@@ -30,6 +30,7 @@ public class Playlist {
     /*
      * set url for non local folder or local folder where files should be added in the order with which they should play
      * use sub folders named in alphabetical order and symbolic links for fill ups
+     * to maintain an order when playing, name programs or folders alphabetically
      */
     private String urlOrFolder;
     // index to a playlist count from top this is rescheduling, must be above it. use only with day, repeats and start fields

@@ -9,13 +9,12 @@ import android.os.Build;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.source.hls.HlsMediaSource;
-import com.google.android.exoplayer2.upstream.DataSource;
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 
 import org.avvento.apps.telefyna.MainActivity;
 import org.avvento.apps.telefyna.stream.Playlist;
 
+import java.io.File;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
@@ -54,28 +53,48 @@ public class Maintenance {
                 player = new SimpleExoPlayer.Builder(MainActivity.instance).build();
                 if(Playlist.Type.LOCAL.equals(playlist.getType())) {
                     // TODO how to add all media items in a folder and to what indexes?
+                    File localPlaylistFolder = new File(MainActivity.instance.getPlaylistDirectory() + File.separator + playlist.getUrlOrFolder());
+                    boolean isFirstFile = false;
+                    setupLocalPlaylist(player, localPlaylistFolder, isFirstFile);
                 } else {
-                    if(playlist.getUrlOrFolder().endsWith(".m3u8")) {
-                        DataSource.Factory dataSourceFactory = new DefaultHttpDataSourceFactory();
-                        HlsMediaSource hlsMediaSource = new HlsMediaSource.Factory(dataSourceFactory)
-                                .createMediaSource(MediaItem.fromUri(playlist.getUrlOrFolder()));
-                        player.setMediaSource(hlsMediaSource);
-                    } else {
-                        player.setMediaItem(MediaItem.fromUri(playlist.getUrlOrFolder()));
-                    }
+                    player.setMediaItem(MediaItem.fromUri(playlist.getUrlOrFolder()));
                 }
-                player.prepare();
+                if(player != null) {
+                    player.prepare();
+                }
             } else {
                 rescheduling--;
                 player = MainActivity.instance.getPlayers().get(rescheduling);
                 playlist = playlists[rescheduling].reschedule(playlist.isActive(), playlist.getDay(), playlist.getRepeats(), playlist.getStart());
             }
-            if (playlist.isActive()) {
-                schedulePlayList(playlist, index);
+            if (player != null) {
+                if(playlist.isActive()) {
+                    schedulePlayList(playlist, index);
+                }
+                MainActivity.instance.putPlayer(index, player);
             }
-            MainActivity.instance.putPlayer(index, player);
         }
         playCurrentSlot();
+    }
+
+    private void setupLocalPlaylist(Player player, File fileOrFolder, boolean isFirstFile) {
+        if(fileOrFolder.exists()) {
+            File[] fileOrFolderList = fileOrFolder.listFiles();
+            Arrays.sort(fileOrFolderList);// ordering programs alphabetically
+            for (int j = 0; j < fileOrFolderList.length; j++) {
+                File file = fileOrFolderList[j];
+                if (file.isDirectory()) {
+                    setupLocalPlaylist(player, file, isFirstFile);
+                } else {
+                    if (j == 0 && !isFirstFile) {
+                        player.setMediaItem(MediaItem.fromUri(Uri.fromFile(file)));
+                        isFirstFile = true;
+                    } else {
+                        player.addMediaItem(MediaItem.fromUri(Uri.fromFile(file)));
+                    }
+                }
+            }
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)

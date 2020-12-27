@@ -10,7 +10,6 @@ import android.view.WindowManager;
 
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
-import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.BehindLiveWindowException;
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
@@ -21,15 +20,11 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.avvento.apps.telefyna.scheduler.Maintenance;
 import org.avvento.apps.telefyna.stream.Config;
-import org.videolan.libvlc.LibVLC;
-import org.videolan.libvlc.MediaPlayer;
-import org.videolan.libvlc.util.VLCVideoLayout;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -47,20 +42,6 @@ public class MainActivity extends AppCompatActivity implements ExoPlayer.EventLi
     private Map<Integer, SimpleExoPlayer> players;
     private SimpleExoPlayer currentPlayer;
     private PlayerView playerView;
-
-    private VLCVideoLayout mVideoLayout = null;
-    private LibVLC mLibVLC = null;
-    private MediaPlayer mMediaPlayer = null;
-
-    private void initVLC() {
-        final ArrayList<String> args = new ArrayList<>();
-        args.add("-vvv");
-        mLibVLC = new LibVLC(this, args);
-        mMediaPlayer = new MediaPlayer(mLibVLC);
-        mVideoLayout = findViewById(R.id.video_layout);
-        mMediaPlayer.attachViews(mVideoLayout, null, true, false);
-    }
-
 
 
     public Map<Integer, SimpleExoPlayer> getPlayers() {
@@ -88,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements ExoPlayer.EventLi
         if(it.hasNext()) {
             if (currentPlayer != null) {
                 currentPlayer.pause();
+                currentPlayer.seekTo(0);
             }
             while (it.hasNext()) {
                 int i = it.next();
@@ -147,8 +129,8 @@ public class MainActivity extends AppCompatActivity implements ExoPlayer.EventLi
         return new File(Environment.getExternalStorageDirectory().getAbsolutePath() + postfix);
     }
 
-    public File getPlaylistDirectory() {
-        return new File(getAppRootDirectory().getAbsolutePath() + File.separator + "playlist");
+    public String getPlaylistDirectory() {
+        return getAppRootDirectory().getAbsolutePath() + File.separator + "playlist";
     }
 
     private Config readConfiguration() {

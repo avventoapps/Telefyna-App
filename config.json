@@ -3,7 +3,7 @@
     {
       "name": "3ABN-International",
       "description": "This is the default playlist, plays wherenever nothing is scheduled or is available",
-      "start": "0700",
+      "start": "0000",
       "type": "STREAM",
       "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652312/secure/master.m3u8"
     },
@@ -12,6 +12,10 @@
       "start": "0600",
       "type": "LOCAL",
       "urlOrFolder": null
+    },
+    {
+      "rescheduling": 1,
+      "start": "0700"
     },
     {
       "name": "3ABN-U-Sabbath",
@@ -75,6 +79,12 @@
     {
       "rescheduling": 1,
       "start": "1649"
+    },
+    {
+      "name": "Test",
+      "start": "0005",
+      "type": "LOCAL",
+      "urlOrFolder": "WeeklySunTueThur"
     }
   ]
 }

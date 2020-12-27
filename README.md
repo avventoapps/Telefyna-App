@@ -25,13 +25,13 @@ For any questions or queries, please email the support team at apps@avventohome.
 
 
 ## TODO
-[ ] Fix com.google.android.exoplayer2.source.BehindLiveWindowException on hls streaming
-[ ] work on presentation approach
-[ ] work on now playing orm to handle resuming local playlists at next play
-[x] fix playlist pending extra being null in broadcast
-[x] Smooth switching/
-[x] Play folder
-[x] Fix scheduling
-[x] hide exoplayer buttons
-[x] exoplayer switching to another track smoothly
-[x] Support resuming from last played in playlist folder to next
+- [ ] Fix com.google.android.exoplayer2.source.BehindLiveWindowException on hls streaming
+- [ ] work on presentation approach
+- [ ] work on now playing orm to handle resuming local playlists at next play
+- [x] fix playlist pending extra being null in broadcast
+- [x] Smooth switching/
+- [x] Play folder
+- [x] Fix scheduling
+- [x] hide exoplayer buttons
+- [x] exoplayer switching to another track smoothly
+- [x] Support resuming from last played in playlist folder to next

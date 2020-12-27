@@ -9,6 +9,9 @@ import android.os.Build;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.source.hls.HlsMediaSource;
+import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 
 import org.avvento.apps.telefyna.MainActivity;
 import org.avvento.apps.telefyna.stream.Playlist;
@@ -45,14 +48,21 @@ public class Maintenance {
         for (int index = 0; index< playlists.length; index++) {
             Playlist playlist = playlists[index];
             Integer rescheduling = playlist.getRescheduling();
-            Player player;
+            SimpleExoPlayer player;
             if(rescheduling == null) {
                 // setup player
                 player = new SimpleExoPlayer.Builder(MainActivity.instance).build();
                 if(Playlist.Type.LOCAL.equals(playlist.getType())) {
                     // TODO how to add all media items in a folder and to what indexes?
                 } else {
-                    player.setMediaItem(MediaItem.fromUri(Uri.parse(playlist.getUrlOrFolder())));
+                    if(playlist.getUrlOrFolder().endsWith(".m3u8")) {
+                        DataSource.Factory dataSourceFactory = new DefaultHttpDataSourceFactory();
+                        HlsMediaSource hlsMediaSource = new HlsMediaSource.Factory(dataSourceFactory)
+                                .createMediaSource(MediaItem.fromUri(playlist.getUrlOrFolder()));
+                        player.setMediaSource(hlsMediaSource);
+                    } else {
+                        player.setMediaItem(MediaItem.fromUri(playlist.getUrlOrFolder()));
+                    }
                 }
                 player.prepare();
             } else {

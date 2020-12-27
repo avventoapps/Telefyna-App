@@ -62,15 +62,19 @@
     },
     {
       "name": "Test- 3ABN US",
-      "start": "1517",
+      "start": "1647",
       "type": "STREAM",
       "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652042/secure/master.m3u8"
     },
     {
       "name": "Test- 3ABN Proclaim",
-      "start": "1520",
+      "start": "1648",
       "type": "STREAM",
       "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652317/secure/master.m3u8"
+    },
+    {
+      "rescheduling": 1,
+      "start": "1649"
     }
   ]
 }

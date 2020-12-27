@@ -8,8 +8,12 @@ import android.os.Handler;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.Player;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.source.BehindLiveWindowException;
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.gson.Gson;
 
@@ -17,11 +21,15 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.avvento.apps.telefyna.scheduler.Maintenance;
 import org.avvento.apps.telefyna.stream.Config;
+import org.videolan.libvlc.LibVLC;
+import org.videolan.libvlc.MediaPlayer;
+import org.videolan.libvlc.util.VLCVideoLayout;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -36,15 +44,30 @@ public class MainActivity extends AppCompatActivity implements ExoPlayer.EventLi
     private AlarmManager alarmManager;
     private Handler handler;
     private Maintenance maintenance;
-    private Map<Integer, Player> players;
-    private Player currentPlayer;
+    private Map<Integer, SimpleExoPlayer> players;
+    private SimpleExoPlayer currentPlayer;
     private PlayerView playerView;
 
-    public Map<Integer, Player> getPlayers() {
+    private VLCVideoLayout mVideoLayout = null;
+    private LibVLC mLibVLC = null;
+    private MediaPlayer mMediaPlayer = null;
+
+    private void initVLC() {
+        final ArrayList<String> args = new ArrayList<>();
+        args.add("-vvv");
+        mLibVLC = new LibVLC(this, args);
+        mMediaPlayer = new MediaPlayer(mLibVLC);
+        mVideoLayout = findViewById(R.id.video_layout);
+        mMediaPlayer.attachViews(mVideoLayout, null, true, false);
+    }
+
+
+
+    public Map<Integer, SimpleExoPlayer> getPlayers() {
         return players;
     }
 
-    public void putPlayer(Integer index, Player player) {
+    public void putPlayer(Integer index, SimpleExoPlayer player) {
         players.put(index, player);
     }
 
@@ -68,9 +91,11 @@ public class MainActivity extends AppCompatActivity implements ExoPlayer.EventLi
             }
             while (it.hasNext()) {
                 int i = it.next();
-                Player player = players.get(index);
+                SimpleExoPlayer player = players.get(index);
                 if (i == index) {
+                    player.prepare();
                     player.setPlayWhenReady(true);
+                    player.addListener(this);
                     playerView.setPlayer(player);
                     currentPlayer = player;
                 }
@@ -84,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements ExoPlayer.EventLi
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         instance = this;
         maintenance = new Maintenance();
+        handler = new Handler();
 
         instance.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
@@ -139,7 +165,29 @@ public class MainActivity extends AppCompatActivity implements ExoPlayer.EventLi
     private void initPlayer() {
         players = new HashMap<>();
         playerView = findViewById(R.id.player);
-        handler = new Handler();
+        playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
+        playerView.setUseController(false);
         maintenance.run();
      }
+
+    @Override
+    public void onPlayerError(ExoPlaybackException error) {
+        if(isBehindLiveWindow(error)) {
+
+        }
+    }
+
+    private static boolean isBehindLiveWindow(ExoPlaybackException error) {
+        if (error.type != ExoPlaybackException.TYPE_SOURCE) {
+            return false;
+        }
+        Throwable cause = error.getSourceException();
+        while (cause != null) {
+            if (cause instanceof BehindLiveWindowException) {
+                return true;
+            }
+            cause = cause.getCause();
+        }
+        return false;
+    }
 }

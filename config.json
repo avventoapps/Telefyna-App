@@ -1,0 +1,76 @@
+{
+  "playlists": [
+    {
+      "name": "3ABN-International",
+      "description": "This is the default playlist, plays wherenever nothing is scheduled or is available",
+      "start": "0700",
+      "type": "STREAM",
+      "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652312/secure/master.m3u8"
+    },
+    {
+      "name": "3ABN-U-MorningWatch",
+      "start": "0600",
+      "type": "LOCAL",
+      "urlOrFolder": null
+    },
+    {
+      "name": "3ABN-U-Sabbath",
+      "day": 7,
+      "start": "0900",
+      "type": "LOCAL",
+      "urlOrFolder": null,
+      "repeats": []
+    },
+    {
+      "rescheduling": 1,
+      "day": 7,
+      "start": "1300"
+    },
+    {
+      "name": "3ABN-U-SatMonWed",
+      "day": 7,
+      "start": "1900",
+      "type": "LOCAL",
+      "urlOrFolder": null,
+      "repeats": [2, 4]
+    },
+    {
+      "name": "3ABN-U-SunTueThur",
+      "day": 1,
+      "start": "1900",
+      "type": "LOCAL",
+      "urlOrFolder": null,
+      "repeats": [3, 5]
+    },
+    {
+      "rescheduling": 1,
+      "start": "2200"
+    },
+    {
+      "name": "3ABN-U-Vespers",
+      "day": 6,
+      "start": "1900",
+      "type": "LOCAL",
+      "urlOrFolder": null,
+      "repeats": []
+    },
+    {
+      "name": "Test- 3ABN Kids",
+      "start": "1515",
+      "type": "STREAM",
+      "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652318/secure/master.m3u8"
+    },
+    {
+      "name": "Test- 3ABN US",
+      "start": "1517",
+      "type": "STREAM",
+      "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652042/secure/master.m3u8"
+    },
+    {
+      "name": "Test- 3ABN Proclaim",
+      "start": "1520",
+      "type": "STREAM",
+      "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652317/secure/master.m3u8"
+    }
+  ]
+}

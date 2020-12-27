@@ -46,13 +46,12 @@ public class Maintenance {
         Playlist[] playlists = MainActivity.instance.getConfiguration().getPlaylists();
         for (int index = 0; index< playlists.length; index++) {
             Playlist playlist = playlists[index];
-            Integer rescheduling = playlist.getRescheduling();
+            Integer clone = playlist.getClone();
             SimpleExoPlayer player;
-            if(rescheduling == null) {
+            if(clone == null) {
                 // setup player
                 player = new SimpleExoPlayer.Builder(MainActivity.instance).build();
                 if(Playlist.Type.LOCAL.equals(playlist.getType())) {
-                    // TODO how to add all media items in a folder and to what indexes?
                     File localPlaylistFolder = new File(MainActivity.instance.getPlaylistDirectory() + File.separator + playlist.getUrlOrFolder());
                     boolean isFirstFile = false;
                     setupLocalPlaylist(player, localPlaylistFolder, isFirstFile);
@@ -63,9 +62,9 @@ public class Maintenance {
                     player.prepare();
                 }
             } else {
-                rescheduling--;
-                player = MainActivity.instance.getPlayers().get(rescheduling);
-                playlist = playlists[rescheduling].reschedule(playlist.isActive(), playlist.getDay(), playlist.getRepeats(), playlist.getStart());
+                clone--;
+                player = MainActivity.instance.getPlayers().get(clone);
+                playlist = playlists[clone].copy(playlist.isActive(), playlist.getDay(), playlist.getRepeats(), playlist.getStart());
             }
             if (player != null) {
                 if(playlist.isActive()) {

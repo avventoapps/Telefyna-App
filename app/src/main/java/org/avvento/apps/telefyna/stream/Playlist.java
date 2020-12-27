@@ -21,7 +21,7 @@ public class Playlist {
     private Integer day;
     // time to start stream in (hhmm)
     private String start;
-    private Type type;
+    private Type type = Type.STREAM;
     /*
      * days of the week [1-7=Sun-Sat] for the repeat of the same time of the playlist:
      * if null, repeats is daily, if [], never repeats
@@ -33,8 +33,8 @@ public class Playlist {
      * to maintain an order when playing, name programs or folders alphabetically
      */
     private String urlOrFolder;
-    // index to a playlist count from top this is rescheduling, must be above it. use only with day, repeats and start fields
-    private Integer rescheduling;
+    // index to a playlist count from top this is cloning, must be above it. use only with day, repeats and start fields
+    private Integer clone;
 
     public boolean scheduledToday() {
         List<Integer> days = new ArrayList<>();
@@ -54,7 +54,7 @@ public class Playlist {
         LOCAL, STREAM
     }
 
-    public Playlist reschedule(boolean active, Integer day, Integer[] repeats, String start) {
+    public Playlist copy(boolean active, Integer day, Integer[] repeats, String start) {
         this.active = active;
         this.day = day;
         this.repeats = repeats;

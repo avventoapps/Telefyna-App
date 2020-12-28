@@ -7,19 +7,19 @@ import android.net.Uri;
 import android.os.Build;
 
 import com.google.android.exoplayer2.MediaItem;
-import com.google.android.exoplayer2.Player;
-import com.google.android.exoplayer2.SimpleExoPlayer;
 
 import org.avvento.apps.telefyna.MainActivity;
 import org.avvento.apps.telefyna.stream.Playlist;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import androidx.annotation.RequiresApi;
@@ -33,7 +33,6 @@ public class Maintenance {
     public void run() {
         schedule();
         MainActivity.instance.getHandler().postDelayed(new Runnable() {
-            @RequiresApi(api = Build.VERSION_CODES.N)
             public void run() {
                 schedule();
                 MainActivity.instance.getHandler().postDelayed(this, getMillsToMidNight());
@@ -47,49 +46,44 @@ public class Maintenance {
         for (int index = 0; index< playlists.length; index++) {
             Playlist playlist = playlists[index];
             Integer clone = playlist.getClone();
-            SimpleExoPlayer player;
+            List<MediaItem> mediaItems = new ArrayList<>();
             if(clone == null) {
-                // setup player
-                player = new SimpleExoPlayer.Builder(MainActivity.instance).build();
                 if(Playlist.Type.LOCAL.equals(playlist.getType())) {
                     File localPlaylistFolder = new File(MainActivity.instance.getPlaylistDirectory() + File.separator + playlist.getUrlOrFolder());
-                    boolean isFirstFile = false;
-                    setupLocalPlaylist(player, localPlaylistFolder, isFirstFile);
+                    boolean addedFirstItem = false;
+                    setupLocalPlaylist(mediaItems, localPlaylistFolder, addedFirstItem);
                 } else {
-                    player.setMediaItem(MediaItem.fromUri(playlist.getUrlOrFolder()));
-                }
-                if(player != null) {
-                    player.prepare();
+                    mediaItems.add(MediaItem.fromUri(playlist.getUrlOrFolder()));
                 }
             } else {
                 clone--;
-                player = MainActivity.instance.getPlayers().get(clone);
+                mediaItems = MainActivity.instance.getPlayout().get(clone);
                 playlist = playlists[clone].copy(playlist.isActive(), playlist.getDay(), playlist.getRepeats(), playlist.getStart());
             }
-            if (player != null) {
+            if (!mediaItems.isEmpty()) {
                 if(playlist.isActive()) {
                     schedulePlayList(playlist, index);
                 }
-                MainActivity.instance.putPlayer(index, player);
+                MainActivity.instance.putPlayout(index, mediaItems);
             }
         }
         playCurrentSlot();
     }
 
-    private void setupLocalPlaylist(Player player, File fileOrFolder, boolean isFirstFile) {
+    private void setupLocalPlaylist(List<MediaItem> mediaItems, File fileOrFolder, boolean addedFirstItem) {
         if(fileOrFolder.exists()) {
             File[] fileOrFolderList = fileOrFolder.listFiles();
             Arrays.sort(fileOrFolderList);// ordering programs alphabetically
             for (int j = 0; j < fileOrFolderList.length; j++) {
                 File file = fileOrFolderList[j];
                 if (file.isDirectory()) {
-                    setupLocalPlaylist(player, file, isFirstFile);
+                    setupLocalPlaylist(mediaItems, file, addedFirstItem);
                 } else {
-                    if (j == 0 && !isFirstFile) {
-                        player.setMediaItem(MediaItem.fromUri(Uri.fromFile(file)));
-                        isFirstFile = true;
+                    if (j == 0 && !addedFirstItem) {
+                        mediaItems.add(0, MediaItem.fromUri(Uri.fromFile(file)));
+                        addedFirstItem = true;
                     } else {
-                        player.addMediaItem(MediaItem.fromUri(Uri.fromFile(file)));
+                        mediaItems.add(MediaItem.fromUri(Uri.fromFile(file)));
                     }
                 }
             }

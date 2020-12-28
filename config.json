@@ -60,31 +60,35 @@
     },
     {
       "name": "Test- 3ABN Kids",
-      "start": "1515",
+      "start": "1256",
       "type": "STREAM",
       "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652318/secure/master.m3u8"
     },
     {
       "name": "Test- 3ABN US",
-      "start": "1647",
+      "start": "1257",
       "type": "STREAM",
       "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652042/secure/master.m3u8"
     },
     {
+      "name": "Test",
+      "start": "1302",
+      "type": "LOCAL",
+      "urlOrFolder": "WeeklySunTueThur"
+    },
+    {
       "name": "Test- 3ABN Proclaim",
-      "start": "1648",
+      "start": "1305",
       "type": "STREAM",
       "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652317/secure/master.m3u8"
     },
     {
-      "clone": 1,
-      "start": "1649"
+      "clone": 11,
+      "start": "1306"
     },
     {
-      "name": "Test",
-      "start": "0005",
-      "type": "LOCAL",
-      "urlOrFolder": "WeeklySunTueThur"
+      "clone": 1,
+      "start": "1307"
     }
   ]
 }

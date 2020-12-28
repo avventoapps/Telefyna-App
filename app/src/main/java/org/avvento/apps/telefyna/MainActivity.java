@@ -9,7 +9,8 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.google.android.exoplayer2.ExoPlaybackException;
-import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.MediaItem;
+import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.BehindLiveWindowException;
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
@@ -26,30 +27,30 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-public class MainActivity extends AppCompatActivity implements ExoPlayer.EventListener {
+public class MainActivity extends AppCompatActivity implements Player.EventListener {
     public static MainActivity instance;
     private Config configuration;
     private AlarmManager alarmManager;
     private Handler handler;
     private Maintenance maintenance;
-    private Map<Integer, SimpleExoPlayer> players;
     private SimpleExoPlayer currentPlayer;
+    private SimpleExoPlayer player;
     private PlayerView playerView;
+    private Map<Integer, List<MediaItem>> playout;
 
-
-    public Map<Integer, SimpleExoPlayer> getPlayers() {
-        return players;
+    public void putPlayout(Integer index, List<MediaItem> mediaItems) {
+        playout.put(index, mediaItems);
     }
 
-    public void putPlayer(Integer index, SimpleExoPlayer player) {
-        players.put(index, player);
+    public Map<Integer, List<MediaItem>> getPlayout() {
+        return playout;
     }
 
     public Config getConfiguration() {
@@ -64,25 +65,20 @@ public class MainActivity extends AppCompatActivity implements ExoPlayer.EventLi
         return handler;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void switchNow(int index) {
-        Iterator<Integer> it = players.keySet().iterator();
-        if(it.hasNext()) {
-            if (currentPlayer != null) {
-                currentPlayer.pause();
-                currentPlayer.seekTo(0);
-            }
-            while (it.hasNext()) {
-                int i = it.next();
-                SimpleExoPlayer player = players.get(index);
-                if (i == index) {
-                    player.prepare();
-                    player.setPlayWhenReady(true);
-                    player.addListener(this);
-                    playerView.setPlayer(player);
-                    currentPlayer = player;
-                }
+        List<MediaItem> mediaItems = playout.get(index);
+        player = new SimpleExoPlayer.Builder(MainActivity.instance).build();
+        for(int i = 0; i < mediaItems.size(); i++) {
+            if(i == 0) {
+                player.setMediaItem(mediaItems.get(i));
+            } else {
+                player.addMediaItem(mediaItems.get(i));
             }
         }
+        player.prepare();
+        player.setPlayWhenReady(true);
+        player.addListener(this);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -145,19 +141,12 @@ public class MainActivity extends AppCompatActivity implements ExoPlayer.EventLi
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void initPlayer() {
-        players = new HashMap<>();
+        playout = new HashMap<>();
         playerView = findViewById(R.id.player);
         playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
         playerView.setUseController(false);
         maintenance.run();
      }
-
-    @Override
-    public void onPlayerError(ExoPlaybackException error) {
-        if(isBehindLiveWindow(error)) {
-
-        }
-    }
 
     private static boolean isBehindLiveWindow(ExoPlaybackException error) {
         if (error.type != ExoPlaybackException.TYPE_SOURCE) {
@@ -171,5 +160,16 @@ public class MainActivity extends AppCompatActivity implements ExoPlayer.EventLi
             cause = cause.getCause();
         }
         return false;
+    }
+
+    @Override
+    public void onIsPlayingChanged(boolean isPlaying) {
+        if(isPlaying && currentPlayer != player) {
+            if (currentPlayer != null) {
+                currentPlayer.release();
+            }
+            playerView.setPlayer(player);
+            currentPlayer = player;
+        }
     }
 }

@@ -5,7 +5,7 @@ A presentational online/local streaming and scheduling app for audio and video.
 ___
 
 ## Configuration
-*  Use `config.json` to create your own, add it to either `sdcard` if existing /device drive in a folder called `telefyna` plus your local playlist folder
+*  Use `config.json` to create your own configurations, [here is a sample](https://github.com/avventoapps/Telefyna/blob/master/config.json), add it to either `sdcard` if existing /device drive in a folder called `telefyna` plus your local playlist folder
 *  Ensure the telefyna app is granted storage permission in your permissions
 
 ## Note
@@ -29,7 +29,7 @@ For any questions or queries, please email the support team at apps@avventohome.
 
 
 ## TODO
-- [ ] work on now playing orm to handle resuming local playlists at next play to support daily etc periods
+- [ ] work on now playing orm to handle resuming local playlists at next play to support daily etc periods and future dates
 - [ ] support streaming to hls, shoutcast & loudcast
 - [ ] locally backup streaming content
 - [ ] ensure all wrong media files are skipped

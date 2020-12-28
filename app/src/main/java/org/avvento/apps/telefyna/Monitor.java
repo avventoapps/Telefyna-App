@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.view.Display;
-import android.view.Window;
 import android.view.WindowManager;
 
 import com.google.android.exoplayer2.ExoPlaybackException;
@@ -36,10 +35,6 @@ import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 
 public class Monitor extends Presentation implements Player.EventListener {
-    public Monitor(Context outerContext, Display display) {
-        super(outerContext, display);
-    }
-
     public static Monitor instance;
     private Config configuration;
     private AlarmManager alarmManager;
@@ -49,6 +44,10 @@ public class Monitor extends Presentation implements Player.EventListener {
     private SimpleExoPlayer player;
     private PlayerView playerView;
     private Map<Integer, List<MediaItem>> playout;
+
+    public Monitor(Context outerContext, Display display) {
+        super(outerContext, display);
+    }
 
     public void putPlayout(Integer index, List<MediaItem> mediaItems) {
         playout.put(index, mediaItems);
@@ -98,9 +97,6 @@ public class Monitor extends Presentation implements Player.EventListener {
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
         instance = this;
         maintenance = new Maintenance();
         handler = new Handler();
@@ -188,4 +184,5 @@ public class Monitor extends Presentation implements Player.EventListener {
     public void onPlayerError(ExoPlaybackException error) {
         switchToDefault();
     }
+
 }

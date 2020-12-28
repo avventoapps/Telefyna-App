@@ -11,5 +11,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class Config {
+    private boolean disableNotifications = true;
     private Playlist[] playlists;
 }

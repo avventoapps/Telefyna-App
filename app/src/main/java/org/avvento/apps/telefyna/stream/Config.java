@@ -1,6 +1,5 @@
 package org.avvento.apps.telefyna.stream;
 
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

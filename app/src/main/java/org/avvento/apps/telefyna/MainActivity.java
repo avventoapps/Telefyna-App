@@ -66,8 +66,16 @@ public class MainActivity extends AppCompatActivity implements Player.EventListe
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
+    private void switchToDefault() {
+        switchNow(0);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void switchNow(int index) {
         List<MediaItem> mediaItems = playout.get(index);
+        if(mediaItems.isEmpty()) {
+            switchToDefault();
+        }
         player = new SimpleExoPlayer.Builder(MainActivity.instance).build();
         for(int i = 0; i < mediaItems.size(); i++) {
             if(i == 0) {
@@ -143,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements Player.EventListe
     private void initPlayer() {
         playout = new HashMap<>();
         playerView = findViewById(R.id.player);
-        playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
+        playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
         playerView.setUseController(false);
         maintenance.run();
      }
@@ -171,5 +179,18 @@ public class MainActivity extends AppCompatActivity implements Player.EventListe
             playerView.setPlayer(player);
             currentPlayer = player;
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
+    public void onPlaybackStateChanged(int state) {
+        if (state == Player.STATE_ENDED) {
+            switchToDefault();
+        }
+    }
+
+    @Override
+    public void onPlayerError(ExoPlaybackException error) {
+        switchToDefault();
     }
 }

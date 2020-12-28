@@ -21,7 +21,7 @@ public class Playlist {
     private Integer day;
     // time to start stream in (hhmm)
     private String start;
-    private Type type = Type.STREAM;
+    private Type type = Type.ONLINE;
     /*
      * days of the week [1-7=Sun-Sat] for the repeat of the same time of the playlist:
      * if null, repeats is daily, if [], never repeats
@@ -38,7 +38,9 @@ public class Playlist {
 
     public boolean scheduledToday() {
         List<Integer> days = new ArrayList<>();
-
+        if(!isActive()) {
+            return false;
+        }
         if(day == null) {
             return true;
         } else {
@@ -51,11 +53,10 @@ public class Playlist {
     }
 
     public enum Type {
-        LOCAL, STREAM
+        LOCAL, ONLINE
     }
 
-    public Playlist copy(boolean active, Integer day, Integer[] repeats, String start) {
-        this.active = active;
+    public Playlist copy(Integer day, Integer[] repeats, String start) {
         this.day = day;
         this.repeats = repeats;
         this.start = start;

@@ -4,7 +4,6 @@
       "name": "3ABN-International",
       "description": "This is the default playlist, plays wherenever nothing is scheduled or is available",
       "start": "0000",
-      "type": "STREAM",
       "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652312/secure/master.m3u8"
     },
     {
@@ -61,34 +60,27 @@
     {
       "name": "Test- 3ABN Kids",
       "start": "1256",
-      "type": "STREAM",
       "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652318/secure/master.m3u8"
     },
     {
       "name": "Test- 3ABN US",
-      "start": "1257",
-      "type": "STREAM",
+      "start": "1414",
       "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652042/secure/master.m3u8"
     },
     {
       "name": "Test",
-      "start": "1302",
+      "start": "1415",
       "type": "LOCAL",
       "urlOrFolder": "WeeklySunTueThur"
     },
     {
       "name": "Test- 3ABN Proclaim",
-      "start": "1305",
-      "type": "STREAM",
+      "start": "1416",
       "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652317/secure/master.m3u8"
     },
     {
-      "clone": 11,
-      "start": "1306"
-    },
-    {
       "clone": 1,
-      "start": "1307"
+      "start": "1518"
     }
   ]
 }

@@ -5,8 +5,10 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.webkit.MimeTypeMap;
 
 import com.google.android.exoplayer2.MediaItem;
+import com.google.android.exoplayer2.util.MimeTypes;
 
 import org.avvento.apps.telefyna.MainActivity;
 import org.avvento.apps.telefyna.stream.Playlist;
@@ -19,7 +21,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import androidx.annotation.RequiresApi;
@@ -50,20 +51,20 @@ public class Maintenance {
             if(clone == null) {
                 if(Playlist.Type.LOCAL.equals(playlist.getType())) {
                     File localPlaylistFolder = new File(MainActivity.instance.getPlaylistDirectory() + File.separator + playlist.getUrlOrFolder());
-                    boolean addedFirstItem = false;
-                    setupLocalPlaylist(mediaItems, localPlaylistFolder, addedFirstItem);
+                    if(localPlaylistFolder.exists() && localPlaylistFolder.listFiles().length > 0) {
+                        boolean addedFirstItem = false;
+                        setupLocalPlaylist(mediaItems, localPlaylistFolder, addedFirstItem);
+                    }
                 } else {
                     mediaItems.add(MediaItem.fromUri(playlist.getUrlOrFolder()));
                 }
             } else {
                 clone--;
                 mediaItems = MainActivity.instance.getPlayout().get(clone);
-                playlist = playlists[clone].copy(playlist.isActive(), playlist.getDay(), playlist.getRepeats(), playlist.getStart());
+                playlist = playlists[clone].copy(playlist.getDay(), playlist.getRepeats(), playlist.getStart());
             }
             if (!mediaItems.isEmpty()) {
-                if(playlist.isActive()) {
-                    schedulePlayList(playlist, index);
-                }
+                schedulePlayList(playlist, index);
                 MainActivity.instance.putPlayout(index, mediaItems);
             }
         }
@@ -142,5 +143,11 @@ public class Maintenance {
         c.set(Calendar.SECOND, 0);
         c.set(Calendar.MILLISECOND, 0);
         return (c.getTimeInMillis() - System.currentTimeMillis());
+    }
+
+    // TODO and use fix
+    private boolean isSupportedImageAudioOrVideo(String url) {
+        String type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(url));
+        return MimeTypes.isAudio(type) || MimeTypes.isVideo(type);
     }
 }

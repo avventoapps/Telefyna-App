@@ -37,4 +37,11 @@ public class MainActivity extends AppCompatActivity implements PlayerNotificatio
             ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancel(notificationId);
         }
     }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        monitor.show();
+    }
 }

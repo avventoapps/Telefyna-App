@@ -9,6 +9,7 @@ ___
 *  Ensure the telefyna app is granted storage permission in your permissions
 
 ## Note
+* Ensure the device's Date and Timezone are set correctly
 * Uses the first secondary monitor if available or the main screen if none is available
 * The first playlist must be active, its the default  playlist
 * `name` your playlist meaningfully
@@ -30,8 +31,9 @@ For any questions or queries, please email the support team at apps@avventohome.
 
 ## TODO
 - [ ] work on now playing orm to handle resuming local playlists at next play to support daily etc periods and future dates
+- [ ] support audit logs
 - [ ] support streaming to hls, shoutcast & loudcast
-- [ ] locally backup streaming content
+- [ ] locally backup/download streaming content
 - [ ] ensure all wrong media files are skipped
 - [x] work on presentation approach
 - [x] default back to first playlist if the local playlist completes before end time

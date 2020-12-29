@@ -169,7 +169,6 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         playerView = findViewById(R.id.player);
         playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
         playerView.setUseController(false);
-        loadFtpServer();
         maintenance.run();
         shutDownHook();
     }
@@ -206,45 +205,10 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         }
     }
 
-    /**
-     *  TODO fix, use external one for now: https://f-droid.org/packages/be.ppareit.swiftp_free/ recommended
-     */
-    private void loadFtpServer() {
-        FtpDetails ftpDetails = getConfiguration().getFtpDetails();
-        BaseUser[] users = ftpDetails.getUsers();
-        if(ftpDetails.isStart() && users.length > 0) {
-            try {
-                FtpServerFactory serverFactory = new FtpServerFactory();
-                ListenerFactory factory = new ListenerFactory();
-                factory.setPort(ftpDetails.getPort());
-                serverFactory.addListener("default", factory.createListener());
-                UserManager userManager = new PropertiesUserManagerFactory().createUserManager();
-                for(BaseUser user: users) {
-                    user.setHomeDirectory(getAppRootDirectory().getAbsolutePath());
-                    user.setAuthorities(Arrays.asList(new Authority[]{new WritePermission()}));
-                    userManager.save(user);
-                }
-                serverFactory.setUserManager(userManager);
-                ftpServer = serverFactory.createServer();
-                ftpServer.start();
-            } catch (FtpException e) {
-                // audit log
-            }
-        } else {
-            // audit log
-        }
-    }
-
     private void shutDownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
-                if(ftpServer != null && !ftpServer.isStopped()) {
-                    try {
-                        ftpServer.stop();
-                    } catch (Exception e) {
-                        //audit log
-                    }
-                }
+
             }
         });
     }

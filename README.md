@@ -7,12 +7,13 @@ ______
 ## Configurations
 * Use `config.json` to create your own configurations, [here is a sample](https://github.com/avventoapps/Telefyna/blob/master/config.json), add it to either `sdcard` if existing /device drive in a folder called `telefyna` plus your local playlist folder
 * Ensure the telefyna app is granted storage permission in your permissions
-* You can use FTP clients like [FileZilla](https://filezilla-project.org/) to upload both revised config.json and playlist folder/contents
 
 ### Device
 * set `disableNotifications` to false to disable notifications
 
-### FTP Server
+### FTP Remote access
+* If you want to access the filesystem remove, run an [FTP app like swiftp](https://f-droid.org/packages/be.ppareit.swiftp_free)
+* You can use FTP clients like [FileZilla](https://filezilla-project.org/) to upload both revised config.json and playlist folder/contents
 
 ### Playlist
 * Ensure the device's Date and Timezone are set correctly

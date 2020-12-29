@@ -1,13 +1,5 @@
 {
   "disableNotifications": false,
-  "ftpDetails": {
-    "users": [
-      {
-        "name": "avvento",
-        "password": "Avvento123"
-      }
-    ]
-  },
   "playlists": [
     {
       "name": "3ABN-International",

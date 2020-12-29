@@ -50,7 +50,7 @@ public class Maintenance {
             List<MediaItem> mediaItems = new ArrayList<>();
             if(clone == null) {
                 if(Playlist.Type.LOCAL.equals(playlist.getType())) {
-                    File localPlaylistFolder = new File(Monitor.instance.getPlaylistDirectory() + File.separator + playlist.getUrlOrFolder());
+                    File localPlaylistFolder = Monitor.instance.getDirectoryToPlaylist(playlist.getUrlOrFolder());
                     if(localPlaylistFolder.exists() && localPlaylistFolder.listFiles().length > 0) {
                         boolean addedFirstItem = false;
                         setupLocalPlaylist(mediaItems, localPlaylistFolder, addedFirstItem);

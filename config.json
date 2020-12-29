@@ -70,18 +70,23 @@
     },
     {
       "name": "Test",
-      "start": "1415",
+      "start": "0020",
       "type": "LOCAL",
-      "urlOrFolder": "WeeklySunTueThur"
+      "urlOrFolder": "Test",
+      "resuming": true
     },
     {
       "name": "Test- 3ABN Proclaim",
-      "start": "1416",
+      "start": "0025",
       "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652317/secure/master.m3u8"
     },
     {
+      "clone": 12,
+      "start": "0027"
+    },
+    {
       "clone": 1,
-      "start": "1624"
+      "start": "0030"
     }
   ]
 }

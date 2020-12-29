@@ -1,16 +1,21 @@
 ![Telefyna](https://avventohome.org/wp-content/uploads/2020/12/telefyna.png "Telefyna")
 
 # Telefyna
-A presentational online/local streaming and scheduling app for audio and video. 
-___
+An android online/local streaming and scheduling app for audio and video.
+______
 
-## Configuration
-*  Use `config.json` to create your own configurations, [here is a sample](https://github.com/avventoapps/Telefyna/blob/master/config.json), add it to either `sdcard` if existing /device drive in a folder called `telefyna` plus your local playlist folder
-*  Ensure the telefyna app is granted storage permission in your permissions
+## Configurations
+* Use `config.json` to create your own configurations, [here is a sample](https://github.com/avventoapps/Telefyna/blob/master/config.json), add it to either `sdcard` if existing /device drive in a folder called `telefyna` plus your local playlist folder
+* Ensure the telefyna app is granted storage permission in your permissions
+* You can use FTP clients like [FileZilla](https://filezilla-project.org/) to upload both revised config.json and playlist folder/contents
 
-## Note
+### Device
+* set `disableNotifications` to false to disable notifications
+
+### FTP Server
+
+### Playlist
 * Ensure the device's Date and Timezone are set correctly
-* Uses the first secondary monitor if available or the main screen if none is available
 * The first playlist must be active, its the default  playlist
 * `name` your playlist meaningfully
 * `description` contains your explanation of about the playlist
@@ -31,11 +36,11 @@ For any questions or queries, please email the support team at apps@avventohome.
 
 ## TODO
 - [ ] work on now playing orm to handle resuming local playlists at next play to support daily etc periods and future dates
-- [ ] support audit logs
+- [ ] support audit logs, mail them out
 - [ ] support streaming to hls, shoutcast & loudcast
 - [ ] locally backup/download streaming content
 - [ ] ensure all wrong media files are skipped
-- [x] work on presentation approach
+- [ ] work on presentation approach (blocked)
 - [x] default back to first playlist if the local playlist completes before end time
 - [x] Fix com.google.android.exoplayer2.source.BehindLiveWindowException on hls streaming
 - [x] fix playlist pending extra being null in broadcast

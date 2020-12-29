@@ -10,7 +10,7 @@ import android.webkit.MimeTypeMap;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.util.MimeTypes;
 
-import org.avvento.apps.telefyna.MainActivity;
+import org.avvento.apps.telefyna.Monitor;
 import org.avvento.apps.telefyna.stream.Playlist;
 
 import java.io.File;
@@ -33,24 +33,24 @@ public class Maintenance {
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void run() {
         schedule();
-        MainActivity.instance.getHandler().postDelayed(new Runnable() {
+        Monitor.instance.getHandler().postDelayed(new Runnable() {
             public void run() {
                 schedule();
-                MainActivity.instance.getHandler().postDelayed(this, getMillsToMidNight());
+                Monitor.instance.getHandler().postDelayed(this, getMillsToMidNight());
             }
         }, getMillsToMidNight());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void schedule() {
-        Playlist[] playlists = MainActivity.instance.getConfiguration().getPlaylists();
+        Playlist[] playlists = Monitor.instance.getConfiguration().getPlaylists();
         for (int index = 0; index< playlists.length; index++) {
             Playlist playlist = playlists[index];
             Integer clone = playlist.getClone();
             List<MediaItem> mediaItems = new ArrayList<>();
             if(clone == null) {
                 if(Playlist.Type.LOCAL.equals(playlist.getType())) {
-                    File localPlaylistFolder = new File(MainActivity.instance.getPlaylistDirectory() + File.separator + playlist.getUrlOrFolder());
+                    File localPlaylistFolder = new File(Monitor.instance.getPlaylistDirectory() + File.separator + playlist.getUrlOrFolder());
                     if(localPlaylistFolder.exists() && localPlaylistFolder.listFiles().length > 0) {
                         boolean addedFirstItem = false;
                         setupLocalPlaylist(mediaItems, localPlaylistFolder, addedFirstItem);
@@ -60,12 +60,12 @@ public class Maintenance {
                 }
             } else {
                 clone--;
-                mediaItems = MainActivity.instance.getPlayout().get(clone);
+                mediaItems = Monitor.instance.getPlayout().get(clone);
                 playlist = playlists[clone].copy(playlist.getDay(), playlist.getRepeats(), playlist.getStart());
             }
             if (!mediaItems.isEmpty()) {
                 schedulePlayList(playlist, index);
-                MainActivity.instance.putPlayout(index, mediaItems);
+                Monitor.instance.putPlayout(index, mediaItems);
             }
         }
         playCurrentSlot();
@@ -97,7 +97,7 @@ public class Maintenance {
             List<String> slots = startedSlotsToday.keySet().stream().collect(Collectors.toList());
             Collections.sort(slots, Collections.reverseOrder());
             CurrentPlaylist currentPlaylist = startedSlotsToday.get(slots.get(0));
-            MainActivity.instance.switchNow(currentPlaylist.getIndex());
+            Monitor.instance.switchNow(currentPlaylist.getIndex());
         }
     }
 
@@ -111,7 +111,7 @@ public class Maintenance {
             if (hour < current.get(Calendar.HOUR_OF_DAY) || (hour == current.get(Calendar.HOUR_OF_DAY) && min <= current.get(Calendar.MINUTE))) {
                 startedSlotsToday.put(playlist.getStart(), new CurrentPlaylist(index, playlist));
             } else {
-                Intent intent = new Intent(MainActivity.instance, PlaylistScheduler.class);
+                Intent intent = new Intent(Monitor.instance, PlaylistScheduler.class);
                 intent.putExtra(PlaylistScheduler.PLAYLIST_INDEX, index);
                 schedule(intent, nextTime(hour, min));
             }
@@ -119,8 +119,8 @@ public class Maintenance {
     }
 
     private void schedule(Intent intent, long mills) {
-        PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(MainActivity.instance, CODE++, intent, 0);
-        MainActivity.instance.getAlarmManager().setExact(AlarmManager.RTC_WAKEUP, mills, alarmPendingIntent);
+        PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(Monitor.instance, CODE++, intent, 0);
+        Monitor.instance.getAlarmManager().setExact(AlarmManager.RTC_WAKEUP, mills, alarmPendingIntent);
     }
 
     private long nextTime(int hour, int min) {

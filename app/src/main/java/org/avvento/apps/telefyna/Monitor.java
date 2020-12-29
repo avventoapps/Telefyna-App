@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.MediaItem;
@@ -21,6 +22,16 @@ import com.google.gson.Gson;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ftpserver.FtpServer;
+import org.apache.ftpserver.FtpServerFactory;
+import org.apache.ftpserver.ftplet.Authority;
+import org.apache.ftpserver.ftplet.FtpException;
+import org.apache.ftpserver.ftplet.UserManager;
+import org.apache.ftpserver.listener.ListenerFactory;
+import org.apache.ftpserver.usermanager.PropertiesUserManagerFactory;
+import org.apache.ftpserver.usermanager.impl.BaseUser;
+import org.apache.ftpserver.usermanager.impl.WritePermission;
+import org.avvento.apps.telefyna.ftp.FtpDetails;
 import org.avvento.apps.telefyna.scheduler.Maintenance;
 import org.avvento.apps.telefyna.stream.Config;
 
@@ -28,6 +39,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,8 +50,8 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-public class MainActivity extends AppCompatActivity implements PlayerNotificationManager.NotificationListener, Player.EventListener {
-    public static MainActivity instance;
+public class Monitor extends AppCompatActivity implements PlayerNotificationManager.NotificationListener, Player.EventListener {
+    public static Monitor instance;
     private Config configuration;
     private AlarmManager alarmManager;
     private Handler handler;
@@ -46,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements PlayerNotificatio
     private SimpleExoPlayer player;
     private PlayerView playerView;
     private Map<Integer, List<MediaItem>> playout;
+    private FtpServer ftpServer;
 
     public void putPlayout(Integer index, List<MediaItem> mediaItems) {
         playout.put(index, mediaItems);
@@ -100,12 +115,12 @@ public class MainActivity extends AppCompatActivity implements PlayerNotificatio
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.monitor);
         super.onCreate(savedInstanceState);
         configuration = readConfiguration();
         alarmManager = ((AlarmManager) instance.getSystemService(Context.ALARM_SERVICE));
 
-        initPlayer();
+        initialization();
     }
 
     /**
@@ -149,12 +164,14 @@ public class MainActivity extends AppCompatActivity implements PlayerNotificatio
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    private void initPlayer() {
+    private void initialization() {
         playout = new HashMap<>();
         playerView = findViewById(R.id.player);
         playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
         playerView.setUseController(false);
+        loadFtpServer();
         maintenance.run();
+        shutDownHook();
     }
 
     @Override
@@ -188,4 +205,56 @@ public class MainActivity extends AppCompatActivity implements PlayerNotificatio
             ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancel(notificationId);
         }
     }
+
+    /**
+     *  TODO fix, use external one for now: https://f-droid.org/packages/be.ppareit.swiftp_free/ recommended
+     */
+    private void loadFtpServer() {
+        FtpDetails ftpDetails = getConfiguration().getFtpDetails();
+        BaseUser[] users = ftpDetails.getUsers();
+        if(ftpDetails.isStart() && users.length > 0) {
+            try {
+                FtpServerFactory serverFactory = new FtpServerFactory();
+                ListenerFactory factory = new ListenerFactory();
+                factory.setPort(ftpDetails.getPort());
+                serverFactory.addListener("default", factory.createListener());
+                UserManager userManager = new PropertiesUserManagerFactory().createUserManager();
+                for(BaseUser user: users) {
+                    user.setHomeDirectory(getAppRootDirectory().getAbsolutePath());
+                    user.setAuthorities(Arrays.asList(new Authority[]{new WritePermission()}));
+                    userManager.save(user);
+                }
+                serverFactory.setUserManager(userManager);
+                ftpServer = serverFactory.createServer();
+                ftpServer.start();
+            } catch (FtpException e) {
+                // audit log
+            }
+        } else {
+            // audit log
+        }
+    }
+
+    private void shutDownHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            public void run() {
+                if(ftpServer != null && !ftpServer.isStopped()) {
+                    try {
+                        ftpServer.stop();
+                    } catch (Exception e) {
+                        //audit log
+                    }
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(ftpServer != null && !ftpServer.isStopped()) {
+            ftpServer.stop();
+        }
+    }
+
 }

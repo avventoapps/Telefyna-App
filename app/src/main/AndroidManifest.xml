@@ -17,7 +17,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true">
         <activity
-            android:name=".MainActivity"
+            android:name=".Monitor"
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:configChanges="orientation|keyboardHidden"

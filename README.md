@@ -20,6 +20,7 @@ ______
 * The first playlist is the default  playlist and is used as a filler if nothing is available to play next or local folder is vacant
 * The second playlist is a second default, it's a second filler choice and is played when `ONLINE` ones fail because of of internet issues
 * Both the above two default playlists must be maintained active, if any of them is local, better set resuming
+* If you intend to use one playlist as default for both the first and second, make the second a clone of the first
 * `name` your playlist meaningfully
 * `description` contains your explanation of about the playlist
 * `days` of the week (1-7=Sun-Sat): if null or not defined, runs daily
@@ -40,6 +41,7 @@ For any questions or queries, please email the support team at apps@avventohome.
 
 ## TODO
 - [ ] Fork and add auto start using system prefs to FTP, send PR
+- [ ] write tests
 - [ ] support audit logs, mail them out
 - [ ] support streaming to hls, shoutcast & loudcast
 - [ ] locally backup/download streaming content
@@ -47,6 +49,7 @@ For any questions or queries, please email the support team at apps@avventohome.
 - [ ] float another layer on video stream for ads, logo etc
 - [ ] ensure all wrong media files are skipped (blocked)
 - [ ] work on presentation approach (blocked)
+- [ ] read satelite channels and decorders as we do local playlists and streams
 - [x] work on now playing orm(system preferences) to handle resuming local playlists at next play to support daily etc periods and future dates
 - [x] add dates in addition to days
 - [x] remove repeats, use days for day

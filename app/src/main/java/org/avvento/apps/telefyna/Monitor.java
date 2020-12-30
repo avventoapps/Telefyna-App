@@ -7,6 +7,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -26,14 +27,12 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.avvento.apps.telefyna.scheduler.Maintenance;
 import org.avvento.apps.telefyna.stream.Config;
-import org.avvento.apps.telefyna.stream.NowPlaying;
 import org.avvento.apps.telefyna.stream.Playlist;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -51,6 +50,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     public static final String PREFERENCES = "TelefynaPrefs" ;
     private static final String PLAYLIST_PLAY = "PLAYLIST_PLAY";
     private static final String PLAYLIST_LAST_MODIFIED = "PLAYLIST_LAST_MODIFIED";
+    private static final String PLAYLIST_SEEK_TO = "PLAYLIST_SEEK_TO";
     private static final String PLAYLIST_PLAY_FORMAT = "%s-%d";
     private SharedPreferences sharedpreferences;
     public static Monitor instance;
@@ -61,7 +61,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     @Getter
     private Handler handler;
     private Maintenance maintenance;
-    private NowPlaying nowPlaying = new NowPlaying();
+    private int nowPlayingIndex;
     @Getter
     private SimpleExoPlayer player;
     private PlayerView playerView;
@@ -91,13 +91,13 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         }
         Playlist playlist = getConfiguration().getPlaylists()[index];
         if(playlist.isClone()) {
-            index = playlist.getClone();
+            index = playlist.getClone() - 1;
             playlist = getConfiguration().getPlaylists()[index];
         }
         if(Playlist.Type.LOCAL.equals(playlist.getType())) {
             if (playlist.isResuming()) {
                 int lastPlayedMediaIndex = getSharedPlaylistKey(index);
-                if (lastPlayedMediaIndex > 0 && lastPlayedMediaIndex++ != mediaItems.size()) {// resuming if not first or last
+                if (lastPlayedMediaIndex > 0 && lastPlayedMediaIndex != mediaItems.size() - 1) {// resuming if not first or last
                     mediaItems = mediaItems.subList(lastPlayedMediaIndex, mediaItems.size());
                 }
             }
@@ -110,6 +110,9 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         for(int i = 0; i < mediaItems.size(); i++) {
             if(i == 0) {
                 player.setMediaItem(mediaItems.get(i));
+                if(playlist.isResuming()) {
+                    player.seekTo(getSharedPlaylistSeekTo(index));
+                }
             } else {
                 player.addMediaItem(mediaItems.get(i));
             }
@@ -117,21 +120,22 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         player.prepare();
         player.setPlayWhenReady(true);
         player.addListener(instance);
-        nowPlaying.setPlaylistIndex(index);
+        nowPlayingIndex = index;
     }
 
     private void resetTrackingNowPlaying(int index) {
-        trackingNowPlaying(index, 0, getLastModifiedFor(index).lastModified());
+        trackingNowPlaying(index, 0, getLastModifiedFor(index).lastModified(), 0);
     }
 
     private boolean playlistModified(int index) {
         return getLastModifiedFor(index).lastModified() >  getSharedPlaylistLastModified(index);
     }
 
-    private void trackingNowPlaying(int index, int at, long lastModified) {
+    private void trackingNowPlaying(int index, int at, long lastModified, long seekTo) {
         SharedPreferences.Editor editor = sharedpreferences.edit();
         editor.putInt(getPlaylistPlayKey(index), at);
         editor.putLong(getPlaylistLastModified(index), lastModified);
+        editor.putLong(getPlaylistSeekTo(index), seekTo);
         editor.commit();
     }
 
@@ -143,12 +147,20 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         return sharedpreferences.getLong(getPlaylistLastModified(index), 0);
     }
 
+    private long getSharedPlaylistSeekTo(Integer index) {
+        return sharedpreferences.getLong(getPlaylistSeekTo(index), 0);
+    }
+
     private String getPlaylistPlayKey(int index) {
         return String.format(PLAYLIST_PLAY_FORMAT, PLAYLIST_PLAY, index);
     }
 
     private String getPlaylistLastModified(int index) {
         return String.format(PLAYLIST_PLAY_FORMAT, PLAYLIST_LAST_MODIFIED, index);
+    }
+
+    private String getPlaylistSeekTo(int index) {
+        return String.format(PLAYLIST_PLAY_FORMAT, PLAYLIST_SEEK_TO, index);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -221,14 +233,20 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         shutDownHook();
     }
 
+    private void setTrackNowtoCurrent() {
+        trackingNowPlaying(nowPlayingIndex, playerView.getPlayer() == null ? 0 : playerView.getPlayer().getCurrentPeriodIndex(), getLastModifiedFor(nowPlayingIndex).lastModified(), playerView.getPlayer() == null ? 0 : playerView.getPlayer().getCurrentPosition());
+    }
+
     @Override
     public void onIsPlayingChanged(boolean isPlaying) {
-        if(isPlaying && !player.equals(nowPlaying.getPlayer())) {
-            if (nowPlaying.getPlayer() != null) {
-                nowPlaying.getPlayer().release();
+        Player current = playerView.getPlayer();
+        if(!player.equals(current)) {
+            setTrackNowtoCurrent();
+            if(current != null) {
+                current.stop();
+                current.release();
             }
             playerView.setPlayer(player);
-            nowPlaying.setPlayer(player);
         }
     }
 
@@ -236,25 +254,30 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     @Override
     public void onPlaybackStateChanged(int state) {
         if (state == Player.STATE_ENDED) {
-            resetTrackingNowPlaying(nowPlaying.getPlaylistIndex());
+            resetTrackingNowPlaying(nowPlayingIndex);
             switchToDefault();
         }
     }
 
     @Override
     public void onMediaItemTransition(@Nullable MediaItem mediaItem, int reason) {
-        int index = nowPlaying.getPlaylistIndex();
-        trackingNowPlaying(index, nowPlaying.getPlayer().getCurrentPeriodIndex(), getLastModifiedFor(index).lastModified());
+        trackingNowPlaying(nowPlayingIndex, playerView.getPlayer().getCurrentPeriodIndex(), getLastModifiedFor(nowPlayingIndex).lastModified(), 0);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onPlayerError(ExoPlaybackException error) {
-        if(error.getCause().getCause() instanceof ConnectException) {
+        setTrackNowtoCurrent();
+        if(!isNetworkConnected()) {
             switchToSecondDefault();
         } else {
             switchToDefault();
         }
+    }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
     }
 
     @Override
@@ -268,6 +291,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
                 // TODO anything to do here
+                setTrackNowtoCurrent();
             }
         });
     }

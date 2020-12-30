@@ -67,8 +67,8 @@ public class Maintenance {
             }
             if (!mediaItems.isEmpty()) {
                 schedulePlayList(playlist, index);
-                Monitor.instance.putPlayout(index, mediaItems);
             }
+            Monitor.instance.putPlayout(index, mediaItems);
         }
         playCurrentSlot();
     }

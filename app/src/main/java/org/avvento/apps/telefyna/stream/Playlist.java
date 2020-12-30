@@ -59,9 +59,9 @@ public class Playlist {
 
     // only overrides days, dates and start but maintains the rest
     public Playlist copy(Playlist clone) {
-        clone.setDays(this.days);
-        clone.setDates(this.dates);
-        clone.setStart(this.getStart());
+        clone.setDays(this.days == null ? clone.getDays(): this.days);
+        clone.setDates(this.dates == null ? clone.getDates() : this.dates);
+        clone.setStart(this.getStart() == null ? clone.getStart() : this.getStart());
         return clone;
     }
 }

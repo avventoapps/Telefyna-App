@@ -10,6 +10,7 @@ import android.webkit.MimeTypeMap;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.util.MimeTypes;
 
+import org.apache.commons.lang3.StringUtils;
 import org.avvento.apps.telefyna.Monitor;
 import org.avvento.apps.telefyna.stream.Playlist;
 
@@ -35,6 +36,7 @@ public class Maintenance {
         schedule();
         Monitor.instance.getHandler().postDelayed(new Runnable() {
             public void run() {
+                Monitor.instance.initialiseConfiguration();
                 schedule();
                 Monitor.instance.getHandler().postDelayed(this, getMillsToMidNight());
             }
@@ -61,7 +63,7 @@ public class Maintenance {
             } else {
                 clone--;
                 mediaItems = Monitor.instance.getPlayout().get(clone);
-                playlist = playlists[clone].copy(playlist.getDay(), playlist.getRepeats(), playlist.getStart());
+                playlist = playlist.copy(playlists[clone]);
             }
             if (!mediaItems.isEmpty()) {
                 schedulePlayList(playlist, index);
@@ -104,16 +106,18 @@ public class Maintenance {
     private void schedulePlayList(Playlist playlist, int index) {
         if(playlist.scheduledToday()) {
             String start = playlist.getStart();
-            Integer hour = Integer.parseInt(start.substring(0, 2));
-            Integer min = Integer.parseInt(start.substring(2, 4));
+            if(StringUtils.isNotBlank(start)) {
+                Integer hour = Integer.parseInt(start.substring(0, 2));
+                Integer min = Integer.parseInt(start.substring(2, 4));
 
-            Calendar current = Calendar.getInstance();
-            if (hour < current.get(Calendar.HOUR_OF_DAY) || (hour == current.get(Calendar.HOUR_OF_DAY) && min <= current.get(Calendar.MINUTE))) {
-                startedSlotsToday.put(playlist.getStart(), new CurrentPlaylist(index, playlist));
-            } else {
-                Intent intent = new Intent(Monitor.instance, PlaylistScheduler.class);
-                intent.putExtra(PlaylistScheduler.PLAYLIST_INDEX, index);
-                schedule(intent, nextTime(hour, min));
+                Calendar current = Calendar.getInstance();
+                if (hour < current.get(Calendar.HOUR_OF_DAY) || (hour == current.get(Calendar.HOUR_OF_DAY) && min <= current.get(Calendar.MINUTE))) {
+                    startedSlotsToday.put(playlist.getStart(), new CurrentPlaylist(index, playlist));
+                } else {
+                    Intent intent = new Intent(Monitor.instance, PlaylistScheduler.class);
+                    intent.putExtra(PlaylistScheduler.PLAYLIST_INDEX, index);
+                    schedule(intent, nextTime(hour, min));
+                }
             }
         }
     }

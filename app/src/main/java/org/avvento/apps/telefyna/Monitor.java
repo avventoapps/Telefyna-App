@@ -1,10 +1,12 @@
 package org.avvento.apps.telefyna;
 
+import android.Manifest;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -31,12 +33,17 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.ConnectException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import lombok.Getter;
 
@@ -60,6 +67,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     private PlayerView playerView;
     @Getter
     private Map<Integer, List<MediaItem>> playout;
+    private File programsFolder;
 
     public void putPlayout(Integer index, List<MediaItem> mediaItems) {
         playout.put(index, mediaItems);
@@ -71,19 +79,31 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
+    private void switchToSecondDefault() {
+        switchNow(1);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void switchNow(int index) {
         List<MediaItem> mediaItems = playout.get(index);
         if(mediaItems.isEmpty()) {
             switchToDefault();
         }
         Playlist playlist = getConfiguration().getPlaylists()[index];
-        if(playlist.isResuming() && !playlistModifed(index)) {
-            int lastPlayedMediaIndex = sharedpreferences.getInt(getPlaylistPlayKey(index), 0);
-            if (lastPlayedMediaIndex > 0) {// resuming
-                mediaItems = mediaItems.subList(lastPlayedMediaIndex + 1, mediaItems.size());
+        if(playlist.isClone()) {
+            index = playlist.getClone();
+            playlist = getConfiguration().getPlaylists()[index];
+        }
+        if(Playlist.Type.LOCAL.equals(playlist.getType())) {
+            if (playlist.isResuming()) {
+                int lastPlayedMediaIndex = getSharedPlaylistKey(index);
+                if (lastPlayedMediaIndex > 0 && lastPlayedMediaIndex++ != mediaItems.size()) {// resuming if not first or last
+                    mediaItems = mediaItems.subList(lastPlayedMediaIndex, mediaItems.size());
+                }
             }
-        } else {
-            resetNowPlaying(index);
+            if(playlistModified(index)){
+                resetTrackingNowPlaying(index);
+            }
         }
         player = new SimpleExoPlayer.Builder(instance).build();
 
@@ -100,19 +120,27 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         nowPlaying.setPlaylistIndex(index);
     }
 
-    private void resetNowPlaying(int index) {
-        trackNowPlaying(index, 0, getDirectoryToPlaylist(getConfiguration().getPlaylists()[index].getUrlOrFolder()).lastModified());
+    private void resetTrackingNowPlaying(int index) {
+        trackingNowPlaying(index, 0, getLastModifiedFor(index).lastModified());
     }
 
-    private boolean playlistModifed(int index) {
-        return getDirectoryToPlaylist(getConfiguration().getPlaylists()[index].getUrlOrFolder()).lastModified() >  sharedpreferences.getLong(getPlaylistLastModified(index), 0);
+    private boolean playlistModified(int index) {
+        return getLastModifiedFor(index).lastModified() >  getSharedPlaylistLastModified(index);
     }
 
-    private void trackNowPlaying(int index, int at, long lastModified) {
+    private void trackingNowPlaying(int index, int at, long lastModified) {
         SharedPreferences.Editor editor = sharedpreferences.edit();
         editor.putInt(getPlaylistPlayKey(index), at);
         editor.putLong(getPlaylistLastModified(index), lastModified);
         editor.commit();
+    }
+
+    private Integer getSharedPlaylistKey(Integer index) {
+        return sharedpreferences.getInt(getPlaylistPlayKey(index), 0);
+    }
+
+    private long getSharedPlaylistLastModified(Integer index) {
+        return sharedpreferences.getLong(getPlaylistLastModified(index), 0);
     }
 
     private String getPlaylistPlayKey(int index) {
@@ -135,7 +163,6 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
 
         setContentView(R.layout.monitor);
         super.onCreate(savedInstanceState);
-        configuration = readConfiguration();
         alarmManager = ((AlarmManager) instance.getSystemService(Context.ALARM_SERVICE));
 
         initialization();
@@ -168,13 +195,13 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     }
 
     public String getPlaylistDirectory() {
-        return getAppRootDirectory().getAbsolutePath() + File.separator + "playlist";
+        return programsFolder.getAbsolutePath() + File.separator + "playlist";
     }
 
-    private Config readConfiguration() {
+    public Config initialiseConfiguration() {
         Config config = null;
         try {
-            config = new Gson().fromJson(new BufferedReader(new FileReader(getAppRootDirectory().getAbsolutePath() + File.separator + "config.json")), Config.class);
+            config = new Gson().fromJson(new BufferedReader(new FileReader(programsFolder.getAbsolutePath() + File.separator + "config.json")), Config.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -183,6 +210,9 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void initialization() {
+        initialiseWithPermissions();
+        programsFolder = getAppRootDirectory();
+        configuration = initialiseConfiguration();
         playout = new HashMap<>();
         playerView = findViewById(R.id.player);
         playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
@@ -205,20 +235,26 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onPlaybackStateChanged(int state) {
-        int index = nowPlaying.getPlaylistIndex();
         if (state == Player.STATE_ENDED) {
-            resetNowPlaying(index);
+            resetTrackingNowPlaying(nowPlaying.getPlaylistIndex());
             switchToDefault();
-        } else if(state == Player.MEDIA_ITEM_TRANSITION_REASON_SEEK) {
-            nowPlaying.setPlayingMediaIndex(nowPlaying.getPlaylistIndex() + 1);
-            trackNowPlaying(index, nowPlaying.getPlayingMediaIndex(), getDirectoryToPlaylist(getConfiguration().getPlaylists()[index].getUrlOrFolder()).lastModified());
         }
+    }
+
+    @Override
+    public void onMediaItemTransition(@Nullable MediaItem mediaItem, int reason) {
+        int index = nowPlaying.getPlaylistIndex();
+        trackingNowPlaying(index, nowPlaying.getPlayer().getCurrentPeriodIndex(), getLastModifiedFor(index).lastModified());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onPlayerError(ExoPlaybackException error) {
-        switchToDefault();
+        if(error.getCause().getCause() instanceof ConnectException) {
+            switchToSecondDefault();
+        } else {
+            switchToDefault();
+        }
     }
 
     @Override
@@ -242,7 +278,48 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         shutDownHook();
     }
 
+    private File getLastModifiedFor(Integer index) {
+        return getDirectoryToPlaylist(getConfiguration().getPlaylists()[index].getUrlOrFolder());
+    }
+
     public File getDirectoryToPlaylist(String urlOrFolder) {
         return new File(getPlaylistDirectory() + File.separator + urlOrFolder);
+    }
+
+    private void initialiseWithPermissions() {
+        List<String> missingPermissions = missingPermissions();
+        if (!missingPermissions.isEmpty()) {
+            askForPermissions(missingPermissions);
+        }
+    }
+
+    private void askForPermissions(List<String> permissions) {
+        ActivityCompat.requestPermissions(instance, permissions.toArray(new String[permissions.size()]), PackageManager.PERMISSION_GRANTED);
+    }
+
+    private List<String> missingPermissions() {
+        List<String> allPermissions = Arrays.asList(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECEIVE_BOOT_COMPLETED, Manifest.permission.INTERNET, Manifest.permission.ACCESS_NETWORK_STATE);
+        List<String> missingPermissions = new ArrayList<>();
+        for (int i = 0; i < allPermissions.size(); i++) {
+            String permission = allPermissions.get(i);
+            if (ContextCompat.checkSelfPermission(instance, permission) != PackageManager.PERMISSION_GRANTED) {
+                missingPermissions.add(permission);
+            }
+        }
+        return missingPermissions;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (permissions.length > 0) {
+            for (int i = 0; i <= grantResults.length - 1; i++) {
+                if (grantResults[i] != requestCode) {
+                    initialiseWithPermissions();
+                    break;
+                }
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
 }

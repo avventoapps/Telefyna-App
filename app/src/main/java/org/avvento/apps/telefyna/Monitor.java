@@ -94,15 +94,15 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
             index = playlist.getClone() - 1;
             playlist = getConfiguration().getPlaylists()[index];
         }
+        if(playlistModified()){
+            resetTrackingNowPlaying();
+        }
         if(Playlist.Type.LOCAL.equals(playlist.getType())) {
             if (playlist.isResuming()) {
                 int lastPlayedMediaIndex = getSharedPlaylistKey(index);
                 if (lastPlayedMediaIndex > 0 && lastPlayedMediaIndex != mediaItems.size() - 1) {// resuming if not first or last
                     mediaItems = mediaItems.subList(lastPlayedMediaIndex, mediaItems.size());
                 }
-            }
-            if(playlistModified(index)){
-                resetTrackingNowPlaying(index);
             }
         }
         player = new SimpleExoPlayer.Builder(instance).build();
@@ -123,19 +123,19 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         nowPlayingIndex = index;
     }
 
-    private void resetTrackingNowPlaying(int index) {
-        trackingNowPlaying(index, 0, getLastModifiedFor(index).lastModified(), 0);
+    private void resetTrackingNowPlaying() {
+        trackingNowPlaying(0, getLastModifiedFor().lastModified(), 0);
     }
 
-    private boolean playlistModified(int index) {
-        return getLastModifiedFor(index).lastModified() >  getSharedPlaylistLastModified(index);
+    private boolean playlistModified() {
+        return getLastModifiedFor().lastModified() >  getSharedPlaylistLastModified(nowPlayingIndex);
     }
 
-    private void trackingNowPlaying(int index, int at, long lastModified, long seekTo) {
+    private void trackingNowPlaying(int at, long lastModified, long seekTo) {
         SharedPreferences.Editor editor = sharedpreferences.edit();
-        editor.putInt(getPlaylistPlayKey(index), at);
-        editor.putLong(getPlaylistLastModified(index), lastModified);
-        editor.putLong(getPlaylistSeekTo(index), seekTo);
+        editor.putInt(getPlaylistPlayKey(nowPlayingIndex), at);
+        editor.putLong(getPlaylistLastModified(nowPlayingIndex), lastModified);
+        editor.putLong(getPlaylistSeekTo(nowPlayingIndex), seekTo);
         editor.commit();
     }
 
@@ -234,7 +234,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     }
 
     private void setTrackNowtoCurrent() {
-        trackingNowPlaying(nowPlayingIndex, playerView.getPlayer() == null ? 0 : playerView.getPlayer().getCurrentPeriodIndex(), getLastModifiedFor(nowPlayingIndex).lastModified(), playerView.getPlayer() == null ? 0 : playerView.getPlayer().getCurrentPosition());
+        trackingNowPlaying(playerView.getPlayer() == null ? 0 : playerView.getPlayer().getCurrentPeriodIndex(), getLastModifiedFor().lastModified(), playerView.getPlayer() == null ? 0 : playerView.getPlayer().getCurrentPosition());
     }
 
     @Override
@@ -254,14 +254,14 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     @Override
     public void onPlaybackStateChanged(int state) {
         if (state == Player.STATE_ENDED) {
-            resetTrackingNowPlaying(nowPlayingIndex);
+            resetTrackingNowPlaying();
             switchToDefault();
         }
     }
 
     @Override
     public void onMediaItemTransition(@Nullable MediaItem mediaItem, int reason) {
-        trackingNowPlaying(nowPlayingIndex, playerView.getPlayer().getCurrentPeriodIndex(), getLastModifiedFor(nowPlayingIndex).lastModified(), 0);
+        trackingNowPlaying(playerView.getPlayer().getCurrentPeriodIndex(), getLastModifiedFor().lastModified(), 0);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -302,8 +302,8 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         shutDownHook();
     }
 
-    private File getLastModifiedFor(Integer index) {
-        return getDirectoryToPlaylist(getConfiguration().getPlaylists()[index].getUrlOrFolder());
+    private File getLastModifiedFor() {
+        return getDirectoryToPlaylist(getConfiguration().getPlaylists()[nowPlayingIndex].getUrlOrFolder());
     }
 
     public File getDirectoryToPlaylist(String urlOrFolder) {

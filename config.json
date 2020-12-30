@@ -71,35 +71,51 @@
     },
     {
       "name": "Test",
-      "start": "2337",
+      "start": "0010",
       "type": "LOCAL",
       "urlOrFolder": "Test",
       "resuming": true
     },
     {
       "name": "Test- 3ABN Proclaim",
-      "start": "2338",
+      "start": "0015",
       "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652317/secure/master.m3u8"
     },
     {
       "clone": 13,
-      "start": "2339"
+      "start": "0020"
     },
     {
       "clone": 2,
-      "start": "2340"
+      "start": "0025"
     },
     {
       "clone": 13,
-      "start": "2341"
+      "start": "0030"
     },
     {
       "clone": 2,
-      "start": "2342"
+      "start": "0035"
     },
     {
       "clone": 13,
-      "start": "2343"
+      "start": "0040"
+    },
+    {
+      "clone": 2,
+      "start": "0045"
+    },
+    {
+      "clone": 13,
+      "start": "0050"
+    },
+    {
+      "clone": 2,
+      "start": "0055"
+    },
+    {
+      "clone": 13,
+      "start": "0100"
     }
   ]
 }

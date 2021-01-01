@@ -30,7 +30,7 @@ ______
 * For local playlists, if active and nothing is defined or completed, the default playlist will be played
 * `type` can either be `LOCAL` or `ONLINE` (default)
 * All playlist are enabled by default, to disable one, set `active=false`
-* `clone` allows you to copy a playlist defined up by its order/number/count and manage separate/override `day`, `repeats`, `start`
+* `clone` allows you to copy a playlist defined up by its order/number/count (starts from 0) and manage separate/override `day`, `repeats`, `start`
 * Set `resuming` to true only if you wish the next time a playlist is loaded to restart the last uncompleted item or next item
 * A field left out in config is by default set to `null`
 * Ensure to have a playlist completing/ending each local one else the default one will automatically be played
@@ -40,16 +40,17 @@ For any questions or queries, please email the support team at apps@avventohome.
 
 
 ## TODO
+- [ ] look through TODOs
 - [ ] Fork and add auto start using system prefs to FTP, send PR
 - [ ] write tests
-- [ ] support audit logs, mail them out
 - [ ] support streaming to hls, shoutcast & loudcast
 - [ ] locally backup/download streaming content
 - [ ] play video with different or additional audio/slave
 - [ ] float another layer on video stream for ads, logo etc
 - [ ] ensure all wrong media files are skipped (blocked)
 - [ ] work on presentation approach (blocked)
-- [ ] read satelite channels and decorders as we do local playlists and streams
+- [ ] read satellite channels and decoders as we do local playlists and streams
+- [x] support audit logs, mail them out
 - [x] work on now playing orm(system preferences) to handle resuming local playlists at next play to support daily etc periods and future dates
 - [x] add dates in addition to days
 - [x] remove repeats, use days for day

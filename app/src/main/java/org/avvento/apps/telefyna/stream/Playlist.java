@@ -40,6 +40,10 @@ public class Playlist {
         return clone != null;
     }
 
+    // clone is not zero index based
+    public Integer getClone() {
+        return clone == null ? null : clone;
+    }
     public boolean scheduledToday() {
         if(!isActive()) {
             return false;
@@ -59,9 +63,9 @@ public class Playlist {
 
     // only overrides days, dates and start but maintains the rest
     public Playlist copy(Playlist clone) {
-        clone.setDays(this.days == null ? clone.getDays(): this.days);
-        clone.setDates(this.dates == null ? clone.getDates() : this.dates);
-        clone.setStart(this.getStart() == null ? clone.getStart() : this.getStart());
-        return clone;
+        this.days = clone.days;
+        this.dates = clone.dates;
+        this.start = clone.start;
+        return this;
     }
 }

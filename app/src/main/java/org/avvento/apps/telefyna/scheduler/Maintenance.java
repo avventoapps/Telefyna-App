@@ -12,7 +12,11 @@ import com.google.android.exoplayer2.util.MimeTypes;
 
 import org.apache.commons.lang3.StringUtils;
 import org.avvento.apps.telefyna.Monitor;
+import org.avvento.apps.telefyna.audit.AuditLog;
+import org.avvento.apps.telefyna.audit.Logger;
+import org.avvento.apps.telefyna.stream.Config;
 import org.avvento.apps.telefyna.stream.Playlist;
+import org.avvento.apps.telefyna.stream.Program;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -31,62 +35,82 @@ public class Maintenance {
     private Map<String, CurrentPlaylist> startedSlotsToday = new HashMap<>();
     private static int CODE = 0;
 
+    private void logMaintenance() {
+        Logger.log(AuditLog.Event.MAINTENANCE);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void prepareSchedule(boolean fromMaintainer) {
+        if(fromMaintainer) {
+            Monitor.instance.initialiseConfiguration();
+        }
+        schedule();
+        logMaintenance();
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void run() {
-        schedule();
-        Monitor.instance.getHandler().postDelayed(new Runnable() {
+        prepareSchedule(false);
+        Monitor.instance.getHandler().postDelayed(new Runnable() {// maintainer
             public void run() {
-                Monitor.instance.initialiseConfiguration();
-                schedule();
+                prepareSchedule(true);
                 Monitor.instance.getHandler().postDelayed(this, getMillsToMidNight());
+                logMaintenance();
             }
         }, getMillsToMidNight());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void schedule() {
-        Playlist[] playlists = Monitor.instance.getConfiguration().getPlaylists();
-        for (int index = 0; index< playlists.length; index++) {
-            Playlist playlist = playlists[index];
-            Integer clone = playlist.getClone();
-            List<MediaItem> mediaItems = new ArrayList<>();
-            if(clone == null) {
-                if(Playlist.Type.LOCAL.equals(playlist.getType())) {
-                    File localPlaylistFolder = Monitor.instance.getDirectoryToPlaylist(playlist.getUrlOrFolder());
-                    if(localPlaylistFolder.exists() && localPlaylistFolder.listFiles().length > 0) {
-                        boolean addedFirstItem = false;
-                        setupLocalPlaylist(mediaItems, localPlaylistFolder, addedFirstItem);
+        Config config = Monitor.instance.getConfiguration();
+        if(config != null) {
+            Playlist[] playlists = config.getPlaylists();
+            for (int index = 0; index < playlists.length; index++) {
+                Playlist playlist = playlists[index];
+                Integer clone = playlist.getClone();
+                List<Program> programs = new ArrayList<>();
+                if (clone == null) {
+                    if (Playlist.Type.LOCAL.equals(playlist.getType())) {
+                        File localPlaylistFolder = Monitor.instance.getDirectoryToPlaylist(playlist.getUrlOrFolder());
+                        if (localPlaylistFolder.exists() && localPlaylistFolder.listFiles().length > 0) {
+                            boolean addedFirstItem = false;
+                            setupLocalPlaylist(programs, localPlaylistFolder, addedFirstItem);
+                        }
+                    } else {
+                        programs.add(new Program(playlist.getName(), MediaItem.fromUri(playlist.getUrlOrFolder())));
                     }
                 } else {
-                    mediaItems.add(MediaItem.fromUri(playlist.getUrlOrFolder()));
+                    programs = Monitor.instance.getProgramsByIndex().get(clone);
+                    playlist = playlists[clone].copy(playlist);
+                    playlist.setClone(clone);// only use playlist scheduling details for scheduling
                 }
-            } else {
-                clone--;
-                mediaItems = Monitor.instance.getPlayout().get(clone);
-                playlist = playlist.copy(playlists[clone]);
+                if (!programs.isEmpty()) {
+                    schedulePlayList(playlist, index);
+                }
+                Monitor.instance.putProgramsByIndex(index, programs);
             }
-            if (!mediaItems.isEmpty()) {
-                schedulePlayList(playlist, index);
-            }
-            Monitor.instance.putPlayout(index, mediaItems);
+            playCurrentSlot();
         }
-        playCurrentSlot();
     }
 
-    private void setupLocalPlaylist(List<MediaItem> mediaItems, File fileOrFolder, boolean addedFirstItem) {
+    private Program extractProgramFromFile(File file) {
+        return new Program(file.getAbsolutePath().split(Monitor.instance.getProgramsFolderPath())[1], MediaItem.fromUri(Uri.fromFile(file)));
+    }
+
+    private void setupLocalPlaylist(List<Program> programs, File fileOrFolder, boolean addedFirstItem) {
         if(fileOrFolder.exists()) {
             File[] fileOrFolderList = fileOrFolder.listFiles();
             Arrays.sort(fileOrFolderList);// ordering programs alphabetically
             for (int j = 0; j < fileOrFolderList.length; j++) {
                 File file = fileOrFolderList[j];
                 if (file.isDirectory()) {
-                    setupLocalPlaylist(mediaItems, file, addedFirstItem);
+                    setupLocalPlaylist(programs, file, addedFirstItem);
                 } else {
                     if (j == 0 && !addedFirstItem) {
-                        mediaItems.add(0, MediaItem.fromUri(Uri.fromFile(file)));
+                        programs.add(0, extractProgramFromFile(file));
                         addedFirstItem = true;
                     } else {
-                        mediaItems.add(MediaItem.fromUri(Uri.fromFile(file)));
+                        programs.add(extractProgramFromFile(file));
                     }
                 }
             }

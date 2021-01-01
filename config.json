@@ -19,7 +19,7 @@
       "urlOrFolder": null
     },
     {
-      "clone": 1,
+      "clone": 0,
       "start": "0700"
     },
     {
@@ -30,7 +30,7 @@
       "urlOrFolder": null
     },
     {
-      "clone": 1,
+      "clone": 0,
       "days": [7],
       "start": "1300"
     },
@@ -49,7 +49,7 @@
       "urlOrFolder": null
     },
     {
-      "clone": 1,
+      "clone": 0,
       "start": "2200"
     },
     {
@@ -66,56 +66,56 @@
     },
     {
       "name": "Test- 3ABN US",
-      "start": "1000",
+      "start": "1520",
       "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652042/secure/master.m3u8"
     },
     {
       "name": "Test",
-      "start": "0010",
+      "start": "1802",
       "type": "LOCAL",
       "urlOrFolder": "Test",
       "resuming": true
     },
     {
       "name": "Test- 3ABN Proclaim",
-      "start": "0015",
+      "start": "1803",
       "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652317/secure/master.m3u8"
     },
     {
-      "clone": 13,
-      "start": "0020"
+      "clone": 12,
+      "start": "1937"
     },
     {
-      "clone": 2,
-      "start": "0025"
+      "clone": 1,
+      "start": "1938"
     },
     {
-      "clone": 13,
-      "start": "0030"
+      "clone": 12,
+      "start": "1939"
     },
     {
-      "clone": 2,
-      "start": "0035"
+      "clone": 1,
+      "start": "1940"
     },
     {
-      "clone": 13,
-      "start": "0040"
+      "clone": 12,
+      "start": "1941"
     },
     {
-      "clone": 2,
-      "start": "0045"
+      "clone": 1,
+      "start": "1942"
     },
     {
-      "clone": 13,
-      "start": "0050"
+      "clone": 12,
+      "start": "1943"
     },
     {
-      "clone": 2,
-      "start": "0055"
+      "clone": 1,
+      "start": "1944"
     },
     {
-      "clone": 13,
-      "start": "0100"
+      "clone": 12,
+      "start": "1945"
     }
   ]
 }

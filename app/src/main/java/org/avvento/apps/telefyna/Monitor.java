@@ -14,7 +14,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.view.WindowManager;
 
-import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.Player;
@@ -40,6 +39,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -102,10 +102,6 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         return mediaItems;
     }
 
-    private boolean resuming(Playlist playlist) {
-        return playlist.isResuming() && !Playlist.Type.ONLINE.equals(playlist.getType());
-    }
-
     private void resetTrackingNowPlaying(int index) {
         trackingNowPlaying(index, 0, 0);
     }
@@ -115,7 +111,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     }
 
     private void trackingNowPlaying(Integer index, int at, long seekTo) {
-        if(Playlist.Type.LOCAL.equals(getConfiguration().getPlaylists()[index].getType())) {
+        if(Playlist.Type.LOCAL_RESUMING.equals(getConfiguration().getPlaylists()[index].getType())) {
             cachePlayingAt(index, at, seekTo);
         }
     }
@@ -256,14 +252,25 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
             playlist = getConfiguration().getPlaylists()[nextPlayingIndex];
             Logger.log(AuditLog.Event.PLAYLIST, new GsonBuilder().setPrettyPrinting().create().toJson(playlist));
 
-            player.setMediaItems(extractingMediaItemsFromPrograms(programs));
-            if (resuming(playlist)) {
-                long lastPlayedProgramSeekto = getSharedPlaylistSeekTo(index);
+            List<MediaItem> mediaItems = extractingMediaItemsFromPrograms(programs);
+            player.setMediaItems(mediaItems);
+            if (Playlist.Type.LOCAL_RESUMING.equals(playlist.getType())) {
                 int lastPlayedProgram = getSharedPlaylistMediaItem(index);
-                player.seekTo(lastPlayedProgram, lastPlayedProgramSeekto);
-                Logger.log(AuditLog.Event.RETRIEVE_NOW_PLAYING_RESUME, playlist.getName(), programs.get(lastPlayedProgram).getName(), lastPlayedProgramSeekto);
+                long lastPlayedProgramSeekto = getSharedPlaylistSeekTo(index);
+                if(lastPlayedProgram > 0 && lastPlayedProgramSeekto > 0) {
+                    player.seekTo(lastPlayedProgram, lastPlayedProgramSeekto);
+                    Logger.log(AuditLog.Event.RETRIEVE_NOW_PLAYING_RESUME, playlist.getName(), programs.get(lastPlayedProgram).getName(), lastPlayedProgramSeekto);
+                }
+            } else if(Playlist.Type.LOCAL_RANDOMIZED.equals(playlist.getType())) {
+                Collections.shuffle(mediaItems);
+            } else if(Playlist.Type.LOCAL_SEQUENCED.equals(playlist.getType())) {
+                // maintain ordered
             }
             player.prepare();
+            Player current = playerView.getPlayer();
+            if(current != null) {
+                current.removeListener(instance);
+            }
             player.addListener(instance);
             player.play();
         }
@@ -281,7 +288,6 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
             if(nowPlayingIndex == null || nowPlayingIndex != nextPlayingIndex) {
                 cacheNowPlaying();
                 if(current != null) {
-                    current.removeListener(instance);
                     current.stop();
                     current.release();
                 }
@@ -290,6 +296,8 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
             }
         }
     }
+
+
 
     @Override
     public void onMediaItemTransition(@Nullable MediaItem mediaItem, int reason) {

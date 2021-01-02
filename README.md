@@ -28,10 +28,9 @@ ______
 * Playlist `start` should be in format hhmm eg `1200` for mid-day
 * `urlOrFolder`, stream url or local folder containing alphabetically ordered playlist folders
 * For local playlists, if active and nothing is defined or completed, the default playlist will be played
-* `type` can either be `LOCAL` or `ONLINE` (default)
+* `type` can either be `ONLINE` (stream/default), or `LOCAL_SEQUENCED` (local ordered folder) or `LOCAL_RESUMING` (local resuming folder) or `LOCAL_RANDOMIZED` (local random folder)
 * All playlist are enabled by default, to disable one, set `active=false`
 * `clone` allows you to copy a playlist defined up by its order/number/count (starts from 0) and manage separate/override `day`, `repeats`, `start`
-* Set `resuming` to true only if you wish the next time a playlist is loaded to restart the last uncompleted item or next item
 * A field left out in config is by default set to `null`
 * Ensure to have a playlist completing/ending each local one else the default one will automatically be played
 
@@ -47,9 +46,9 @@ For any questions or queries, please email the support team at apps@avventohome.
 - [ ] locally backup/download streaming content
 - [ ] play video with different or additional audio/slave
 - [ ] float another layer on video stream for ads, logo etc
+- [ ] read satellite channels and decoders as we do local playlists and streams
 - [ ] ensure all wrong media files are skipped (blocked)
 - [ ] work on presentation approach (blocked)
-- [ ] read satellite channels and decoders as we do local playlists and streams
 - [x] support audit logs, mail them out
 - [x] work on now playing orm(system preferences) to handle resuming local playlists at next play to support daily etc periods and future dates
 - [x] add dates in addition to days

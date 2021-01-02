@@ -33,8 +33,6 @@ public class Playlist {
     private String urlOrFolder;
     // index to a playlist count from top this is cloning, must be above it. use only with day, repeats and start fields
     private Integer clone;
-    // use to order playlist to proceed proceed from program that was playing next next time
-    private boolean resuming = false;
 
     public boolean isClone() {
         return clone != null;
@@ -58,7 +56,7 @@ public class Playlist {
     }
 
     public enum Type {
-        LOCAL, ONLINE
+        ONLINE, LOCAL_SEQUENCED, LOCAL_RESUMING, LOCAL_RANDOMIZED
     }
 
     // only overrides days, dates and start but maintains the rest

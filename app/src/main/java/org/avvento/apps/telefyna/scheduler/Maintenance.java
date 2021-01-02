@@ -65,12 +65,14 @@ public class Maintenance {
         Config config = Monitor.instance.getConfiguration();
         if(config != null) {
             Playlist[] playlists = config.getPlaylists();
+            List<String> starts = new ArrayList<>();
+            List<String> dates = new ArrayList<>();
             for (int index = 0; index < playlists.length; index++) {
                 Playlist playlist = playlists[index];
                 Integer clone = playlist.getClone();
                 List<Program> programs = new ArrayList<>();
                 if (clone == null) {
-                    if (Playlist.Type.LOCAL.equals(playlist.getType())) {
+                    if (playlist.getType().name().startsWith("LOCAL_")) {
                         File localPlaylistFolder = Monitor.instance.getDirectoryToPlaylist(playlist.getUrlOrFolder());
                         if (localPlaylistFolder.exists() && localPlaylistFolder.listFiles().length > 0) {
                             boolean addedFirstItem = false;
@@ -91,6 +93,16 @@ public class Maintenance {
             }
             playCurrentSlot();
         }
+    }
+
+    // TODO only the first playlist with start or da is scheduled, fix dates comparison
+    private boolean startAndDatesNotScheduled(Playlist playlist, List<String> starts, List<String> dates) {
+        String start = playlist.getStart();
+        String[] dts = playlist.getDates();
+        if((StringUtils.isNotBlank(start) && starts.contains(start)) || (dts != null && dates.contains(dts))) {
+            return true;
+        }
+        return false;
     }
 
     private Program extractProgramFromFile(File file) {

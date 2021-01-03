@@ -263,8 +263,9 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                 }
             } else if(Playlist.Type.LOCAL_RANDOMIZED.equals(playlist.getType())) {
                 Collections.shuffle(mediaItems);
+                player.setMediaItems(mediaItems);
             } else if(Playlist.Type.LOCAL_SEQUENCED.equals(playlist.getType())) {
-                // maintain ordered
+                // maintain ordered is on by default
             }
             player.prepare();
             Player current = playerView.getPlayer();

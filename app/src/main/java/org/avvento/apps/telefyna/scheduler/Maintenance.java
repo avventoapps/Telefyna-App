@@ -141,14 +141,14 @@ public class Maintenance {
 
     private void schedulePlayList(Playlist playlist, int index) {
         if(playlist.scheduledToday()) {
-            String[] start = playlist.getStart().split(":");
+            String start = playlist.getStart();
             if(StringUtils.isNotBlank(start)) {
-                Integer hour = start[0];
-                Integer min = start[1];
+                Integer hour = Integer.parseInt(start.split(":")[0]);
+                Integer min = Integer.parseInt(start.split(":")[1]);
 
                 Calendar current = Calendar.getInstance();
                 if (hour < current.get(Calendar.HOUR_OF_DAY) || (hour == current.get(Calendar.HOUR_OF_DAY) && min <= current.get(Calendar.MINUTE))) {
-                    startedSlotsToday.put(playlist.getStart(), new CurrentPlaylist(index, playlist));
+                    startedSlotsToday.put(start, new CurrentPlaylist(index, playlist));
                 } else {
                     Intent intent = new Intent(Monitor.instance, PlaylistScheduler.class);
                     intent.putExtra(PlaylistScheduler.PLAYLIST_INDEX, index);

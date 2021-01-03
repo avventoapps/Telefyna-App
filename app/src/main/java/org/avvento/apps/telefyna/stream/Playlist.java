@@ -22,7 +22,7 @@ public class Playlist {
     private Integer[] days;
     // dates to schedule for
     private String[] dates;
-    // time to start stream in (hhmm)
+    // time to start stream in (HH:mm)
     private String start;
     private Type type = Type.ONLINE;
     /*

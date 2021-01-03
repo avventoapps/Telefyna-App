@@ -141,10 +141,10 @@ public class Maintenance {
 
     private void schedulePlayList(Playlist playlist, int index) {
         if(playlist.scheduledToday()) {
-            String start = playlist.getStart();
+            String[] start = playlist.getStart().split(":");
             if(StringUtils.isNotBlank(start)) {
-                Integer hour = Integer.parseInt(start.substring(0, 2));
-                Integer min = Integer.parseInt(start.substring(2, 4));
+                Integer hour = start[0];
+                Integer min = start[1];
 
                 Calendar current = Calendar.getInstance();
                 if (hour < current.get(Calendar.HOUR_OF_DAY) || (hour == current.get(Calendar.HOUR_OF_DAY) && min <= current.get(Calendar.MINUTE))) {

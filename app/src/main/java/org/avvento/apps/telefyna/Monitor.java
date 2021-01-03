@@ -297,8 +297,6 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         }
     }
 
-
-
     @Override
     public void onMediaItemTransition(@Nullable MediaItem mediaItem, int reason) {
         int item = playerView.getPlayer().getCurrentPeriodIndex() - 1;// last item index
@@ -365,9 +363,8 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void initialiseWithPermissions() {
-        List<String> missingPermissions = missingPermissions();
-        if (!missingPermissions.isEmpty()) {
-            askForPermissions(missingPermissions);
+        while (!missingPermissions().isEmpty()) {
+            askForPermissions(missingPermissions());
         }
     }
 

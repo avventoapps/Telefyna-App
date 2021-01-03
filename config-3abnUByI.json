@@ -1,0 +1,62 @@
+{
+  "disableNotifications": false,
+  "playlists": [
+    {
+      "name": "3ABN-International",
+      "description": "This is the default playlist, plays wherenever nothing is scheduled or is available",
+      "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652312/secure/master.m3u8"
+    },
+    {
+      "name": "Filler",
+      "type": "LOCAL_RANDOMIZED",
+      "urlOrFolder": "Filler"
+    },
+    {
+      "name": "3ABN-Uganda-MorningWatch",
+      "start": "06:00",
+      "type": "LOCAL_RESUMING",
+      "urlOrFolder": "DailyMorningSlot"
+    },
+    {
+      "clone": 0,
+      "start": "07:00"
+    },
+    {
+      "name": "3ABN-Uganda-Sabbath",
+      "days": [7],
+      "start": "09:00",
+      "type": "LOCAL_SEQUENCED",
+      "urlOrFolder": "SabbathSlot"
+    },
+    {
+      "clone": 0,
+      "days": [7],
+      "start": "13:00"
+    },
+    {
+      "name": "3ABN-Uganda-SunTueThur",
+      "days": [1, 3, 5],
+      "start": "19:00",
+      "type": "LOCAL_SEQUENCED",
+      "urlOrFolder": "WeeklySlot1"
+    },
+    {
+      "name": "3ABN-Uganda-SatMonWed",
+      "days": [2, 4, 7],
+      "start": "19:00",
+      "type": "LOCAL_SEQUENCED",
+      "urlOrFolder": "WeeklySlot2"
+    },
+    {
+      "name": "3ABN-U-FriVespers",
+      "days": [6],
+      "start": "19:00",
+      "type": "LOCAL_SEQUENCED",
+      "urlOrFolder": "VespersSlot"
+    },
+    {
+      "clone": 0,
+      "start": "22:00"
+    }
+  ]
+}

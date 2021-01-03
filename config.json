@@ -12,108 +12,61 @@
       "urlOrFolder": "Filler"
     },
     {
-      "name": "3ABN-U-MorningWatch",
-      "start": "0600",
-      "type": "LOCAL_SEQUENCED",
-      "urlOrFolder": null
-    },
-    {
-      "clone": 0,
-      "start": "0700"
-    },
-    {
-      "name": "3ABN-U-Sabbath",
-      "days": [7],
-      "start": "0900",
-      "type": "LOCAL_SEQUENCED",
-      "urlOrFolder": null
-    },
-    {
-      "clone": 0,
-      "days": [7],
-      "start": "1300"
-    },
-    {
-      "name": "3ABN-U-SatMonWed",
-      "days": [2, 4, 7],
-      "start": "1900",
-      "type": "LOCAL_SEQUENCED",
-      "urlOrFolder": null
-    },
-    {
-      "name": "3ABN-U-SunTueThur",
-      "days": [1, 3, 5],
-      "start": "1900",
-      "type": "LOCAL_SEQUENCED",
-      "urlOrFolder": null
-    },
-    {
-      "clone": 0,
-      "start": "2200"
-    },
-    {
-      "name": "3ABN-U-Vespers",
-      "days": [6],
-      "start": "1900",
-      "type": "LOCAL_SEQUENCED",
-      "urlOrFolder": null
-    },
-    {
       "name": "Test- 3ABN Kids",
-      "start": "2110",
+      "start": "12:00",
       "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652318/secure/master.m3u8"
     },
     {
       "name": "Test- 3ABN US",
-      "start": "2120",
+      "start": "12:10",
       "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652042/secure/master.m3u8"
     },
     {
       "name": "Test",
-      "start": "2130",
+      "start": "12:20",
       "type": "LOCAL_RESUMING",
       "urlOrFolder": "Test"
     },
     {
       "name": "Test- 3ABN Proclaim",
-      "start": "2140",
+      "start": "12:35",
       "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652317/secure/master.m3u8"
     },
     {
-      "clone": 12,
-      "start": "2145"
+      "clone": 4,
+      "start": "12:40"
     },
     {
       "clone": 0,
-      "start": "2150"
+      "start": "12:50"
     },
     {
-      "clone": 12,
-      "start": "2155"
+      "clone": 4,
+      "start": "13:00"
     },
     {
       "clone": 1,
-      "start": "2200"
+      "start": "13:10"
     },
     {
-      "clone": 12,
-      "start": "2205"
+      "clone": 4,
+      "start": "13:20"
     },
     {
       "clone": 0,
-      "start": "2210"
+      "start": "13:30"
     },
     {
-      "clone": 12,
-      "start": "2215"
+      "clone": 4,
+      "start": "13:40"
     },
     {
       "clone": 1,
-      "start": "2220"
+      "start": "13:50"
     },
     {
-      "clone": 12,
-      "start": "2225"
+      "clone": 4,
+      "start": "14:00"
     }
   ]
 }

@@ -25,7 +25,7 @@ ______
 * `description` contains your explanation of about the playlist
 * `days` of the week (1-7=Sun-Sat): if null or not defined, runs daily
 * `dates` to schedule playlist for, date format must be `dd-MM-yyyy`
-* Playlist `start` should be in format hhmm eg `1200` for mid-day
+* Playlist `start` should be in format `HH:mm` eg `12:00` for mid-day, hours are in 24 hour
 * `urlOrFolder`, stream url or local folder containing alphabetically ordered playlist folders
 * For local playlists, if active and nothing is defined or completed, the default playlist will be played
 * `type` can either be `ONLINE` (stream/default), or `LOCAL_SEQUENCED` (local ordered folder) or `LOCAL_RESUMING` (local resuming folder) or `LOCAL_RANDOMIZED` (local random folder)

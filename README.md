@@ -1,11 +1,15 @@
 ![Telefyna](https://avventohome.org/wp-content/uploads/2020/12/telefyna.png "Telefyna")
 
 # Telefyna
-An android online/local streaming and scheduling app for audio and video.
+An android online/local streaming and scheduling player for audio and video suitable for TVs and radios.
 ______
 
+## Installation
+* Download the [APK from here](https://github.com/avventoapps/avvento/releases/latest/download/telefyna.apk) and install it, grant the app Storage permission and relaod it if necessary
+
 ## Configurations
-* Use `config.json` to create your own configurations, [here is a sample](https://github.com/avventoapps/Telefyna/blob/master/config.json), add it to either `sdcard` if existing /device drive in a folder called `telefyna` plus your local playlist folder
+* Use `config.json` to create your own configurations, [here is a sample](https://github.com/avventoapps/Telefyna/blob/master/config.json), add it to either `sdcard` if existing /device drive in a folder called `telefyna`
+* Add a local playlist folder containing your local programs folder for each local playlist
 * Ensure the telefyna app is granted storage permission in your permissions
 
 ### Device
@@ -13,7 +17,7 @@ ______
 
 ### FTP Remote access
 * If you want to access the filesystem remove, run an [FTP app like swiftp](https://f-droid.org/packages/be.ppareit.swiftp_free)
-* You can use FTP clients like [FileZilla](https://filezilla-project.org/) to upload both revised config.json and playlist folder/contents
+* You can use FTP clients like [FileZilla](https://filezilla-project.org/) to upload both revised `config.json` and `playlist` folder/contents
 
 ### Playlist
 * Ensure the device's Date and Timezone are set correctly
@@ -23,7 +27,7 @@ ______
 * If you intend to use one playlist as default for both the first and second, make the second a clone of the first
 * `name` your playlist meaningfully
 * `description` contains your explanation of about the playlist
-* `days` of the week (1-7=Sun-Sat): if null or not defined, runs daily
+* `days` of the week (`1-7`=Sun-Sat): if null or not defined, runs daily
 * `dates` to schedule playlist for, date format must be `dd-MM-yyyy`
 * Playlist `start` should be in format `HH:mm` eg `12:00` for mid-day, hours are in 24 hour
 * `urlOrFolder`, stream url or local folder containing alphabetically ordered playlist folders

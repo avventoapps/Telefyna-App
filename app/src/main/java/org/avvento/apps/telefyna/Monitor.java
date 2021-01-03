@@ -14,6 +14,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.view.WindowManager;
 
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.Player;
@@ -295,6 +296,10 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                 playerView.setPlayer(player);
                 nowPlayingIndex = nextPlayingIndex;
             }
+        } else if(state == Player.STATE_BUFFERING) {
+            //player.seekTo(C.TIME_UNSET); TODO fix paused stream
+        } else if(state == Player.STATE_IDLE) {
+            player.seekTo(C.TIME_UNSET); //TODO fix paused stream
         }
     }
 
@@ -406,6 +411,9 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         super.onResume();
         if(getConfiguration() == null) {
             maintenance.run();
+        }
+        if(!player.isPlaying()) {
+            player.play();
         }
     }
 }

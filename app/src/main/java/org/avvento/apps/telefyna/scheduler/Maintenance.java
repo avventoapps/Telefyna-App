@@ -136,6 +136,8 @@ public class Maintenance {
             Collections.sort(slots, Collections.reverseOrder());
             CurrentPlaylist currentPlaylist = startedSlotsToday.get(slots.get(0));
             Monitor.instance.switchNow(currentPlaylist.getIndex());
+        } else { // play first default
+            Monitor.instance.switchToFirstDefault();
         }
     }
 

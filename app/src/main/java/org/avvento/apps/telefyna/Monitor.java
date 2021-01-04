@@ -85,7 +85,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    private void switchToDefault() {
+    public void switchToFirstDefault() {
         switchNow(0);
     }
 
@@ -237,7 +237,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
             Playlist playlist = getConfiguration().getPlaylists()[index];
             List<Program> programs = programsByIndex.get(index);
             if (programs.isEmpty()) {
-                switchToDefault();
+                switchToFirstDefault();
             }
             long modifiedOffset = playlistModified(index);
             if (modifiedOffset > 0) {
@@ -284,7 +284,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         if (state == Player.STATE_ENDED) {
             resetTrackingNowPlaying(nowPlayingIndex);
             Logger.log(AuditLog.Event.PLAYLIST_COMPLETED, getNowPlayingPlaylistLabel());
-            switchToDefault();
+            switchToFirstDefault();
         } else if (state == Player.STATE_READY) {
             Player current = playerView.getPlayer();
             if(nowPlayingIndex == null || nowPlayingIndex != nextPlayingIndex) {
@@ -318,7 +318,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
             Logger.log(AuditLog.Event.NO_INTERNET, getNowPlayingPlaylistLabel());
             switchToSecondDefault();
         } else {
-            switchToDefault();
+            switchToFirstDefault();
         }
     }
 
@@ -412,7 +412,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         if(getConfiguration() == null) {
             maintenance.run();
         }
-        if(!player.isPlaying()) {
+        if(player != null && !player.isPlaying()) {
             player.play();
         }
     }

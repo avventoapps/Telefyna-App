@@ -5,6 +5,7 @@ import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
@@ -16,14 +17,10 @@ import android.view.WindowManager;
 
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultLoadControl;
-import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlaybackException;
-import com.google.android.exoplayer2.ExoPlayer;
-import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.PlayerNotificationManager;
 import com.google.android.exoplayer2.ui.PlayerView;
@@ -34,7 +31,8 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.avvento.apps.telefyna.audit.AuditLog;
 import org.avvento.apps.telefyna.audit.Logger;
-import org.avvento.apps.telefyna.scheduler.Maintenance;
+import org.avvento.apps.telefyna.listen.Maintenance;
+import org.avvento.apps.telefyna.listen.NetworkState;
 import org.avvento.apps.telefyna.stream.Config;
 import org.avvento.apps.telefyna.stream.Playlist;
 import org.avvento.apps.telefyna.stream.Program;
@@ -57,7 +55,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import lombok.Getter;
 
-public class Monitor extends AppCompatActivity implements PlayerNotificationManager.NotificationListener, Player.EventListener {
+public class Monitor extends AppCompatActivity implements PlayerNotificationManager.NotificationListener, Player.EventListener, NetworkState.NetworkStateListener {
     public static final String PREFERENCES = "TelefynaPrefs" ;
     private static final String PLAYLIST_PLAY = "PLAYLIST_PLAY";
     private static final String PLAYLIST_LAST_MODIFIED = "PLAYLIST_LAST_MODIFIED";
@@ -80,6 +78,8 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     @Getter
     private Map<Integer, List<Program>> programsByIndex;
     private File programsFolder;
+    private NetworkState networkState;
+    private Integer currentPlayingNetworkIndex;
 
     public String getProgramsFolderPath() {
         return programsFolder.getAbsolutePath();
@@ -89,15 +89,8 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         programsByIndex.put(index, mediaItems);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    public void switchToFirstDefault() {
-        switchNow(0);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    private void switchToSecondDefault() {
-        switchNow(1);
-    }
+    public Integer getFirstDefaultIndex() {return 0;}
+    private Integer getSecondDefaultIndex() {return 1;}
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private List<MediaItem> extractingMediaItemsFromPrograms(List<Program> programs) {
@@ -167,6 +160,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
 
         setContentView(R.layout.monitor);
         super.onCreate(savedInstanceState);
+        startNetworkStateListener(instance);
         alarmManager = ((AlarmManager) instance.getSystemService(Context.ALARM_SERVICE));
 
         initialization();
@@ -248,7 +242,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
             Playlist playlist = getConfiguration().getPlaylists()[index];
             List<Program> programs = programsByIndex.get(index);
             if (programs.isEmpty()) {
-                switchToFirstDefault();
+                switchNow(getFirstDefaultIndex());
             }
             long modifiedOffset = playlistModified(index);
             if (modifiedOffset > 0) {
@@ -300,7 +294,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         if (state == Player.STATE_ENDED) {
             resetTrackingNowPlaying(nowPlayingIndex);
             Logger.log(AuditLog.Event.PLAYLIST_COMPLETED, getNowPlayingPlaylistLabel());
-            switchToFirstDefault();
+            switchNow(getFirstDefaultIndex());
         } else if (state == Player.STATE_READY) {
             Player current = playerView.getPlayer();
             if(nowPlayingIndex == null || nowPlayingIndex != nextPlayingIndex) {
@@ -311,6 +305,9 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                 }
                 playerView.setPlayer(player);
                 nowPlayingIndex = nextPlayingIndex;
+                if(nowPlayingIndex != getSecondDefaultIndex()) {
+                    currentPlayingNetworkIndex = null;
+                }
             }
         } else if(state == Player.STATE_BUFFERING) {
             //player.seekTo(C.TIME_UNSET); TODO fix paused stream
@@ -329,12 +326,12 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onPlayerError(ExoPlaybackException error) {
+        Logger.log(AuditLog.Event.ERROR, error.getMessage());
         cacheNowPlaying();
         if(!isNetworkConnected()) {
-            Logger.log(AuditLog.Event.NO_INTERNET, getNowPlayingPlaylistLabel());
-            switchToSecondDefault();
+            // handled by network listener
         } else {
-            switchToFirstDefault();
+            switchNow(getFirstDefaultIndex());
         }
     }
 
@@ -430,6 +427,52 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         }
         if(player != null && !player.isPlaying()) {
             player.play();
+        }
+    }
+
+    @Override
+    public void onPositionDiscontinuity(int reason) {
+        if(player != null && !player.isPlaying()) {
+            player.play();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        unregisterNetworkState(instance);
+        super.onPause();
+    }
+
+    private void startNetworkStateListener(Context currentContext) {
+        networkState = new NetworkState();
+        networkState.addListener((NetworkState.NetworkStateListener) currentContext);
+        registerNetworkState(currentContext);
+    }
+
+    private void registerNetworkState(Context currentContext) {
+        currentContext.registerReceiver(networkState, new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+    private void unregisterNetworkState(Context currentContext) {
+        currentContext.unregisterReceiver(networkState);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
+    public void networkAvailable() {
+        Logger.log(AuditLog.Event.NETWORK_STATE, "");
+        if(currentPlayingNetworkIndex != null && nowPlayingIndex == getSecondDefaultIndex() && Playlist.Type.ONLINE.equals(getConfiguration().getPlaylists()[currentPlayingNetworkIndex].getType())) {
+            switchNow(currentPlayingNetworkIndex);
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
+    public void networkUnavailable() {
+        Logger.log(AuditLog.Event.NETWORK_STATE, "Un-");
+        if(Playlist.Type.ONLINE.equals(getConfiguration().getPlaylists()[nowPlayingIndex].getType())) {
+            currentPlayingNetworkIndex = nowPlayingIndex;
+            switchNow(getSecondDefaultIndex());
         }
     }
 }

@@ -10,9 +10,10 @@ public class AuditLog {
         PLAYLIST_MODIFIED("Playlist: %s is resetting resuming since it was modified %s seconds ago"),
         PLAYLIST_ITEM_CHANGE("Playing playlist: %s now playing program: %s"),
         PLAYLIST_COMPLETED("Completed playing playlist: %s"),
-        NO_INTERNET("No Internet connection for playlist: %s"),
         CACHE_NOW_PLAYING_RESUME("Playlist: %s will next be resuming program: %s at: %d"),
-        RETRIEVE_NOW_PLAYING_RESUME("Resuming Playlist: %s program: %s at: %d");
+        RETRIEVE_NOW_PLAYING_RESUME("Resuming Playlist: %s program: %s at: %d"),
+        NETWORK_STATE("Network Is %sAvailable"),
+        ERROR("%s");
 
         private String message;
 

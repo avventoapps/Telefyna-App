@@ -55,6 +55,7 @@ For any questions or queries, please email the support team at apps@avventohome.
 - [ ] read satellite channels and decoders as we do local playlists and streams
 - [ ] ensure all wrong media files are skipped (blocked)
 - [ ] work on presentation approach (blocked)
+- [x] Network listener, switches to second default when internet is off, and back if slot still active
 - [x] Add continuing not by seekto `LOCAL_RESUMING_NEXT`
 - [x] Fork and add auto start using system prefs to FTP, send [PR](https://github.com/ppareit/swiftp/pull/163)
 - [x] support audit logs, mail them out

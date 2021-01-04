@@ -1,4 +1,4 @@
-package org.avvento.apps.telefyna.scheduler;
+package org.avvento.apps.telefyna.listen;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -137,7 +137,7 @@ public class Maintenance {
             CurrentPlaylist currentPlaylist = startedSlotsToday.get(slots.get(0));
             Monitor.instance.switchNow(currentPlaylist.getIndex());
         } else { // play first default
-            Monitor.instance.switchToFirstDefault();
+            Monitor.instance.switchNow(Monitor.instance.getFirstDefaultIndex());
         }
     }
 

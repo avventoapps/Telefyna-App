@@ -1,4 +1,4 @@
-package org.avvento.apps.telefyna.scheduler;
+package org.avvento.apps.telefyna.listen;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

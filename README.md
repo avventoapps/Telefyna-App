@@ -32,7 +32,7 @@ ______
 * Playlist `start` should be in format `HH:mm` eg `12:00` for mid-day, hours are in 24 hour
 * `urlOrFolder`, stream url or local folder containing alphabetically ordered playlist folders
 * For local playlists, if active and nothing is defined or completed, the default playlist will be played
-* `type` can either be `ONLINE` (stream/default), or `LOCAL_SEQUENCED` (local ordered folder) or `LOCAL_RESUMING` (local resuming folder) or `LOCAL_RANDOMIZED` (local random folder)
+* `type` can either be `ONLINE` (stream/default), or `LOCAL_SEQUENCED` (local ordered folder) or `LOCAL_RESUMING` (local resuming folder), or `LOCAL_RESUMING_NEXT` (local resuming from next program) or `LOCAL_RANDOMIZED` (local random folder)
 * All playlist are enabled by default, to disable one, set `active=false`
 * `clone` allows you to copy a playlist defined up by its order/number/count (starts from 0) and manage separate/override `day`, `repeats`, `start`
 * A field left out in config is by default set to `null`
@@ -43,16 +43,20 @@ For any questions or queries, please email the support team at apps@avventohome.
 
 
 ## TODO
+- [ ] add fading mechanisms than cut
 - [ ] look through TODOs
-- [ ] Fork and add auto start using system prefs to FTP, send PR
-- [ ] write tests
 - [ ] support streaming to hls, shoutcast & loudcast
 - [ ] locally backup/download streaming content
+- [ ] add a way to stream video as only audio, only streaming audio
+- [ ] Build schedule builder & viewer for the `config.json`
+- [ ] write tests
 - [ ] play video with different or additional audio/slave
 - [ ] float another layer on video stream for ads, logo etc
 - [ ] read satellite channels and decoders as we do local playlists and streams
 - [ ] ensure all wrong media files are skipped (blocked)
 - [ ] work on presentation approach (blocked)
+- [x] Add continuing not by seekto `LOCAL_RESUMING_NEXT`
+- [x] Fork and add auto start using system prefs to FTP, send [PR](https://github.com/ppareit/swiftp/pull/163)
 - [x] support audit logs, mail them out
 - [x] work on now playing orm(system preferences) to handle resuming local playlists at next play to support daily etc periods and future dates
 - [x] add dates in addition to days

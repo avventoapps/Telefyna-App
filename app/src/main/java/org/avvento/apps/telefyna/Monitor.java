@@ -15,10 +15,15 @@ import android.os.Handler;
 import android.view.WindowManager;
 
 import com.google.android.exoplayer2.C;
+import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlaybackException;
+import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.PlayerNotificationManager;
 import com.google.android.exoplayer2.ui.PlayerView;
@@ -112,7 +117,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     }
 
     private void trackingNowPlaying(Integer index, int at, long seekTo) {
-        if(Playlist.Type.LOCAL_RESUMING.equals(getConfiguration().getPlaylists()[index].getType())) {
+        if(getConfiguration().getPlaylists()[index].getType().name().startsWith(Playlist.Type.LOCAL_RESUMING.name())) {
             cachePlayingAt(index, at, seekTo);
         }
     }
@@ -231,6 +236,12 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         }
     }
 
+    private SimpleExoPlayer buildPlayer() {
+        DefaultLoadControl.Builder builder = new DefaultLoadControl.Builder();
+        builder.setBufferDurationsMs(DefaultLoadControl.DEFAULT_MIN_BUFFER_MS, 60000, DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_MS, DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS);
+        return new SimpleExoPlayer.Builder(instance).setLoadControl(builder.build()).build();
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void switchNow(int index) {
         if(nowPlayingIndex == null || nowPlayingIndex != index) {// leave current program to proceed if it's the same being loaded
@@ -244,7 +255,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                 Logger.log(AuditLog.Event.PLAYLIST_MODIFIED, getPlayingAtIndexLabel(index), modifiedOffset / 1000);
                 resetTrackingNowPlaying(index);
             }
-            player = new SimpleExoPlayer.Builder(instance).build();
+            player = buildPlayer();
             if (playlist.isClone()) {// only play the clone
                 index = playlist.getClone();
                 programs = programsByIndex.get(index);
@@ -255,12 +266,16 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
 
             List<MediaItem> mediaItems = extractingMediaItemsFromPrograms(programs);
             player.setMediaItems(mediaItems);
-            if (Playlist.Type.LOCAL_RESUMING.equals(playlist.getType())) {
-                int lastPlayedProgram = getSharedPlaylistMediaItem(index);
-                long lastPlayedProgramSeekto = getSharedPlaylistSeekTo(index);
-                if(lastPlayedProgram > 0 && lastPlayedProgramSeekto > 0) {
-                    player.seekTo(lastPlayedProgram, lastPlayedProgramSeekto);
-                    Logger.log(AuditLog.Event.RETRIEVE_NOW_PLAYING_RESUME, playlist.getName(), programs.get(lastPlayedProgram).getName(), lastPlayedProgramSeekto);
+            if (playlist.getType().name().startsWith(Playlist.Type.LOCAL_RESUMING.name())) {
+                int nextProgram = getSharedPlaylistMediaItem(index);
+                long nextSeekTo = getSharedPlaylistSeekTo(index);
+                if(nextProgram > 0 && nextSeekTo > 0) {
+                    if(playlist.getType().equals(Playlist.Type.LOCAL_RESUMING_NEXT) && nextProgram == mediaItems.size() - 1) {
+                        nextProgram++;
+                        nextSeekTo = C.POSITION_UNSET;
+                    }
+                    player.seekTo(nextProgram, nextSeekTo);
+                    Logger.log(AuditLog.Event.RETRIEVE_NOW_PLAYING_RESUME, playlist.getName(), programs.get(nextProgram).getName(), nextSeekTo);
                 }
             } else if(Playlist.Type.LOCAL_RANDOMIZED.equals(playlist.getType())) {
                 Collections.shuffle(mediaItems);
@@ -273,6 +288,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
             if(current != null) {
                 current.removeListener(instance);
             }
+
             player.addListener(instance);
             player.play();
         }
@@ -299,7 +315,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         } else if(state == Player.STATE_BUFFERING) {
             //player.seekTo(C.TIME_UNSET); TODO fix paused stream
         } else if(state == Player.STATE_IDLE) {
-            player.seekTo(C.TIME_UNSET); //TODO fix paused stream
+            //player.play(); //TODO fix paused stream
         }
     }
 

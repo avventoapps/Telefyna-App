@@ -48,15 +48,15 @@ public class Playlist {
         }
         Calendar now = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-        List<Integer> playoutDays = (days == null || days.length == 0) ? new ArrayList<>() : Arrays.asList(days);
+        List<Integer> playoutDays = (days == null || days.length == 0) ? null : Arrays.asList(days);
         List<String> playoutDates = (dates == null || dates.length == 0) ? new ArrayList<>() : Arrays.asList(dates);
-        boolean dayScheduled = playoutDays.isEmpty() ? true : playoutDays.contains(now.get(Calendar.DAY_OF_WEEK));
+        boolean dayScheduled = playoutDays == null ? true : playoutDays.contains(now.get(Calendar.DAY_OF_WEEK));
         boolean dateScheduled = playoutDates.contains(dateFormat.format(now.getTime()));
         return dayScheduled || dateScheduled;
     }
 
     public enum Type {
-        ONLINE, LOCAL_SEQUENCED, LOCAL_RESUMING, LOCAL_RANDOMIZED
+        ONLINE, LOCAL_SEQUENCED, LOCAL_RESUMING, LOCAL_RESUMING_NEXT, LOCAL_RANDOMIZED
     }
 
     // only overrides days, dates and start but maintains the rest

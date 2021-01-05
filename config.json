@@ -12,6 +12,16 @@
       "urlOrFolder": "Filler"
     },
     {
+      "name": "Filler1",
+      "type": "LOCAL_RESUMING",
+      "urlOrFolder": "Filler"
+    },
+    {
+      "name": "Filler2",
+      "type": "LOCAL_RESUMING_NEXT",
+      "urlOrFolder": "Filler"
+    },
+    {
       "name": "Test- 3ABN Kids",
       "start": "12:00",
       "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652318/secure/master.m3u8"
@@ -33,31 +43,15 @@
       "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652317/secure/master.m3u8"
     },
     {
-      "clone": 4,
-      "start": "12:40"
-    },
-    {
-      "clone": 0,
-      "start": "12:50"
-    },
-    {
-      "clone": 4,
-      "start": "13:00"
-    },
-    {
       "clone": 1,
-      "start": "13:10"
+      "start": "13:25"
     },
     {
-      "clone": 4,
-      "start": "13:20"
-    },
-    {
-      "clone": 0,
+      "clone": 2,
       "start": "13:30"
     },
     {
-      "clone": 4,
+      "clone": 3,
       "start": "13:35"
     },
     {
@@ -65,12 +59,8 @@
       "start": "13:40"
     },
     {
-      "clone": 4,
-      "start": "13:45"
-    },
-    {
       "clone": 0,
-      "start": "19:40"
+      "start": "14:40"
     }
   ]
 }

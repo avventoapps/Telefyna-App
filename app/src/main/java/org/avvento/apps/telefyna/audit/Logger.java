@@ -14,7 +14,7 @@ import java.util.Calendar;
 public class Logger {
     private static SimpleDateFormat datetimeFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
-    private static SimpleDateFormat dateFormat  = new SimpleDateFormat("dd-MM-yyyy");
+    private static SimpleDateFormat dateFormat  = new SimpleDateFormat("yyyy-MM-dd");
 
     /*
      * TODO mail, save to file

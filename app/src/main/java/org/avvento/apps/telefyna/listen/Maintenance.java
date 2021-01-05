@@ -66,7 +66,6 @@ public class Maintenance {
         if(config != null) {
             Playlist[] playlists = config.getPlaylists();
             List<String> starts = new ArrayList<>();
-            List<String> dates = new ArrayList<>();
             for (int index = 0; index < playlists.length; index++) {
                 Playlist playlist = playlists[index];
                 Integer clone = playlist.getClone();
@@ -76,7 +75,7 @@ public class Maintenance {
                         File localPlaylistFolder = Monitor.instance.getDirectoryToPlaylist(playlist.getUrlOrFolder());
                         if (localPlaylistFolder.exists() && localPlaylistFolder.listFiles().length > 0) {
                             boolean addedFirstItem = false;
-                            setupLocalPlaylist(programs, localPlaylistFolder, addedFirstItem);
+                            setupLocalPrograms(programs, localPlaylistFolder, addedFirstItem);
                         }
                     } else {
                         programs.add(new Program(playlist.getName(), MediaItem.fromUri(playlist.getUrlOrFolder())));
@@ -84,10 +83,12 @@ public class Maintenance {
                 } else {
                     programs = Monitor.instance.getProgramsByIndex().get(clone);
                     playlist = playlists[clone].copy(playlist);
-                    playlist.setClone(clone);// only use playlist scheduling details for scheduling
+                    //playlist.setClone(clone);// only use playlist scheduling details for scheduling
                 }
-                if (!programs.isEmpty()) {
+                // take the first start in a day to avoid scheduling for more than once
+                if (!programs.isEmpty() && StringUtils.isNotBlank(playlist.getStart()) && !starts.contains(playlist.getStart())) {
                     schedulePlayList(playlist, index);
+                    starts.add(playlist.getStart());
                 }
                 Monitor.instance.putProgramsByIndex(index, programs);
             }
@@ -95,28 +96,18 @@ public class Maintenance {
         }
     }
 
-    // TODO only the first playlist with start or da is scheduled, fix dates comparison
-    private boolean startAndDatesNotScheduled(Playlist playlist, List<String> starts, List<String> dates) {
-        String start = playlist.getStart();
-        String[] dts = playlist.getDates();
-        if((StringUtils.isNotBlank(start) && starts.contains(start)) || (dts != null && dates.contains(dts))) {
-            return true;
-        }
-        return false;
-    }
-
     private Program extractProgramFromFile(File file) {
         return new Program(file.getAbsolutePath().split(Monitor.instance.getProgramsFolderPath())[1], MediaItem.fromUri(Uri.fromFile(file)));
     }
 
-    private void setupLocalPlaylist(List<Program> programs, File fileOrFolder, boolean addedFirstItem) {
+    public void setupLocalPrograms(List<Program> programs, File fileOrFolder, boolean addedFirstItem) {
         if(fileOrFolder.exists()) {
             File[] fileOrFolderList = fileOrFolder.listFiles();
             Arrays.sort(fileOrFolderList);// ordering programs alphabetically
             for (int j = 0; j < fileOrFolderList.length; j++) {
                 File file = fileOrFolderList[j];
                 if (file.isDirectory()) {
-                    setupLocalPlaylist(programs, file, addedFirstItem);
+                    setupLocalPrograms(programs, file, addedFirstItem);
                 } else {
                     if (j == 0 && !addedFirstItem) {
                         programs.add(0, extractProgramFromFile(file));
@@ -144,18 +135,16 @@ public class Maintenance {
     private void schedulePlayList(Playlist playlist, int index) {
         if(playlist.scheduledToday()) {
             String start = playlist.getStart();
-            if(StringUtils.isNotBlank(start)) {
-                Integer hour = Integer.parseInt(start.split(":")[0]);
-                Integer min = Integer.parseInt(start.split(":")[1]);
+            Integer hour = Integer.parseInt(start.split(":")[0]);
+            Integer min = Integer.parseInt(start.split(":")[1]);
 
-                Calendar current = Calendar.getInstance();
-                if (hour < current.get(Calendar.HOUR_OF_DAY) || (hour == current.get(Calendar.HOUR_OF_DAY) && min <= current.get(Calendar.MINUTE))) {
-                    startedSlotsToday.put(start, new CurrentPlaylist(index, playlist));
-                } else {
-                    Intent intent = new Intent(Monitor.instance, PlaylistScheduler.class);
-                    intent.putExtra(PlaylistScheduler.PLAYLIST_INDEX, index);
-                    schedule(intent, nextTime(hour, min));
-                }
+            Calendar current = Calendar.getInstance();
+            if (hour < current.get(Calendar.HOUR_OF_DAY) || (hour == current.get(Calendar.HOUR_OF_DAY) && min <= current.get(Calendar.MINUTE))) {
+                startedSlotsToday.put(start, new CurrentPlaylist(index, playlist));
+            } else {
+                Intent intent = new Intent(Monitor.instance, PlaylistScheduler.class);
+                intent.putExtra(PlaylistScheduler.PLAYLIST_INDEX, index);
+                schedule(intent, nextTime(hour, min));
             }
         }
     }

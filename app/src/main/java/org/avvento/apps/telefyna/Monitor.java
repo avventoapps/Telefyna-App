@@ -192,6 +192,10 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         return new File(Environment.getExternalStorageDirectory().getAbsolutePath() + postfix);
     }
 
+    public String getBumperDirectory() {
+        return programsFolder.getAbsolutePath() + File.separator + "bumper";
+    }
+
     public String getPlaylistDirectory() {
         return programsFolder.getAbsolutePath() + File.separator + "playlist";
     }
@@ -277,6 +281,23 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
             } else if(Playlist.Type.LOCAL_SEQUENCED.equals(playlist.getType())) {
                 // maintain ordered is on by default
             }
+
+            // set any bumpers if available only for non continuous local playlists
+            if(Playlist.Type.LOCAL_RANDOMIZED.equals(playlist.getType())
+                    || Playlist.Type.LOCAL_RESUMING_NEXT.equals(playlist.getType())
+                    || Playlist.Type.LOCAL_SEQUENCED.equals(playlist.getType())) {
+                File bumperFolder = new File(getBumperDirectory() + File.separator + playlist.getUrlOrFolder());
+                if(bumperFolder.exists() && bumperFolder.listFiles().length > 0) {
+                    List<Program> bumpers = new ArrayList<>();
+                    boolean addedFirstItem = false;
+                    maintenance.setupLocalPrograms(bumpers, bumperFolder, addedFirstItem);
+                    Collections.reverse(bumpers);
+                    for(Program bumber : bumpers) {
+                        player.addMediaItem(0, bumber.getMediaItem());
+                    }
+                }
+            }
+
             player.prepare();
             Player current = playerView.getPlayer();
             if(current != null) {
@@ -292,19 +313,19 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     @Override
     public void onPlaybackStateChanged(int state) {
         if (state == Player.STATE_ENDED) {
-            resetTrackingNowPlaying(nowPlayingIndex);
             Logger.log(AuditLog.Event.PLAYLIST_COMPLETED, getNowPlayingPlaylistLabel());
+            resetTrackingNowPlaying(nowPlayingIndex);
             switchNow(getFirstDefaultIndex());
         } else if (state == Player.STATE_READY) {
             Player current = playerView.getPlayer();
             if(nowPlayingIndex == null || nowPlayingIndex != nextPlayingIndex) {
-                cacheNowPlaying();
                 if(current != null) {
                     current.stop();
                     current.release();
                 }
                 playerView.setPlayer(player);
                 nowPlayingIndex = nextPlayingIndex;
+                cacheNowPlaying();
                 if(nowPlayingIndex != getSecondDefaultIndex()) {
                     currentPlayingNetworkIndex = null;
                 }
@@ -312,7 +333,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         } else if(state == Player.STATE_BUFFERING) {
             //player.seekTo(C.TIME_UNSET); TODO fix paused stream
         } else if(state == Player.STATE_IDLE) {
-            //player.play(); //TODO fix paused stream
+            player.play(); //TODO fix paused stream
         }
     }
 
@@ -461,7 +482,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     @Override
     public void networkAvailable() {
         Logger.log(AuditLog.Event.NETWORK_STATE, "");
-        if(currentPlayingNetworkIndex != null && nowPlayingIndex == getSecondDefaultIndex() && Playlist.Type.ONLINE.equals(getConfiguration().getPlaylists()[currentPlayingNetworkIndex].getType())) {
+        if(currentPlayingNetworkIndex != null && nowPlayingIndex != null && getSecondDefaultIndex() == nowPlayingIndex && Playlist.Type.ONLINE.equals(getConfiguration().getPlaylists()[currentPlayingNetworkIndex].getType())) {
             switchNow(currentPlayingNetworkIndex);
         }
     }
@@ -470,8 +491,8 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     @Override
     public void networkUnavailable() {
         Logger.log(AuditLog.Event.NETWORK_STATE, "Un-");
-        if(Playlist.Type.ONLINE.equals(getConfiguration().getPlaylists()[nowPlayingIndex].getType())) {
-            currentPlayingNetworkIndex = nowPlayingIndex;
+        if(Playlist.Type.ONLINE.equals(getConfiguration().getPlaylists()[nowPlayingIndex == null ? nextPlayingIndex : nowPlayingIndex].getType())) {
+            currentPlayingNetworkIndex = nowPlayingIndex == null ? nextPlayingIndex : nowPlayingIndex;
             switchNow(getSecondDefaultIndex());
         }
     }

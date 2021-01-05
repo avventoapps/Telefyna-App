@@ -5,7 +5,7 @@ An android online/local streaming and scheduling player for audio and video suit
 ______
 
 ## Installation
-* Download the [APK from here](https://github.com/avventoapps/avvento/releases/latest/download/telefyna.apk) and install it, grant the app Storage permission and relaod it if necessary
+* Download the [APK from here](https://github.com/avventoapps/avvento/releases/latest/download/telefyna.apk) and install it, grant the app Storage permission and reload it if necessary
 
 ## Configurations
 * Use `config.json` to create your own configurations, [here is a sample](https://github.com/avventoapps/Telefyna/blob/master/config.json), add it to either `sdcard` if existing /device drive in a folder called `telefyna`
@@ -23,6 +23,7 @@ ______
 * Ensure the device's Date and Timezone are set correctly
 * The first playlist is the default  playlist and is used as a filler if nothing is available to play next or local folder is vacant
 * The second playlist is a second default, it's a second filler choice and is played when `ONLINE` ones fail because of of internet issues
+* If an internet connection is lost during a broadcast, the second playlist is defaulted to and if it's restored, the previous program will be restored too
 * Both the above two default playlists must be maintained active, if any of them is local, better set resuming
 * If you intend to use one playlist as default for both the first and second, make the second a clone of the first
 * `name` your playlist meaningfully
@@ -33,6 +34,7 @@ ______
 * `urlOrFolder`, stream url or local folder containing alphabetically ordered playlist folders
 * For local playlists, if active and nothing is defined or completed, the default playlist will be played
 * `type` can either be `ONLINE` (stream/default), or `LOCAL_SEQUENCED` (local ordered folder) or `LOCAL_RESUMING` (local resuming folder), or `LOCAL_RESUMING_NEXT` (local resuming from next program) or `LOCAL_RANDOMIZED` (local random folder)
+* For `type`s `LOCAL_SEQUENCED`, `LOCAL_RANDOMIZED` and `LOCAL_RESUMING_NEXT`, you can define bumpers to play as the playlist starts in `bumper` folder in a sub folder named by playlist folder
 * All playlist are enabled by default, to disable one, set `active=false`
 * `clone` allows you to copy a playlist defined up by its order/number/count (starts from 0) and manage separate/override `day`, `repeats`, `start`
 * A field left out in config is by default set to `null`
@@ -43,16 +45,19 @@ For any questions or queries, please email the support team at apps@avventohome.
 
 
 ## TODO
+- [ ] test and fix mid night runner
+- [ ] Schedule once per start, ignore the rest of the slots
+- [ ] add promos/sweepers/something folder that starts the playout whether in continuing. usable for upnexts: intros folder containing another named by foldername: test symbolic links
 - [ ] add fading mechanisms than cut
 - [ ] look through TODOs
-- [ ] support streaming to hls, shoutcast & loudcast
 - [ ] locally backup/download streaming content
-- [ ] add a way to stream video as only audio, only streaming audio
 - [ ] Build schedule builder & viewer for the `config.json`
 - [ ] write tests
 - [ ] play video with different or additional audio/slave
 - [ ] float another layer on video stream for ads, logo etc
 - [ ] read satellite channels and decoders as we do local playlists and streams
+- [ ] add a way to stream video as only audio, only streaming audio
+- [ ] support streaming to hls, shoutcast & loudcast (not supported); use external streaming encoder
 - [ ] ensure all wrong media files are skipped (blocked)
 - [ ] work on presentation approach (blocked)
 - [x] Network listener, switches to second default when internet is off, and back if slot still active

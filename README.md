@@ -34,7 +34,9 @@ ______
 * `urlOrFolder`, stream url or local folder containing alphabetically ordered playlist folders
 * For local playlists, if active and nothing is defined or completed, the default playlist will be played
 * `type` can either be `ONLINE` (stream/default), or `LOCAL_SEQUENCED` (local ordered folder) or `LOCAL_RESUMING` (local resuming folder), or `LOCAL_RESUMING_NEXT` (local resuming from next program) or `LOCAL_RANDOMIZED` (local random folder)
-* For `type`s `LOCAL_SEQUENCED`, `LOCAL_RANDOMIZED` and `LOCAL_RESUMING_NEXT`, you can define bumpers to play as the playlist starts in `bumper` folder in a sub folder named by playlist folder
+* For `type`s `LOCAL_SEQUENCED`, `LOCAL_RANDOMIZED`
+* You can define bumpers (ads, promos etc) to play as the `LOCAL_SEQUENCED` or `LOCAL_RANDOMIZED` playlist (Non resuming local one) starts in `bumper` folder in a sub folder named by playlist folder
+* Add `General` folder in `bumper` folder for general ads to play before all programs
 * All playlist are enabled by default, to disable one, set `active=false`
 * `clone` allows you to copy a playlist defined up by its order/number/count (starts from 0) and manage separate/override `day`, `repeats`, `start`
 * A field left out in config is by default set to `null`
@@ -45,6 +47,7 @@ For any questions or queries, please email the support team at apps@avventohome.
 
 
 ## TODO
+- [ ] handle player idling on stream, resume the play/seekTo
 - [ ] some sorce error unknown makes the program to switch, retry defaulting back to the program
 - [ ] test and fix mid night runner
 - [ ] Schedule once per start, ignore the rest of the slots

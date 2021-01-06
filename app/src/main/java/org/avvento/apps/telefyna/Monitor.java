@@ -20,6 +20,7 @@ import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.Player;
+import com.google.android.exoplayer2.SeekParameters;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.PlayerNotificationManager;
@@ -77,6 +78,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     private PlayerView playerView;
     @Getter
     private Map<Integer, List<Program>> programsByIndex;
+    private List<Program> currentBumpers;
     private File programsFolder;
     private NetworkState networkState;
     private Integer currentPlayingNetworkIndex;
@@ -116,12 +118,25 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     }
 
     private void cachePlayingAt(Integer index, int at, long seekTo) {
-        SharedPreferences.Editor editor = sharedpreferences.edit();
-        editor.putInt(getPlaylistPlayKey(index), at);
-        editor.putLong(getPlaylistSeekTo(index), seekTo);
-        editor.putLong(getPlaylistLastModified(index), getLastModifiedFor(index));
-        editor.commit();
-        Logger.log(AuditLog.Event.CACHE_NOW_PLAYING_RESUME, getPlayingAtIndexLabel(index), programsByIndex.get(index).get(at).getName(), seekTo);
+        String programName = getMediaItemName(index, at);
+        if(StringUtils.isNotBlank(programName)) {// exclude bumpers
+            SharedPreferences.Editor editor = sharedpreferences.edit();
+            editor.putInt(getPlaylistPlayKey(index), at);
+            editor.putLong(getPlaylistSeekTo(index), seekTo);
+            editor.putLong(getPlaylistLastModified(index), getLastModifiedFor(index));
+            editor.commit();
+            Logger.log(AuditLog.Event.CACHE_NOW_PLAYING_RESUME, getPlayingAtIndexLabel(index), programName, seekTo);
+        }
+    }
+
+    private String getMediaItemName(int index, int at) {
+        if(currentBumpers.isEmpty() || (at > currentBumpers.size())) {
+            List<Program> programs = programsByIndex.get(index);
+            if(programs.size() > at) {
+                return programs.get(at).getName();
+            }
+        }
+        return null;
     }
 
     private Integer getSharedPlaylistMediaItem(Integer index) {
@@ -223,7 +238,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         programsByIndex = new HashMap<>();
         playerView = findViewById(R.id.player);
         playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
-        playerView.setUseController(false);
+        //playerView.setUseController(false);
         maintenance.run();
         shutDownHook();
     }
@@ -242,71 +257,79 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void switchNow(int index) {
+        currentBumpers = new ArrayList<>();
         if(nowPlayingIndex == null || nowPlayingIndex != index) {// leave current program to proceed if it's the same being loaded
+            // setup objects, skip playlist with nothing to play
             Playlist playlist = getConfiguration().getPlaylists()[index];
             List<Program> programs = programsByIndex.get(index);
+            if (playlist.isClone()) {// only play the clone
+                index = playlist.getClone();
+                programs = programsByIndex.get(index);
+            }
+            nextPlayingIndex = index;
+            player = buildPlayer();
+            playlist = getConfiguration().getPlaylists()[nextPlayingIndex];
             if (programs.isEmpty()) {
                 switchNow(getFirstDefaultIndex());
-            } else {
-                long modifiedOffset = playlistModified(index);
-                if (modifiedOffset > 0) {
-                    Logger.log(AuditLog.Event.PLAYLIST_MODIFIED, getPlayingAtIndexLabel(index), modifiedOffset / 1000);
-                    resetTrackingNowPlaying(index);
-                }
-                player = buildPlayer();
-                if (playlist.isClone()) {// only play the clone
-                    index = playlist.getClone();
-                    programs = programsByIndex.get(index);
-                }
-                nextPlayingIndex = index;
-                playlist = getConfiguration().getPlaylists()[nextPlayingIndex];
-                Logger.log(AuditLog.Event.PLAYLIST, new GsonBuilder().setPrettyPrinting().create().toJson(playlist));
-
-                List<MediaItem> mediaItems = extractingMediaItemsFromPrograms(programs);
-                player.setMediaItems(mediaItems);
-                if (playlist.getType().name().startsWith(Playlist.Type.LOCAL_RESUMING.name())) {
-                    int nextProgram = getSharedPlaylistMediaItem(index);
-                    long nextSeekTo = getSharedPlaylistSeekTo(index);
-                    if (nextProgram > 0 && nextSeekTo > 0) {
-                        if (playlist.getType().equals(Playlist.Type.LOCAL_RESUMING_NEXT) && nextProgram == mediaItems.size() - 1) {
-                            nextProgram++;
-                            nextSeekTo = C.POSITION_UNSET;
-                        }
-                        player.seekTo(nextProgram, nextSeekTo);
-                        Logger.log(AuditLog.Event.RETRIEVE_NOW_PLAYING_RESUME, playlist.getName(), programs.get(nextProgram).getName(), nextSeekTo);
-                    }
-                } else if (Playlist.Type.LOCAL_RANDOMIZED.equals(playlist.getType())) {
-                    Collections.shuffle(mediaItems);
-                    player.setMediaItems(mediaItems);
-                } else if (Playlist.Type.LOCAL_SEQUENCED.equals(playlist.getType())) {
-                    // maintain ordered is on by default
-                }
-
-                // set any bumpers if available only for non continuous local playlists
-                if (Playlist.Type.LOCAL_RANDOMIZED.equals(playlist.getType())
-                        || Playlist.Type.LOCAL_RESUMING_NEXT.equals(playlist.getType())
-                        || Playlist.Type.LOCAL_SEQUENCED.equals(playlist.getType())) {
-                    File bumperFolder = new File(getBumperDirectory() + File.separator + playlist.getUrlOrFolder());
-                    if (bumperFolder.exists() && bumperFolder.listFiles().length > 0) {
-                        List<Program> bumpers = new ArrayList<>();
-                        boolean addedFirstItem = false;
-                        maintenance.setupLocalPrograms(bumpers, bumperFolder, addedFirstItem);
-                        Collections.reverse(bumpers);
-                        for (Program bumber : bumpers) {
-                            player.addMediaItem(0, bumber.getMediaItem());
-                        }
-                    }
-                }
-
-                player.prepare();
-                Player current = playerView.getPlayer();
-                if (current != null) {
-                    current.removeListener(instance);
-                }
-
-                player.addListener(instance);
-                player.play();
             }
+
+            // reset tracking now playing if the playlist programs were modified
+            long modifiedOffset = playlistModified(index);
+            if (modifiedOffset > 0) {
+                Logger.log(AuditLog.Event.PLAYLIST_MODIFIED, getPlayingAtIndexLabel(index), modifiedOffset / 1000);
+                resetTrackingNowPlaying(index);
+            }
+
+            Logger.log(AuditLog.Event.PLAYLIST, new GsonBuilder().setPrettyPrinting().create().toJson(playlist));
+
+            // extract and add programs
+            List<MediaItem> programItems = extractingMediaItemsFromPrograms(programs);
+            // handle resuming local playlists
+            if (Playlist.Type.LOCAL_RANDOMIZED.equals(playlist.getType())) {
+                Collections.shuffle(programItems);
+            }
+            // resume local resumable programs
+            if (playlist.getType().name().startsWith(Playlist.Type.LOCAL_RESUMING.name())) {
+                int nextProgram = getSharedPlaylistMediaItem(index);
+                long nextSeekTo = getSharedPlaylistSeekTo(index);
+                if (nextProgram > 0 && nextSeekTo > 0) {
+                    if (playlist.getType().equals(Playlist.Type.LOCAL_RESUMING_NEXT) && nextProgram == programItems.size() - 1) {
+                        nextProgram++; // next program excluding bumpers
+                        nextSeekTo = C.POSITION_UNSET;
+                    }
+                    player.seekTo(nextProgram, nextSeekTo);
+                    Logger.log(AuditLog.Event.RETRIEVE_NOW_PLAYING_RESUME, playlist.getName(), programs.get(nextProgram).getName(), nextSeekTo);
+                }
+            } else if(!playlist.getType().equals(Playlist.Type.ONLINE)) {// only add bumpers if not resuming and not online
+                // prepare bumpers
+                File bumperFolder = new File(getBumperDirectory() + File.separator + playlist.getUrlOrFolder());
+                File generalBumperFolder = new File(getBumperDirectory() + File.separator + "General");
+                addBumpers(bumperFolder, false);
+                addBumpers(generalBumperFolder, true);
+                List<MediaItem> bumperMediaItems = new ArrayList<>();
+                // add any bumpers if available only for non continuous local playlists
+                for (Program bumber : currentBumpers) {
+                    bumperMediaItems.add(bumber.getMediaItem());
+                }
+                programItems.addAll(0, bumperMediaItems);
+            }
+            player.setMediaItems(programItems);
+
+            player.prepare();
+            Player current = playerView.getPlayer();
+            if (current != null) {
+                current.removeListener(instance);
+            }
+
+            player.addListener(instance);
+            player.play();
+        }
+    }
+
+    private void addBumpers(File bumperFolder, boolean addedFirstItem) {
+        if (bumperFolder.exists() && bumperFolder.listFiles().length > 0) {
+            maintenance.setupLocalPrograms(currentBumpers, bumperFolder, addedFirstItem);
+            Collections.reverse(currentBumpers);
         }
     }
 
@@ -343,7 +366,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     public void onMediaItemTransition(@Nullable MediaItem mediaItem, int reason) {
         int item = playerView.getPlayer().getCurrentPeriodIndex() - 1;// last item index
         trackingNowPlaying(nowPlayingIndex, item, 0);
-        Logger.log(AuditLog.Event.PLAYLIST_ITEM_CHANGE, getNowPlayingPlaylistLabel(),  programsByIndex.get(nowPlayingIndex).get(item + 1).getName());
+        Logger.log(AuditLog.Event.PLAYLIST_ITEM_CHANGE, getNowPlayingPlaylistLabel(), getMediaItemName(nowPlayingIndex, item + 1));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)

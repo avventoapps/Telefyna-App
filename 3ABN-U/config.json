@@ -39,7 +39,7 @@
     },
     {
       "name": "8-3ABN-U Bwatyo Bwayogela Mukama",
-      "type": "LOCAL_RESUMING_NEXT",
+      "type": "LOCAL_SEQUENCED",
       "urlOrFolder": "BwatyoBwayogelaMukama"
     },
     {

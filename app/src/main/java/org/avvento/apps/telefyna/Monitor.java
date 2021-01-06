@@ -310,14 +310,9 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
-    public void onPlaybackStateChanged(int state) {
-        if (state == Player.STATE_ENDED) {
-            Logger.log(AuditLog.Event.PLAYLIST_COMPLETED, getNowPlayingPlaylistLabel());
-            resetTrackingNowPlaying(nowPlayingIndex);
-            switchNow(getFirstDefaultIndex());
-        } else if (state == Player.STATE_READY) {
+    public void onIsPlayingChanged(boolean isPlaying) {
+        if(isPlaying) {
             Player current = playerView.getPlayer();
             if(nowPlayingIndex == null || nowPlayingIndex != nextPlayingIndex) {
                 if(current != null) {
@@ -331,10 +326,16 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                     currentPlayingNetworkIndex = null;
                 }
             }
-        } else if(state == Player.STATE_BUFFERING) {
-            //player.seekTo(C.TIME_UNSET); TODO fix paused stream
-        } else if(state == Player.STATE_IDLE) {
-            player.play(); //TODO fix paused stream
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
+    public void onPlaybackStateChanged(int state) {
+        if (state == Player.STATE_ENDED) {
+            Logger.log(AuditLog.Event.PLAYLIST_COMPLETED, getNowPlayingPlaylistLabel());
+            resetTrackingNowPlaying(nowPlayingIndex);
+            switchNow(getFirstDefaultIndex());
         }
     }
 

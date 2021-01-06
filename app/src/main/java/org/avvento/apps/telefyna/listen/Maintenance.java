@@ -86,7 +86,7 @@ public class Maintenance {
                     //playlist.setClone(clone);// only use playlist scheduling details for scheduling
                 }
                 // take the first start in a day to avoid scheduling for more than once
-                if (!programs.isEmpty() && StringUtils.isNotBlank(playlist.getStart()) && !starts.contains(playlist.getStart())) {
+                if (playlist.scheduledToday() && StringUtils.isNotBlank(playlist.getStart()) && !starts.contains(playlist.getStart())) {
                     schedulePlayList(playlist, index);
                     starts.add(playlist.getStart());
                 }
@@ -133,19 +133,17 @@ public class Maintenance {
     }
 
     private void schedulePlayList(Playlist playlist, int index) {
-        if(playlist.scheduledToday()) {
-            String start = playlist.getStart();
-            Integer hour = Integer.parseInt(start.split(":")[0]);
-            Integer min = Integer.parseInt(start.split(":")[1]);
+        String start = playlist.getStart();
+        Integer hour = Integer.parseInt(start.split(":")[0]);
+        Integer min = Integer.parseInt(start.split(":")[1]);
 
-            Calendar current = Calendar.getInstance();
-            if (hour < current.get(Calendar.HOUR_OF_DAY) || (hour == current.get(Calendar.HOUR_OF_DAY) && min <= current.get(Calendar.MINUTE))) {
-                startedSlotsToday.put(start, new CurrentPlaylist(index, playlist));
-            } else {
-                Intent intent = new Intent(Monitor.instance, PlaylistScheduler.class);
-                intent.putExtra(PlaylistScheduler.PLAYLIST_INDEX, index);
-                schedule(intent, nextTime(hour, min));
-            }
+        Calendar current = Calendar.getInstance();
+        if (hour < current.get(Calendar.HOUR_OF_DAY) || (hour == current.get(Calendar.HOUR_OF_DAY) && min <= current.get(Calendar.MINUTE))) {
+            startedSlotsToday.put(start, new CurrentPlaylist(index, playlist));
+        } else {
+            Intent intent = new Intent(Monitor.instance, PlaylistScheduler.class);
+            intent.putExtra(PlaylistScheduler.PLAYLIST_INDEX, index);
+            schedule(intent, nextTime(hour, min));
         }
     }
 

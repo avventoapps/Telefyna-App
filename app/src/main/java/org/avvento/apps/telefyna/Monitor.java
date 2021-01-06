@@ -247,65 +247,66 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
             List<Program> programs = programsByIndex.get(index);
             if (programs.isEmpty()) {
                 switchNow(getFirstDefaultIndex());
-            }
-            long modifiedOffset = playlistModified(index);
-            if (modifiedOffset > 0) {
-                Logger.log(AuditLog.Event.PLAYLIST_MODIFIED, getPlayingAtIndexLabel(index), modifiedOffset / 1000);
-                resetTrackingNowPlaying(index);
-            }
-            player = buildPlayer();
-            if (playlist.isClone()) {// only play the clone
-                index = playlist.getClone();
-                programs = programsByIndex.get(index);
-            }
-            nextPlayingIndex = index;
-            playlist = getConfiguration().getPlaylists()[nextPlayingIndex];
-            Logger.log(AuditLog.Event.PLAYLIST, new GsonBuilder().setPrettyPrinting().create().toJson(playlist));
-
-            List<MediaItem> mediaItems = extractingMediaItemsFromPrograms(programs);
-            player.setMediaItems(mediaItems);
-            if (playlist.getType().name().startsWith(Playlist.Type.LOCAL_RESUMING.name())) {
-                int nextProgram = getSharedPlaylistMediaItem(index);
-                long nextSeekTo = getSharedPlaylistSeekTo(index);
-                if(nextProgram > 0 && nextSeekTo > 0) {
-                    if(playlist.getType().equals(Playlist.Type.LOCAL_RESUMING_NEXT) && nextProgram == mediaItems.size() - 1) {
-                        nextProgram++;
-                        nextSeekTo = C.POSITION_UNSET;
-                    }
-                    player.seekTo(nextProgram, nextSeekTo);
-                    Logger.log(AuditLog.Event.RETRIEVE_NOW_PLAYING_RESUME, playlist.getName(), programs.get(nextProgram).getName(), nextSeekTo);
+            } else {
+                long modifiedOffset = playlistModified(index);
+                if (modifiedOffset > 0) {
+                    Logger.log(AuditLog.Event.PLAYLIST_MODIFIED, getPlayingAtIndexLabel(index), modifiedOffset / 1000);
+                    resetTrackingNowPlaying(index);
                 }
-            } else if(Playlist.Type.LOCAL_RANDOMIZED.equals(playlist.getType())) {
-                Collections.shuffle(mediaItems);
+                player = buildPlayer();
+                if (playlist.isClone()) {// only play the clone
+                    index = playlist.getClone();
+                    programs = programsByIndex.get(index);
+                }
+                nextPlayingIndex = index;
+                playlist = getConfiguration().getPlaylists()[nextPlayingIndex];
+                Logger.log(AuditLog.Event.PLAYLIST, new GsonBuilder().setPrettyPrinting().create().toJson(playlist));
+
+                List<MediaItem> mediaItems = extractingMediaItemsFromPrograms(programs);
                 player.setMediaItems(mediaItems);
-            } else if(Playlist.Type.LOCAL_SEQUENCED.equals(playlist.getType())) {
-                // maintain ordered is on by default
-            }
+                if (playlist.getType().name().startsWith(Playlist.Type.LOCAL_RESUMING.name())) {
+                    int nextProgram = getSharedPlaylistMediaItem(index);
+                    long nextSeekTo = getSharedPlaylistSeekTo(index);
+                    if (nextProgram > 0 && nextSeekTo > 0) {
+                        if (playlist.getType().equals(Playlist.Type.LOCAL_RESUMING_NEXT) && nextProgram == mediaItems.size() - 1) {
+                            nextProgram++;
+                            nextSeekTo = C.POSITION_UNSET;
+                        }
+                        player.seekTo(nextProgram, nextSeekTo);
+                        Logger.log(AuditLog.Event.RETRIEVE_NOW_PLAYING_RESUME, playlist.getName(), programs.get(nextProgram).getName(), nextSeekTo);
+                    }
+                } else if (Playlist.Type.LOCAL_RANDOMIZED.equals(playlist.getType())) {
+                    Collections.shuffle(mediaItems);
+                    player.setMediaItems(mediaItems);
+                } else if (Playlist.Type.LOCAL_SEQUENCED.equals(playlist.getType())) {
+                    // maintain ordered is on by default
+                }
 
-            // set any bumpers if available only for non continuous local playlists
-            if(Playlist.Type.LOCAL_RANDOMIZED.equals(playlist.getType())
-                    || Playlist.Type.LOCAL_RESUMING_NEXT.equals(playlist.getType())
-                    || Playlist.Type.LOCAL_SEQUENCED.equals(playlist.getType())) {
-                File bumperFolder = new File(getBumperDirectory() + File.separator + playlist.getUrlOrFolder());
-                if(bumperFolder.exists() && bumperFolder.listFiles().length > 0) {
-                    List<Program> bumpers = new ArrayList<>();
-                    boolean addedFirstItem = false;
-                    maintenance.setupLocalPrograms(bumpers, bumperFolder, addedFirstItem);
-                    Collections.reverse(bumpers);
-                    for(Program bumber : bumpers) {
-                        player.addMediaItem(0, bumber.getMediaItem());
+                // set any bumpers if available only for non continuous local playlists
+                if (Playlist.Type.LOCAL_RANDOMIZED.equals(playlist.getType())
+                        || Playlist.Type.LOCAL_RESUMING_NEXT.equals(playlist.getType())
+                        || Playlist.Type.LOCAL_SEQUENCED.equals(playlist.getType())) {
+                    File bumperFolder = new File(getBumperDirectory() + File.separator + playlist.getUrlOrFolder());
+                    if (bumperFolder.exists() && bumperFolder.listFiles().length > 0) {
+                        List<Program> bumpers = new ArrayList<>();
+                        boolean addedFirstItem = false;
+                        maintenance.setupLocalPrograms(bumpers, bumperFolder, addedFirstItem);
+                        Collections.reverse(bumpers);
+                        for (Program bumber : bumpers) {
+                            player.addMediaItem(0, bumber.getMediaItem());
+                        }
                     }
                 }
-            }
 
-            player.prepare();
-            Player current = playerView.getPlayer();
-            if(current != null) {
-                current.removeListener(instance);
-            }
+                player.prepare();
+                Player current = playerView.getPlayer();
+                if (current != null) {
+                    current.removeListener(instance);
+                }
 
-            player.addListener(instance);
-            player.play();
+                player.addListener(instance);
+                player.play();
+            }
         }
     }
 

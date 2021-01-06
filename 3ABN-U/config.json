@@ -2,73 +2,73 @@
   "disableNotifications": false,
   "playlists": [
     {
-      "name": "0->3ABN-I International",
+      "name": "0-3ABN-I International",
       "description": "This is the first default playlist, it plays whenever nothing is scheduled or is available",
       "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652312/secure/master.m3u8"
     },
     {
-      "name": "1->Fillers",
+      "name": "1-Fillers",
       "description": "This is the second default playlist, it plays whenever there's no internet or it's disconnected",
       "type": "LOCAL_RANDOMIZED",
       "urlOrFolder": "Fillers"
     },
     {
-      "name": "2->3ABN-N Network",
+      "name": "2-3ABN-N Network",
       "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652042/secure/master.m3u8"
     },
     {
-      "name": "3->3ABN-P Proclaim",
+      "name": "3-3ABN-P Proclaim",
       "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652317/secure/master.m3u8"
     },
     {
-      "name": "4->3ABN-D DareToDream",
+      "name": "4-3ABN-D DareToDream",
       "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652313/secure/master.m3u8"
     },
     {
-      "name": "5->3ABN-K Kids",
+      "name": "5-3ABN-K Kids",
       "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652318/secure/master.m3u8"
     },
     {
-      "name": "6->3ABN-M PraiseHimMusic",
+      "name": "6-3ABN-M PraiseHimMusic",
       "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/554145/secure/playlist.m3u8"
     },
     {
-      "name": "7->3ABN-U Ensulo ey'enkya",
+      "name": "7-3ABN-U Ensulo ey'enkya",
       "type": "LOCAL_RESUMING_NEXT",
       "urlOrFolder": "EnsuloEyenkya"
     },
     {
-      "name": "8->3ABN-U Bwatyo Bwayogela Mukama",
+      "name": "8-3ABN-U Bwatyo Bwayogela Mukama",
       "type": "LOCAL_RESUMING_NEXT",
       "urlOrFolder": "BwatyoBwayogelaMukama"
     },
     {
-      "name": "9->3ABN-U Manya Ebiro",
+      "name": "9-3ABN-U Manya Ebiro",
       "type": "LOCAL_SEQUENCED",
       "urlOrFolder": "ManyaEbiro"
     },
     {
-      "name": "10->3ABN-U-Julira Mukama",
+      "name": "10-3ABN-U-Julira Mukama",
       "type": "LOCAL_SEQUENCED",
       "urlOrFolder": "JuliraMukama"
     },
     {
-      "name": "11->3ABN-U-Beera Mulamu",
+      "name": "11-3ABN-U-Beera Mulamu",
       "type": "LOCAL_SEQUENCED",
       "urlOrFolder": "BeeraMulamu"
     },
     {
-      "name": "12->3ABN-U-Yimba Nange",
+      "name": "12-3ABN-U-Yimba Nange",
       "type": "LOCAL_SEQUENCED",
       "urlOrFolder": "YimbaNange"
     },
     {
-      "name": "13->3ABN-U-Obutonde bwogera",
+      "name": "13-3ABN-U-Obutonde bwogera",
       "type": "LOCAL_SEQUENCED",
       "urlOrFolder": "ObutondeBwogera"
     },
     {
-      "name": "14->3ABN-U-Ennyimba",
+      "name": "14-3ABN-U-Ennyimba",
       "type": "LOCAL_RANDOMIZED",
       "urlOrFolder": "Ennyimba"
     },

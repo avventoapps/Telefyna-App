@@ -348,7 +348,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onPlayerError(ExoPlaybackException error) {
-        Logger.log(AuditLog.Event.ERROR, error.getMessage());
+        Logger.log(AuditLog.Event.ERROR, String.format("%s: %s", error.getCause().toString(), error.getMessage()));
         cacheNowPlaying();
         if(!isNetworkConnected()) {
             // handled by network listener

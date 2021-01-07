@@ -47,6 +47,7 @@ For any questions or queries, please email the support team at apps@avventohome.
 
 
 ## TODO
+- [ ] Test playlist modification etc
 - [ ] handle player idling on stream, resume the play/seekTo
 - [ ] some sorce error unknown makes the program to switch, retry defaulting back to the program
 - [ ] test and fix mid night runner

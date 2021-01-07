@@ -264,6 +264,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
             playlist = getConfiguration().getPlaylists()[nextPlayingIndex];
             if (programs.isEmpty()) {
                 switchNow(getFirstDefaultIndex());
+                return;
             }
 
             // reset tracking now playing if the playlist programs were modified

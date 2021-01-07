@@ -84,7 +84,7 @@ public class Maintenance {
                 } else {
                     programs = Monitor.instance.getProgramsByIndex().get(clone);
                     playlist = playlists[clone].copy(playlist);
-                    //playlist.setClone(clone);// only use playlist scheduling details for scheduling
+                    playlist.setClone(clone);// only use playlist scheduling details for scheduling
                 }
                 // take the first start in a day to avoid scheduling for more than once
                 if (playlist.scheduledToday() && StringUtils.isNotBlank(playlist.getStart()) && !starts.contains(playlist.getStart())) {
@@ -140,7 +140,7 @@ public class Maintenance {
 
         Calendar current = Calendar.getInstance();
         if (hour < current.get(Calendar.HOUR_OF_DAY) || (hour == current.get(Calendar.HOUR_OF_DAY) && min <= current.get(Calendar.MINUTE))) {
-            startedSlotsToday.put(start, new CurrentPlaylist(index, playlist));
+            startedSlotsToday.put(start, new CurrentPlaylist(playlist.isClone() ? playlist.getClone() : index, playlist));
         } else {
             Intent intent = new Intent(Monitor.instance, PlaylistScheduler.class);
             intent.putExtra(PlaylistScheduler.PLAYLIST_INDEX, index);

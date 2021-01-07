@@ -20,7 +20,6 @@ import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.Player;
-import com.google.android.exoplayer2.SeekParameters;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.PlayerNotificationManager;
@@ -219,22 +218,20 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         return String.format("%saudit%s.log", programsFolder.getAbsolutePath() + File.separator, File.separator + name);
     }
 
-    public Config initialiseConfiguration() {
-        Config config = null;
+    public void initialiseConfiguration() {
         try {
-            config = new Gson().fromJson(new BufferedReader(new FileReader(programsFolder.getAbsolutePath() + File.separator + "config.json")), Config.class);
+            configuration = new Gson().fromJson(new BufferedReader(new FileReader(programsFolder.getAbsolutePath() + File.separator + "config.json")), Config.class);
             Logger.log(AuditLog.Event.CONFIGURATION);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return config;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void initialization() {
         initialiseWithPermissions();
         programsFolder = getAppRootDirectory();
-        configuration = initialiseConfiguration();
+        initialiseConfiguration();
         programsByIndex = new HashMap<>();
         playerView = findViewById(R.id.player);
         playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
@@ -262,10 +259,6 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
             // setup objects, skip playlist with nothing to play
             Playlist playlist = getConfiguration().getPlaylists()[index];
             List<Program> programs = programsByIndex.get(index);
-            if (playlist.isClone()) {// only play the clone
-                index = playlist.getClone();
-                programs = programsByIndex.get(index);
-            }
             nextPlayingIndex = index;
             player = buildPlayer();
             playlist = getConfiguration().getPlaylists()[nextPlayingIndex];
@@ -374,9 +367,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     public void onPlayerError(ExoPlaybackException error) {
         Logger.log(AuditLog.Event.ERROR, String.format("%s: %s", error.getCause().toString(), error.getMessage()));
         cacheNowPlaying();
-        if(!isNetworkConnected()) {
-            // handled by network listener
-        } else {
+        if(isNetworkConnected()) {// else is handled by network listener
             switchNow(getFirstDefaultIndex());
         }
     }

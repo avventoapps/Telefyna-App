@@ -32,7 +32,7 @@ import androidx.annotation.RequiresApi;
 
 public class Maintenance {
 
-    private Map<String, CurrentPlaylist> startedSlotsToday = new HashMap<>();
+    private Map<String, CurrentPlaylist> startedSlotsToday;
     private static int CODE = 0;
 
     private void logMaintenance() {
@@ -41,6 +41,7 @@ public class Maintenance {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void prepareSchedule(boolean fromMaintainer) {
+        startedSlotsToday = new HashMap<>();
         if(fromMaintainer) {
             Monitor.instance.initialiseConfiguration();
         }
@@ -54,10 +55,10 @@ public class Maintenance {
         Monitor.instance.getHandler().postDelayed(new Runnable() {// maintainer
             public void run() {
                 prepareSchedule(true);
-                Monitor.instance.getHandler().postDelayed(this, getMillsToMidNight());
+                Monitor.instance.getHandler().postDelayed(this, getMillsToMaintenanceTime());
                 logMaintenance();
             }
-        }, getMillsToMidNight());
+        }, getMillsToMaintenanceTime());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -71,14 +72,14 @@ public class Maintenance {
                 Integer clone = playlist.getClone();
                 List<Program> programs = new ArrayList<>();
                 if (clone == null) {
-                    if (playlist.getType().name().startsWith("LOCAL_")) {
+                    if (playlist.getType().equals(Playlist.Type.ONLINE)) {
+                        programs.add(new Program(playlist.getName(), MediaItem.fromUri(playlist.getUrlOrFolder())));
+                    } else {
                         File localPlaylistFolder = Monitor.instance.getDirectoryToPlaylist(playlist.getUrlOrFolder());
                         if (localPlaylistFolder.exists() && localPlaylistFolder.listFiles().length > 0) {
                             boolean addedFirstItem = false;
                             setupLocalPrograms(programs, localPlaylistFolder, addedFirstItem);
                         }
-                    } else {
-                        programs.add(new Program(playlist.getName(), MediaItem.fromUri(playlist.getUrlOrFolder())));
                     }
                 } else {
                     programs = Monitor.instance.getProgramsByIndex().get(clone);
@@ -156,7 +157,7 @@ public class Maintenance {
         Calendar next = Calendar.getInstance();
         next.set(Calendar.HOUR_OF_DAY, hour);
         next.set(Calendar.MINUTE, min);
-        next.set(Calendar.SECOND, 0);
+        next.set(Calendar.SECOND, hour == 0 && min == 0 ? 5 : 0);// switch after 5 seconds since maintenance scheduler runs at 0 seconds
         next.set(Calendar.MILLISECOND, 0);
         return next.getTimeInMillis();
     }
@@ -164,14 +165,14 @@ public class Maintenance {
     /*
      * Runs at midnight
      */
-    private long getMillsToMidNight() {
+    private long getMillsToMaintenanceTime() {// close to midnight
         Calendar c = Calendar.getInstance();
         c.add(Calendar.DAY_OF_MONTH, 1);
         c.set(Calendar.HOUR_OF_DAY, 0);
         c.set(Calendar.MINUTE, 0);
         c.set(Calendar.SECOND, 0);
         c.set(Calendar.MILLISECOND, 0);
-        return (c.getTimeInMillis() - System.currentTimeMillis());
+        return c.getTimeInMillis() - System.currentTimeMillis();
     }
 
     // TODO and use fix

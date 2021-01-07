@@ -235,7 +235,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         programsByIndex = new HashMap<>();
         playerView = findViewById(R.id.player);
         playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
-        //playerView.setUseController(false);
+        playerView.setUseController(false);
         maintenance.run();
         shutDownHook();
     }

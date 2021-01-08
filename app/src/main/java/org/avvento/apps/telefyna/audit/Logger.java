@@ -21,7 +21,11 @@ public class Logger {
      */
     public static void log(AuditLog.Event event, Object... params) {
         String message = String.format(event.getMessage(), params);
-        Log.i(event.name(), message);
+        if(event.equals(AuditLog.Event.ERROR)) {
+            Log.e(event.name(), message);
+        } else {
+            Log.i(event.name(), message);
+        }
         try {
             FileUtils.writeStringToFile(new File(Monitor.instance.getAuditLogsFilePath(getToday())), String.format("%s %s: \n\t%s", getNow(), event.name(), message), StandardCharsets.UTF_8, true);
         } catch (IOException e) {

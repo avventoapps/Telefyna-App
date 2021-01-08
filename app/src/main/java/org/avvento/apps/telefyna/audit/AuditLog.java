@@ -2,11 +2,13 @@ package org.avvento.apps.telefyna.audit;
 
 public class AuditLog {
     private static String SEPARATOR = "\n\n";
+    private static String SPLITTER = "--------------------------------------------------------------";
 
     public enum Event {
         CONFIGURATION("Initialized configurations"),
         MAINTENANCE("Ran maintenance"),
-        PLAYLIST("Preparing to play playlist: %s"),
+        PLAYLIST(SPLITTER + "[ Preparing to play playlist: %s"),
+        PLAYLIST_PLAY(SPLITTER + "] Now playing playlist: %s"),
         PLAYLIST_MODIFIED("Playlist: %s is resetting resuming since it was modified %s seconds ago"),
         PLAYLIST_ITEM_CHANGE("Playing playlist: %s now playing program: %s"),
         PLAYLIST_COMPLETED("Completed playing playlist: %s"),

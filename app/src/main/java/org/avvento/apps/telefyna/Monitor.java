@@ -98,7 +98,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         List<MediaItem> mediaItems = new ArrayList<>();
         for(Program program : programs) {
             mediaItems.add(program.getMediaItem());
-        };
+        }
         return mediaItems;
     }
 
@@ -249,13 +249,14 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     private SimpleExoPlayer buildPlayer() {
         DefaultLoadControl.Builder builder = new DefaultLoadControl.Builder();
         builder.setBufferDurationsMs(DefaultLoadControl.DEFAULT_MIN_BUFFER_MS, 60000, DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_MS, DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS);
-        return new SimpleExoPlayer.Builder(instance).setLoadControl(builder.build()).build();
+        SimpleExoPlayer player = new SimpleExoPlayer.Builder(instance).setLoadControl(builder.build()).build();
+        return player;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void switchNow(int index) {
-        currentBumpers = new ArrayList<>();
         if(nowPlayingIndex == null || nowPlayingIndex != index) {// leave current program to proceed if it's the same being loaded
+            currentBumpers = new ArrayList<>();
             // setup objects, skip playlist with nothing to play
             Playlist playlist = getConfiguration().getPlaylists()[index];
             List<Program> programs = programsByIndex.get(index);
@@ -308,7 +309,6 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                 programItems.addAll(0, bumperMediaItems);
             }
             player.setMediaItems(programItems);
-
             player.prepare();
             Player current = playerView.getPlayer();
             if (current != null) {
@@ -338,6 +338,8 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                 }
                 playerView.setPlayer(player);
                 nowPlayingIndex = nextPlayingIndex;
+                Logger.log(AuditLog.Event.PLAYLIST_PLAY,  getNowPlayingPlaylistLabel());
+
                 cacheNowPlaying();
                 if(nowPlayingIndex != getSecondDefaultIndex()) {
                     currentPlayingNetworkIndex = null;
@@ -353,6 +355,8 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
             Logger.log(AuditLog.Event.PLAYLIST_COMPLETED, getNowPlayingPlaylistLabel());
             resetTrackingNowPlaying(nowPlayingIndex);
             switchNow(getFirstDefaultIndex());
+        } else if(state == Player.STATE_BUFFERING) {
+            player.seekTo(player.getContentPosition() + 250);
         }
     }
 
@@ -369,8 +373,13 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         Logger.log(AuditLog.Event.ERROR, String.format("%s: %s", error.getCause().toString(), error.getMessage()));
         cacheNowPlaying();
         if(isNetworkConnected()) {// else is handled by network listener
-            switchNow(getFirstDefaultIndex());
+            reload();
         }
+    }
+
+    private void reload() {
+        player.prepare();
+        player.play();
     }
 
     private String getPlayingAtIndexLabel(Integer index) {
@@ -470,8 +479,8 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
 
     @Override
     public void onPositionDiscontinuity(int reason) {
-        if(player != null && !player.isPlaying()) {
-            player.play();
+        if(player != null) {
+            //reload();
         }
     }
 

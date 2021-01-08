@@ -8,6 +8,10 @@ import android.os.Build;
 import android.webkit.MimeTypeMap;
 
 import com.google.android.exoplayer2.MediaItem;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.source.hls.HlsMediaSource;
+import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.MimeTypes;
 
 import org.apache.commons.lang3.StringUtils;
@@ -84,7 +88,7 @@ public class Maintenance {
                 } else {
                     programs = Monitor.instance.getProgramsByIndex().get(clone);
                     playlist = playlists[clone].copy(playlist);
-                    playlist.setClone(clone);// only use playlist scheduling details for scheduling
+                    playlist.setClone(clone);
                 }
                 // take the first start in a day to avoid scheduling for more than once
                 if (playlist.scheduledToday() && StringUtils.isNotBlank(playlist.getStart()) && !starts.contains(playlist.getStart())) {

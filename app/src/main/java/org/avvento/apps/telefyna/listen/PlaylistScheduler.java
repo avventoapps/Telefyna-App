@@ -12,9 +12,9 @@ import androidx.annotation.RequiresApi;
 public class PlaylistScheduler extends BroadcastReceiver {
     public static String PLAYLIST_INDEX = "playlist_index";
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onReceive(Context context, Intent intent) {
-        Monitor.instance.switchNow(intent.getIntExtra(PLAYLIST_INDEX, 0));
+        Monitor.instance.switchNow(intent.getIntExtra(PLAYLIST_INDEX, Monitor.instance.getFirstDefaultIndex()));
     }
 }

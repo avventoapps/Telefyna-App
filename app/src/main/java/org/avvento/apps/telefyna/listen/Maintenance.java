@@ -121,7 +121,7 @@ public class Maintenance {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void playCurrentSlot() {
         if(!startedSlotsToday.isEmpty()) {
             List<String> slots = startedSlotsToday.keySet().stream().collect(Collectors.toList());

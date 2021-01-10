@@ -5,14 +5,13 @@ import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.StrictMode;
 import android.view.WindowManager;
 
 import com.google.android.exoplayer2.C;
@@ -32,7 +31,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.avvento.apps.telefyna.audit.AuditLog;
 import org.avvento.apps.telefyna.audit.Logger;
 import org.avvento.apps.telefyna.listen.Maintenance;
-import org.avvento.apps.telefyna.listen.NetworkState;
 import org.avvento.apps.telefyna.stream.Config;
 import org.avvento.apps.telefyna.stream.Playlist;
 import org.avvento.apps.telefyna.stream.Program;
@@ -55,7 +53,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import lombok.Getter;
 
-public class Monitor extends AppCompatActivity implements PlayerNotificationManager.NotificationListener, Player.EventListener, NetworkState.NetworkStateListener {
+public class Monitor extends AppCompatActivity implements PlayerNotificationManager.NotificationListener, Player.EventListener {
     public static final String PREFERENCES = "TelefynaPrefs" ;
     private static final String PLAYLIST_PLAY = "PLAYLIST_PLAY";
     private static final String PLAYLIST_LAST_MODIFIED = "PLAYLIST_LAST_MODIFIED";
@@ -71,7 +69,6 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     private Handler handler;
     private Maintenance maintenance;
     private Integer nowPlayingIndex;
-    private Integer nextPlayingIndex;
     @Getter
     private SimpleExoPlayer player;
     private PlayerView playerView;
@@ -79,8 +76,6 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     private Map<Integer, List<Program>> programsByIndex;
     private List<Program> currentBumpers;
     private File programsFolder;
-    private NetworkState networkState;
-    private Integer currentPlayingNetworkIndex;
 
     public String getProgramsFolderPath() {
         return programsFolder.getAbsolutePath();
@@ -162,7 +157,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         return String.format(PLAYLIST_PLAY_FORMAT, PLAYLIST_SEEK_TO, index);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         instance = this;
@@ -174,9 +169,9 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
 
         setContentView(R.layout.monitor);
         super.onCreate(savedInstanceState);
-        startNetworkStateListener(instance);
         alarmManager = ((AlarmManager) instance.getSystemService(Context.ALARM_SERVICE));
-
+        // allow network etc actions since telefyna depends on all of these
+        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().permitAll().build());
         initialization();
     }
 
@@ -227,7 +222,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void initialization() {
         initialiseWithPermissions();
         programsFolder = getAppRootDirectory();
@@ -253,73 +248,6 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         return player;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    public void switchNow(int index) {
-        if(nowPlayingIndex == null || nowPlayingIndex != index) {// leave current program to proceed if it's the same being loaded
-            currentBumpers = new ArrayList<>();
-            // setup objects, skip playlist with nothing to play
-            Playlist playlist = getConfiguration().getPlaylists()[index];
-            List<Program> programs = programsByIndex.get(index);
-            nextPlayingIndex = index;
-            player = buildPlayer();
-            playlist = getConfiguration().getPlaylists()[nextPlayingIndex];
-            if (programs.isEmpty()) {
-                switchNow(getFirstDefaultIndex());
-                return;
-            }
-
-            // reset tracking now playing if the playlist programs were modified
-            long modifiedOffset = playlistModified(index);
-            if (modifiedOffset > 0) {
-                Logger.log(AuditLog.Event.PLAYLIST_MODIFIED, getPlayingAtIndexLabel(index), modifiedOffset / 1000);
-                resetTrackingNowPlaying(index);
-            }
-
-            Logger.log(AuditLog.Event.PLAYLIST, new GsonBuilder().setPrettyPrinting().create().toJson(playlist));
-
-            // extract and add programs
-            List<MediaItem> programItems = extractingMediaItemsFromPrograms(programs);
-            // handle resuming local playlists
-            if (Playlist.Type.LOCAL_RANDOMIZED.equals(playlist.getType())) {
-                Collections.shuffle(programItems);
-            }
-            // resume local resumable programs
-            if (playlist.getType().name().startsWith(Playlist.Type.LOCAL_RESUMING.name())) {
-                int nextProgram = getSharedPlaylistMediaItem(index);
-                long nextSeekTo = getSharedPlaylistSeekTo(index);
-                if (nextProgram > 0 && nextSeekTo > 0) {
-                    if (playlist.getType().equals(Playlist.Type.LOCAL_RESUMING_NEXT) && nextProgram == programItems.size() - 1) {
-                        nextProgram++; // next program excluding bumpers
-                        nextSeekTo = C.POSITION_UNSET;
-                    }
-                    player.seekTo(nextProgram, nextSeekTo);
-                    Logger.log(AuditLog.Event.RETRIEVE_NOW_PLAYING_RESUME, playlist.getName(), programs.get(nextProgram).getName(), nextSeekTo);
-                }
-            } else if(!playlist.getType().equals(Playlist.Type.ONLINE)) {// only add bumpers if not resuming and not online
-                // prepare bumpers
-                File bumperFolder = new File(getBumperDirectory() + File.separator + playlist.getUrlOrFolder());
-                File generalBumperFolder = new File(getBumperDirectory() + File.separator + "General");
-                addBumpers(bumperFolder, false);
-                addBumpers(generalBumperFolder, true);
-                List<MediaItem> bumperMediaItems = new ArrayList<>();
-                // add any bumpers if available only for non continuous local playlists
-                for (Program bumber : currentBumpers) {
-                    bumperMediaItems.add(bumber.getMediaItem());
-                }
-                programItems.addAll(0, bumperMediaItems);
-            }
-            player.setMediaItems(programItems);
-            player.prepare();
-            Player current = playerView.getPlayer();
-            if (current != null) {
-                current.removeListener(instance);
-            }
-
-            player.addListener(instance);
-            player.play();
-        }
-    }
-
     private void addBumpers(File bumperFolder, boolean addedFirstItem) {
         if (bumperFolder.exists() && bumperFolder.listFiles().length > 0) {
             maintenance.setupLocalPrograms(currentBumpers, bumperFolder, addedFirstItem);
@@ -327,44 +255,109 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         }
     }
 
-    @Override
-    public void onIsPlayingChanged(boolean isPlaying) {
-        if(isPlaying) {
-            Player current = playerView.getPlayer();
-            if(nowPlayingIndex == null || nowPlayingIndex != nextPlayingIndex) {
-                if(current != null) {
-                    current.stop();
-                    current.release();
-                }
-                playerView.setPlayer(player);
-                nowPlayingIndex = nextPlayingIndex;
-                Logger.log(AuditLog.Event.PLAYLIST_PLAY,  getNowPlayingPlaylistLabel());
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void switchNow(int index) {
+        if(nowPlayingIndex == null || nowPlayingIndex != index) {// leave current program to proceed if it's the same being loaded
+            int secondDefaultIndex = getSecondDefaultIndex();
+            if(!Utils.internetConnected() && secondDefaultIndex != index) {
+                switchNow(secondDefaultIndex);
+            } else {
+                currentBumpers = new ArrayList<>();
+                player = buildPlayer();
 
-                cacheNowPlaying();
-                if(nowPlayingIndex != getSecondDefaultIndex()) {
-                    currentPlayingNetworkIndex = null;
+                // setup objects, skip playlist with nothing to play
+                List<Program> programs = programsByIndex.get(index);
+                Playlist playlist = getConfiguration().getPlaylists()[index];
+
+                // reset tracking now playing if the playlist programs were modified
+                long modifiedOffset = playlistModified(index);
+                if (modifiedOffset > 0) {
+                    Logger.log(AuditLog.Event.PLAYLIST_MODIFIED, getPlayingAtIndexLabel(index), modifiedOffset / 1000);
+                    resetTrackingNowPlaying(index);
                 }
+
+                Logger.log(AuditLog.Event.PLAYLIST, new GsonBuilder().setPrettyPrinting().create().toJson(playlist));
+
+                // extract and add programs
+                List<MediaItem> programItems = extractingMediaItemsFromPrograms(programs);
+                // handle resuming local playlists
+                if (Playlist.Type.LOCAL_RANDOMIZED.equals(playlist.getType())) {
+                    Collections.shuffle(programItems);
+                }
+                // resume local resumable programs
+                if (playlist.getType().name().startsWith(Playlist.Type.LOCAL_RESUMING.name())) {
+                    int nextProgram = getSharedPlaylistMediaItem(index);
+                    long nextSeekTo = getSharedPlaylistSeekTo(index);
+                    if (nextProgram > 0 && nextSeekTo > 0) {
+                        if (playlist.getType().equals(Playlist.Type.LOCAL_RESUMING_NEXT) && nextProgram == programItems.size() - 1) {
+                            nextProgram++; // next program excluding bumpers
+                            nextSeekTo = C.POSITION_UNSET;
+                        }
+                        player.seekTo(nextProgram, nextSeekTo);
+                        Logger.log(AuditLog.Event.RETRIEVE_NOW_PLAYING_RESUME, playlist.getName(), programs.get(nextProgram).getName(), nextSeekTo);
+                    }
+                } else if (!playlist.getType().equals(Playlist.Type.ONLINE)) {// only add bumpers if not resuming and not online
+                    // prepare bumpers
+                    File bumperFolder = new File(getBumperDirectory() + File.separator + playlist.getUrlOrFolder());
+                    File generalBumperFolder = new File(getBumperDirectory() + File.separator + "General");
+                    addBumpers(bumperFolder, false);
+                    addBumpers(generalBumperFolder, true);
+                    List<MediaItem> bumperMediaItems = new ArrayList<>();
+                    // add any bumpers if available only for non continuous local playlists
+                    for (Program bumber : currentBumpers) {
+                        bumperMediaItems.add(bumber.getMediaItem());
+                    }
+                    programItems.addAll(0, bumperMediaItems);
+                }
+                player.setMediaItems(programItems);
+                player.prepare();
+                Player current = playerView.getPlayer();
+                if (current != null) {
+                    current.removeListener(instance);
+                }
+
+                player.addListener(instance);
+                player.play();
             }
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
+    public void onIsPlayingChanged(boolean isPlaying) {
+        Player current = playerView.getPlayer();
+        if(isPlaying && (current == null || !player.equals(current))) {
+            if(current != null) {
+                current.stop();
+                current.release();
+            }
+            playerView.setPlayer(player);
+            Logger.log(AuditLog.Event.PLAYLIST_PLAY,  getNowPlayingPlaylistLabel());
+
+            cacheNowPlaying();
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onPlaybackStateChanged(int state) {
-        if (state == Player.STATE_ENDED) {
-            Logger.log(AuditLog.Event.PLAYLIST_COMPLETED, getNowPlayingPlaylistLabel());
-            resetTrackingNowPlaying(nowPlayingIndex);
-            switchNow(getFirstDefaultIndex());
-        } else if(state == Player.STATE_BUFFERING) {
-            player.seekTo(player.getContentPosition() + 250);
+        if(nowPlayingIndex != null) {
+            if (state == Player.STATE_ENDED) {
+                Logger.log(AuditLog.Event.PLAYLIST_COMPLETED, getNowPlayingPlaylistLabel());
+                resetTrackingNowPlaying(nowPlayingIndex);
+                switchNow(getFirstDefaultIndex());
+            } else if (state == Player.STATE_BUFFERING && Playlist.Type.ONLINE.equals(getConfiguration().getPlaylists()[nowPlayingIndex].getType())) {
+                player.seekTo(player.getContentDuration());// hack
+            }
         }
     }
 
     @Override
     public void onMediaItemTransition(@Nullable MediaItem mediaItem, int reason) {
-        int item = playerView.getPlayer().getCurrentPeriodIndex() - 1;// last item index
-        trackingNowPlaying(nowPlayingIndex, item, 0);
-        Logger.log(AuditLog.Event.PLAYLIST_ITEM_CHANGE, getNowPlayingPlaylistLabel(), getMediaItemName(nowPlayingIndex, item + 1));
+        if(nowPlayingIndex != null) {
+            int item = playerView.getPlayer().getCurrentPeriodIndex() - 1;// last item index
+            trackingNowPlaying(nowPlayingIndex, item, 0);
+            Logger.log(AuditLog.Event.PLAYLIST_ITEM_CHANGE, getNowPlayingPlaylistLabel(), getMediaItemName(nowPlayingIndex, item + 1));
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -372,11 +365,10 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     public void onPlayerError(ExoPlaybackException error) {
         Logger.log(AuditLog.Event.ERROR, String.format("%s: %s", error.getCause().toString(), error.getMessage()));
         cacheNowPlaying();
-        if(isNetworkConnected()) {// else is handled by network listener
-            reload();
-        }
+        reload();
     }
 
+    // TODO reload?
     private void reload() {
         player.prepare();
         player.play();
@@ -390,11 +382,6 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     private String getNowPlayingPlaylistLabel() {
         String playlistName = nowPlayingIndex == null ? "" : getConfiguration().getPlaylists()[nowPlayingIndex].getName();
         return String.format("%s #%d", playlistName, nowPlayingIndex);
-    }
-
-    private boolean isNetworkConnected() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
     }
 
     @Override
@@ -465,7 +452,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onResume() {
         super.onResume();
@@ -486,40 +473,6 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
 
     @Override
     protected void onPause() {
-        unregisterNetworkState(instance);
         super.onPause();
-    }
-
-    private void startNetworkStateListener(Context currentContext) {
-        networkState = new NetworkState();
-        networkState.addListener((NetworkState.NetworkStateListener) currentContext);
-        registerNetworkState(currentContext);
-    }
-
-    private void registerNetworkState(Context currentContext) {
-        currentContext.registerReceiver(networkState, new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
-    }
-
-    private void unregisterNetworkState(Context currentContext) {
-        currentContext.unregisterReceiver(networkState);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    @Override
-    public void networkAvailable() {
-        Logger.log(AuditLog.Event.NETWORK_STATE, "");
-        if(currentPlayingNetworkIndex != null && nowPlayingIndex != null && getSecondDefaultIndex() == nowPlayingIndex && Playlist.Type.ONLINE.equals(getConfiguration().getPlaylists()[currentPlayingNetworkIndex].getType())) {
-            switchNow(currentPlayingNetworkIndex);
-        }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    @Override
-    public void networkUnavailable() {
-        Logger.log(AuditLog.Event.NETWORK_STATE, "Un-");
-        if(Playlist.Type.ONLINE.equals(getConfiguration().getPlaylists()[nowPlayingIndex == null ? nextPlayingIndex : nowPlayingIndex].getType())) {
-            currentPlayingNetworkIndex = nowPlayingIndex == null ? nextPlayingIndex : nowPlayingIndex;
-            switchNow(getSecondDefaultIndex());
-        }
     }
 }

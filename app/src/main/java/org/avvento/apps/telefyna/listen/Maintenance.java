@@ -8,14 +8,11 @@ import android.os.Build;
 import android.webkit.MimeTypeMap;
 
 import com.google.android.exoplayer2.MediaItem;
-import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.source.hls.HlsMediaSource;
-import com.google.android.exoplayer2.upstream.DataSource;
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.MimeTypes;
 
 import org.apache.commons.lang3.StringUtils;
 import org.avvento.apps.telefyna.Monitor;
+import org.avvento.apps.telefyna.Utils;
 import org.avvento.apps.telefyna.audit.AuditLog;
 import org.avvento.apps.telefyna.audit.Logger;
 import org.avvento.apps.telefyna.stream.Config;
@@ -43,7 +40,7 @@ public class Maintenance {
         Logger.log(AuditLog.Event.MAINTENANCE);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void prepareSchedule(boolean fromMaintainer) {
         startedSlotsToday = new HashMap<>();
         if(fromMaintainer) {
@@ -53,7 +50,7 @@ public class Maintenance {
         logMaintenance();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void run() {
         prepareSchedule(false);
         Monitor.instance.getHandler().postDelayed(new Runnable() {// maintainer
@@ -65,7 +62,7 @@ public class Maintenance {
         }, getMillsToMaintenanceTime());
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void schedule() {
         Config config = Monitor.instance.getConfiguration();
         if(config != null) {
@@ -88,14 +85,13 @@ public class Maintenance {
                 } else {
                     programs = Monitor.instance.getProgramsByIndex().get(clone);
                     playlist = playlists[clone].copy(playlist);
-                    playlist.setClone(clone);
                 }
                 // take the first start in a day to avoid scheduling for more than once
                 if (playlist.scheduledToday() && StringUtils.isNotBlank(playlist.getStart()) && !starts.contains(playlist.getStart())) {
-                    schedulePlayList(playlist, index);
+                    schedulePlayList(playlist, clone == null ? index : clone);
                     starts.add(playlist.getStart());
                 }
-                Monitor.instance.putProgramsByIndex(index, programs);
+                Monitor.instance.putProgramsByIndex(clone == null ? index : clone, programs);
             }
             playCurrentSlot();
         }
@@ -144,7 +140,7 @@ public class Maintenance {
 
         Calendar current = Calendar.getInstance();
         if (hour < current.get(Calendar.HOUR_OF_DAY) || (hour == current.get(Calendar.HOUR_OF_DAY) && min <= current.get(Calendar.MINUTE))) {
-            startedSlotsToday.put(start, new CurrentPlaylist(playlist.isClone() ? playlist.getClone() : index, playlist));
+            startedSlotsToday.put(start, new CurrentPlaylist(index, playlist));
         } else {
             Intent intent = new Intent(Monitor.instance, PlaylistScheduler.class);
             intent.putExtra(PlaylistScheduler.PLAYLIST_INDEX, index);

@@ -47,9 +47,11 @@ For any questions or queries, please email the support team at apps@avventohome.
 
 
 ## TODO
+- [ ] player plays another in the background sometimes
+- [ ] investigate bumpers missing when loaded from scheduler
 - [ ] Test playlist modification etc
 - [ ] handle player idling on stream, resume the play/seekTo
-- [ ] some sorce error unknown makes the program to switch, retry defaulting back to the program
+- [ ] some source error unknown makes the program to switch, retry defaulting back to the program
 - [ ] test and fix mid night runner
 - [ ] Schedule once per start, ignore the rest of the slots
 - [ ] add promos/sweepers/something folder that starts the playout whether in continuing. usable for upnexts: intros folder containing another named by foldername: test symbolic links

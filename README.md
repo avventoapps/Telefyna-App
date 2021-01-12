@@ -47,6 +47,7 @@ For any questions or queries, please email the support team at apps@avventohome.
 
 
 ## TODO
+- [ ] fix app relaunching openning a new/duplicate rather than resuming
 - [ ] fix swift bug, don't override, just replace (hack, skip by default, delete copy again) manually files
 - [ ] player plays another in the background sometimes
 - [ ] investigate bumpers missing when loaded from scheduler

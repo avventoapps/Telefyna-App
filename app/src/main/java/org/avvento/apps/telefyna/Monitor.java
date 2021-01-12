@@ -456,18 +456,6 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if(getConfiguration() == null) {
-            maintenance.run();
-        }
-        if(player != null && !player.isPlaying()) {
-            player.play();
-        }
-    }
-
     private void handleAnyException() {
         Thread.setDefaultUncaughtExceptionHandler((paramThread, paramThrowable) -> {
             //Catch your exception
@@ -475,4 +463,10 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
             System.exit(2);
         });
     }
+
+    @Override
+    public void onBackPressed() {
+        //moveTaskToBack(false);
+    }
+
 }

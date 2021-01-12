@@ -1,5 +1,6 @@
 package org.avvento.apps.telefyna.audit;
 
+import android.content.Intent;
 import android.util.Log;
 
 import org.apache.commons.io.FileUtils;
@@ -15,7 +16,8 @@ public class Logger {
     private static SimpleDateFormat datetimeFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
     private static SimpleDateFormat dateFormat  = new SimpleDateFormat("yyyy-MM-dd");
-
+    public static final String PATH = "URI";
+    public static final String MESSAGE = "MESSAGE";
     /*
      * TODO mail, save to file
      */
@@ -26,8 +28,10 @@ public class Logger {
         } else {
             Log.i(event.name(), message);
         }
+        String path = Monitor.instance.getAuditLogsFilePath(getToday());
+        String msg = String.format("%s %s: \n\t%s", getNow(), event.name(), message);
         try {
-            FileUtils.writeStringToFile(new File(Monitor.instance.getAuditLogsFilePath(getToday())), String.format("%s %s: \n\t%s", getNow(), event.name(), message), StandardCharsets.UTF_8, true);
+            FileUtils.writeStringToFile(new File(path), msg, StandardCharsets.UTF_8, true);
         } catch (IOException e) {
             Log.e("WRITING_AUDIT_ERROR", e.getMessage());
         }

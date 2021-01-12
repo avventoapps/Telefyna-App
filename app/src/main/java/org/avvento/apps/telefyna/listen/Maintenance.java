@@ -41,21 +41,19 @@ public class Maintenance {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void prepareSchedule(boolean fromMaintainer) {
+    private void prepareSchedule() {
         startedSlotsToday = new HashMap<>();
-        if(fromMaintainer) {
-            Monitor.instance.initialiseConfiguration();
-        }
+        Monitor.instance.initialiseConfiguration();
         schedule();
         logMaintenance();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void run() {
-        prepareSchedule(false);
+        prepareSchedule();
         Monitor.instance.getHandler().postDelayed(new Runnable() {// maintainer
             public void run() {
-                prepareSchedule(true);
+                prepareSchedule();
                 Monitor.instance.getHandler().postDelayed(this, getMillsToMaintenanceTime());
                 logMaintenance();
             }

@@ -4,7 +4,9 @@ import android.Manifest;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -160,6 +162,9 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.monitor);
+        handleAnyException();
         instance = this;
         maintenance = new Maintenance();
         handler = new Handler();
@@ -167,8 +172,6 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        setContentView(R.layout.monitor);
-        super.onCreate(savedInstanceState);
         alarmManager = ((AlarmManager) instance.getSystemService(Context.ALARM_SERVICE));
         // allow network etc actions since telefyna depends on all of these
         StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().permitAll().build());
@@ -189,13 +192,9 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         }
         ArrayUtils.reverse(storages);
         for (File storage : storages) {
-            String location = storage.getAbsolutePath();
-            if (!storage.getAbsolutePath().startsWith(mntUsb)) {
-                location = storage.getAbsolutePath().substring(0, StringUtils.ordinalIndexOf(storage.getAbsolutePath(), "/", storage.getAbsolutePath().contains("emulated") ? 4 : 3));
-            }
-            File programsFolderLookup = new File(location + postfix);
-            if (programsFolderLookup != null && programsFolderLookup.exists() && programsFolderLookup.isDirectory() && programsFolderLookup.listFiles() != null && programsFolderLookup.listFiles().length > 0) {
-                return programsFolderLookup;
+            if(storage != null) {
+                String location = storage.getAbsolutePath().substring(0, StringUtils.ordinalIndexOf(storage.getAbsolutePath(), "/", storage.getAbsolutePath().contains("emulated") ? 4 : 3));
+                return new File(location + postfix);
             }
         }
         return new File(Environment.getExternalStorageDirectory().getAbsolutePath() + postfix);
@@ -210,7 +209,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     }
 
     public String getAuditLogsFilePath(String name) {
-        return String.format("%saudit%s.log", programsFolder.getAbsolutePath() + File.separator, File.separator + name);
+        return String.format("%s/telefynaAudit/%s.log", Environment.getExternalStorageDirectory().getAbsolutePath(), name);
     }
 
     public void initialiseConfiguration() {
@@ -218,6 +217,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
             configuration = new Gson().fromJson(new BufferedReader(new FileReader(programsFolder.getAbsolutePath() + File.separator + "config.json")), Config.class);
             Logger.log(AuditLog.Event.CONFIGURATION);
         } catch (IOException e) {
+            Logger.log(AuditLog.Event.ERROR, e.getMessage());
             e.printStackTrace();
         }
     }
@@ -226,7 +226,6 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     private void initialization() {
         initialiseWithPermissions();
         programsFolder = getAppRootDirectory();
-        initialiseConfiguration();
         programsByIndex = new HashMap<>();
         playerView = findViewById(R.id.player);
         playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
@@ -269,55 +268,60 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                 List<Program> programs = programsByIndex.get(index);
                 Playlist playlist = getConfiguration().getPlaylists()[index];
 
-                // reset tracking now playing if the playlist programs were modified
-                long modifiedOffset = playlistModified(index);
-                if (modifiedOffset > 0) {
-                    Logger.log(AuditLog.Event.PLAYLIST_MODIFIED, getPlayingAtIndexLabel(index), modifiedOffset / 1000);
-                    resetTrackingNowPlaying(index);
-                }
+                if(programs.isEmpty()) {
+                    switchNow(getFirstDefaultIndex());
+                } else {
+                    // reset tracking now playing if the playlist programs were modified
+                    long modifiedOffset = playlistModified(index);
+                    if (modifiedOffset > 0) {
+                        Logger.log(AuditLog.Event.PLAYLIST_MODIFIED, getPlayingAtIndexLabel(index), modifiedOffset / 1000);
+                        resetTrackingNowPlaying(index);
+                    }
 
-                Logger.log(AuditLog.Event.PLAYLIST, new GsonBuilder().setPrettyPrinting().create().toJson(playlist));
+                    Logger.log(AuditLog.Event.PLAYLIST, new GsonBuilder().setPrettyPrinting().create().toJson(playlist));
 
-                // extract and add programs
-                List<MediaItem> programItems = extractingMediaItemsFromPrograms(programs);
-                // handle resuming local playlists
-                if (Playlist.Type.LOCAL_RANDOMIZED.equals(playlist.getType())) {
-                    Collections.shuffle(programItems);
-                }
-                // resume local resumable programs
-                if (playlist.getType().name().startsWith(Playlist.Type.LOCAL_RESUMING.name())) {
-                    int nextProgram = getSharedPlaylistMediaItem(index);
-                    long nextSeekTo = getSharedPlaylistSeekTo(index);
-                    if (nextProgram > 0 && nextSeekTo > 0) {
-                        if (playlist.getType().equals(Playlist.Type.LOCAL_RESUMING_NEXT) && nextProgram == programItems.size() - 1) {
-                            nextProgram++; // next program excluding bumpers
-                            nextSeekTo = C.POSITION_UNSET;
+                    // extract and add programs
+                    List<MediaItem> programItems = extractingMediaItemsFromPrograms(programs);
+                    // handle resuming local playlists
+                    if (Playlist.Type.LOCAL_RANDOMIZED.equals(playlist.getType())) {
+                        Collections.shuffle(programItems);
+                    }
+                    // resume local resumable programs
+                    if (playlist.getType().name().startsWith(Playlist.Type.LOCAL_RESUMING.name())) {
+                        int nextProgram = getSharedPlaylistMediaItem(index);
+                        long nextSeekTo = getSharedPlaylistSeekTo(index);
+                        if (nextProgram > 0 && nextSeekTo > 0) {
+                            if (playlist.getType().equals(Playlist.Type.LOCAL_RESUMING_NEXT) && nextProgram == programItems.size() - 1) {
+                                nextProgram++; // next program excluding bumpers
+                                nextSeekTo = C.POSITION_UNSET;
+                            }
+                            player.seekTo(nextProgram, nextSeekTo);
+                            Logger.log(AuditLog.Event.RETRIEVE_NOW_PLAYING_RESUME, playlist.getName(), programs.get(nextProgram).getName(), nextSeekTo);
                         }
-                        player.seekTo(nextProgram, nextSeekTo);
-                        Logger.log(AuditLog.Event.RETRIEVE_NOW_PLAYING_RESUME, playlist.getName(), programs.get(nextProgram).getName(), nextSeekTo);
+                    } else if (!playlist.getType().equals(Playlist.Type.ONLINE)) {// only add bumpers if not resuming and not online
+                        // prepare bumpers
+                        File bumperFolder = new File(getBumperDirectory() + File.separator + playlist.getUrlOrFolder());
+                        File generalBumperFolder = new File(getBumperDirectory() + File.separator + "General");
+                        addBumpers(bumperFolder, false);
+                        addBumpers(generalBumperFolder, true);
+                        List<MediaItem> bumperMediaItems = new ArrayList<>();
+                        // add any bumpers if available only for non continuous local playlists
+                        for (Program bumber : currentBumpers) {
+                            bumperMediaItems.add(bumber.getMediaItem());
+                        }
+                        programItems.addAll(0, bumperMediaItems);
                     }
-                } else if (!playlist.getType().equals(Playlist.Type.ONLINE)) {// only add bumpers if not resuming and not online
-                    // prepare bumpers
-                    File bumperFolder = new File(getBumperDirectory() + File.separator + playlist.getUrlOrFolder());
-                    File generalBumperFolder = new File(getBumperDirectory() + File.separator + "General");
-                    addBumpers(bumperFolder, false);
-                    addBumpers(generalBumperFolder, true);
-                    List<MediaItem> bumperMediaItems = new ArrayList<>();
-                    // add any bumpers if available only for non continuous local playlists
-                    for (Program bumber : currentBumpers) {
-                        bumperMediaItems.add(bumber.getMediaItem());
+                    player.setMediaItems(programItems);
+                    player.prepare();
+                    Player current = playerView.getPlayer();
+                    if (current != null) {
+                        current.removeListener(instance);
                     }
-                    programItems.addAll(0, bumperMediaItems);
-                }
-                player.setMediaItems(programItems);
-                player.prepare();
-                Player current = playerView.getPlayer();
-                if (current != null) {
-                    current.removeListener(instance);
-                }
 
-                player.addListener(instance);
-                player.play();
+                    player.addListener(instance);
+                    player.play();
+                    nowPlayingIndex = index;
+                }
             }
         }
     }
@@ -464,15 +468,11 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         }
     }
 
-    @Override
-    public void onPositionDiscontinuity(int reason) {
-        if(player != null) {
-            //reload();
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
+    private void handleAnyException() {
+        Thread.setDefaultUncaughtExceptionHandler((paramThread, paramThrowable) -> {
+            //Catch your exception
+            // Without System.exit() this will not work.
+            System.exit(2);
+        });
     }
 }

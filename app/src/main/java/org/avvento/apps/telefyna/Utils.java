@@ -5,6 +5,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 
+import org.avvento.apps.telefyna.audit.AuditLog;
+import org.avvento.apps.telefyna.audit.Logger;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -22,6 +25,7 @@ public class Utils {
             (new URL("http://www.google.com")).openConnection().connect();
             return true;
         } catch (IOException e) {
+            Logger.log(AuditLog.Event.ERROR, e.getMessage());
             return false;
         }
     }

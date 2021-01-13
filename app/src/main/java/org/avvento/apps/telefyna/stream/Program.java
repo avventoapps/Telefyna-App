@@ -1,7 +1,5 @@
 package org.avvento.apps.telefyna.stream;
 
-import android.media.browse.MediaBrowser;
-
 import com.google.android.exoplayer2.MediaItem;
 
 import lombok.AllArgsConstructor;

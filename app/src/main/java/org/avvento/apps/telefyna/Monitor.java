@@ -4,9 +4,7 @@ import android.Manifest;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -73,7 +71,6 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     private Integer nowPlayingIndex;
     @Getter
     private SimpleExoPlayer player;
-    private PlayerView playerView;
     @Getter
     private Map<Integer, List<Program>> programsByIndex;
     private Map<Integer, Playlist> playlistByIndex;
@@ -239,6 +236,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
 
     private void cacheNowPlaying() {
         if(nowPlayingIndex != null) {
+            PlayerView playerView = findViewById(R.id.player);
             trackingNowPlaying(nowPlayingIndex, playerView.getPlayer() == null ? 0 : playerView.getPlayer().getCurrentPeriodIndex(), playerView.getPlayer() == null ? 0 : playerView.getPlayer().getCurrentPosition());
         }
     }
@@ -316,7 +314,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                     }
                     player.setMediaItems(programItems);
                     player.prepare();
-                    Player current = playerView.getPlayer();
+                    Player current = ((PlayerView) findViewById(R.id.player)).getPlayer();
                     if (current != null) {
                         current.removeListener(instance);
                     }
@@ -331,29 +329,18 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
 
     @Override
     public void onIsPlayingChanged(boolean isPlaying) {
+        PlayerView playerView = findViewById(R.id.player);
         Player current = playerView.getPlayer();
         if(isPlaying && (current == null || !player.equals(current))) {
             if(current != null) {
                 current.stop();
                 current.release();
-                PlayerView newPlayerView = constructPlayerView();
-                PlayerView.switchTargetView(player, playerView, newPlayerView);
-                playerView = newPlayerView;
-            } else {
-                playerView = constructPlayerView();
-                playerView.setPlayer(player);
             }
+            playerView.setPlayer(player);
             Logger.log(AuditLog.Event.PLAYLIST_PLAY,  getNowPlayingPlaylistLabel());
 
             cacheNowPlaying();
         }
-    }
-
-    private PlayerView constructPlayerView() {
-        PlayerView pv = findViewById(R.id.player);
-        pv.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
-        pv.setUseController(false);
-        return pv;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -373,7 +360,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     @Override
     public void onMediaItemTransition(@Nullable MediaItem mediaItem, int reason) {
         if(nowPlayingIndex != null) {
-            int item = playerView.getPlayer().getCurrentPeriodIndex() - 1;// last item index
+            int item = ((PlayerView) findViewById(R.id.player)).getPlayer().getCurrentPeriodIndex() - 1;// last item index
             trackingNowPlaying(nowPlayingIndex, item, 0);
             Logger.log(AuditLog.Event.PLAYLIST_ITEM_CHANGE, getNowPlayingPlaylistLabel(), getMediaItemName(nowPlayingIndex, item + 1));
         }

@@ -1,6 +1,5 @@
 package org.avvento.apps.telefyna.audit;
 
-import android.content.Intent;
 import android.util.Log;
 
 import org.apache.commons.io.FileUtils;
@@ -16,8 +15,6 @@ public class Logger {
     private static SimpleDateFormat datetimeFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
     private static SimpleDateFormat dateFormat  = new SimpleDateFormat("yyyy-MM-dd");
-    public static final String PATH = "URI";
-    public static final String MESSAGE = "MESSAGE";
     /*
      * TODO mail, save to file
      */

@@ -12,7 +12,6 @@ import com.google.android.exoplayer2.util.MimeTypes;
 
 import org.apache.commons.lang3.StringUtils;
 import org.avvento.apps.telefyna.Monitor;
-import org.avvento.apps.telefyna.Utils;
 import org.avvento.apps.telefyna.audit.AuditLog;
 import org.avvento.apps.telefyna.audit.Logger;
 import org.avvento.apps.telefyna.stream.Config;

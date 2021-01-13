@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".Monitor"
     android:keepScreenOn="true">
@@ -12,6 +13,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        app:resize_mode="fill"
+        app:use_controller="false"
         android:focusable="false"/>
 
 </androidx.appcompat.widget.LinearLayoutCompat>

@@ -76,6 +76,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     private PlayerView playerView;
     @Getter
     private Map<Integer, List<Program>> programsByIndex;
+    private Map<Integer, Playlist> playlistByIndex;
     private List<Program> currentBumpers;
     private File programsFolder;
 
@@ -85,6 +86,10 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
 
     public void putProgramsByIndex(Integer index, List<Program> mediaItems) {
         programsByIndex.put(index, mediaItems);
+    }
+
+    public void putPlayListByIndex(Integer index, Playlist playlist) {
+        playlistByIndex.put(index, playlist);
     }
 
     public Integer getFirstDefaultIndex() {return 0;}
@@ -108,7 +113,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     }
 
     private void trackingNowPlaying(Integer index, int at, long seekTo) {
-        if(getConfiguration().getPlaylists()[index].getType().name().startsWith(Playlist.Type.LOCAL_RESUMING.name())) {
+        if(playlistByIndex.get(index).getType().name().startsWith(Playlist.Type.LOCAL_RESUMING.name())) {
             cachePlayingAt(index, at, seekTo);
         }
     }
@@ -227,9 +232,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         initialiseWithPermissions();
         programsFolder = getAppRootDirectory();
         programsByIndex = new HashMap<>();
-        playerView = findViewById(R.id.player);
-        playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
-        playerView.setUseController(false);
+        playlistByIndex = new HashMap<>();
         maintenance.run();
         shutDownHook();
     }
@@ -266,7 +269,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
 
                 // setup objects, skip playlist with nothing to play
                 List<Program> programs = programsByIndex.get(index);
-                Playlist playlist = getConfiguration().getPlaylists()[index];
+                Playlist playlist = playlistByIndex.get(index);
 
                 if(programs.isEmpty()) {
                     switchNow(getFirstDefaultIndex());
@@ -319,7 +322,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                     }
 
                     player.addListener(instance);
-                    player.play();
+                    player.setPlayWhenReady(true);
                     nowPlayingIndex = index;
                 }
             }
@@ -333,12 +336,24 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
             if(current != null) {
                 current.stop();
                 current.release();
+                PlayerView newPlayerView = constructPlayerView();
+                PlayerView.switchTargetView(player, playerView, newPlayerView);
+                playerView = newPlayerView;
+            } else {
+                playerView = constructPlayerView();
+                playerView.setPlayer(player);
             }
-            playerView.setPlayer(player);
             Logger.log(AuditLog.Event.PLAYLIST_PLAY,  getNowPlayingPlaylistLabel());
 
             cacheNowPlaying();
         }
+    }
+
+    private PlayerView constructPlayerView() {
+        PlayerView pv = findViewById(R.id.player);
+        pv.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
+        pv.setUseController(false);
+        return pv;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -349,7 +364,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                 Logger.log(AuditLog.Event.PLAYLIST_COMPLETED, getNowPlayingPlaylistLabel());
                 resetTrackingNowPlaying(nowPlayingIndex);
                 switchNow(getFirstDefaultIndex());
-            } else if (state == Player.STATE_BUFFERING && Playlist.Type.ONLINE.equals(getConfiguration().getPlaylists()[nowPlayingIndex].getType())) {
+            } else if (state == Player.STATE_BUFFERING && Playlist.Type.ONLINE.equals(playlistByIndex.get(nowPlayingIndex).getType())) {
                 player.seekTo(player.getContentDuration());// hack
             }
         }
@@ -374,17 +389,17 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
 
     // TODO reload?
     private void reload() {
-        player.prepare();
-        player.play();
+        /*player.prepare();
+        player.play();*/
     }
 
     private String getPlayingAtIndexLabel(Integer index) {
-        String playlistName = getConfiguration().getPlaylists()[index].getName();
+        String playlistName = playlistByIndex.get(index).getName();
         return String.format("%s #%d", playlistName, index);
     }
 
     private String getNowPlayingPlaylistLabel() {
-        String playlistName = nowPlayingIndex == null ? "" : getConfiguration().getPlaylists()[nowPlayingIndex].getName();
+        String playlistName = nowPlayingIndex == null ? "" : playlistByIndex.get(nowPlayingIndex).getName();
         return String.format("%s #%d", playlistName, nowPlayingIndex);
     }
 
@@ -411,7 +426,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     }
 
     private long getLastModifiedFor(int index) {
-        return getDirectoryToPlaylist(getConfiguration().getPlaylists()[index].getUrlOrFolder()).lastModified();
+        return getDirectoryToPlaylist(playlistByIndex.get(index).getUrlOrFolder()).lastModified();
     }
 
     public File getDirectoryToPlaylist(String urlOrFolder) {

@@ -90,6 +90,7 @@ public class Maintenance {
                     starts.add(playlist.getStart());
                 }
                 Monitor.instance.putProgramsByIndex(clone == null ? index : clone, programs);
+                Monitor.instance.putPlayListByIndex(clone == null ? index : clone, playlist);
             }
             playCurrentSlot();
         }

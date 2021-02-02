@@ -333,7 +333,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     public void onIsPlayingChanged(boolean isPlaying) {
         PlayerView playerView = findViewById(R.id.player);
         Player current = playerView.getPlayer();
-        if(isPlaying && (current == null || !player.equals(current))) {
+        if(current == null || !player.equals(current)) {
             if(current != null) {
                 current.stop();
                 current.release();

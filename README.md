@@ -18,6 +18,7 @@ ______
 ### FTP Remote access
 * If you want to access the filesystem remove, run an [FTP app like swiftp](https://f-droid.org/packages/be.ppareit.swiftp_free)
 * You can use FTP clients like [FileZilla](https://filezilla-project.org/) to upload both revised `config.json` and `playlist` folder/contents
+* You can do the same `telefynaAudit` folder which is the internal device storage root path
 
 ### Playlist
 * Ensure the device's Date and Timezone are set correctly
@@ -35,10 +36,10 @@ ______
 * For local playlists, if active and nothing is defined or completed, the default playlist will be played
 * `type` can either be `ONLINE` (stream/default), or `LOCAL_SEQUENCED` (local ordered folder) or `LOCAL_RESUMING` (local resuming folder), or `LOCAL_RESUMING_NEXT` (local resuming from next program) or `LOCAL_RANDOMIZED` (local random folder)
 * For `type`s `LOCAL_SEQUENCED`, `LOCAL_RANDOMIZED`
-* You can define bumpers (ads, promos etc) to play as the `LOCAL_SEQUENCED` or `LOCAL_RANDOMIZED` playlist (Non resuming local one) starts in `bumper` folder in a sub folder named by playlist folder
-* Add `General` folder in `bumper` folder for general ads to play before all programs
+* You can define bumpers (ads, promos etc) to play as the `LOCAL_SEQUENCED` or `LOCAL_RANDOMIZED` playlist starts in `bumper` folder in a sub folder named same value as your playlist's `urlOrFolder`
+* Add `General` folder in `bumper` folder for general ads to play before all bumpers & programs
 * All playlist are enabled by default, to disable one, set `active=false`
-* `clone` allows you to copy a playlist defined up by its order/number/count (starts from 0) and manage separate/override `day`, `repeats`, `start`
+* `clone` allows you to copy a playlist defined up by its order/number/count (starts from 0) and manage separate/override `start` or `days` or `dates`
 * A field left out in config is by default set to `null`
 * Ensure to have a playlist completing/ending each local one else the default one will automatically be played
 

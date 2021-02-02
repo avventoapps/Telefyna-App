@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -61,9 +62,11 @@ public class Playlist {
 
     // only overrides days, dates and start but maintains the rest
     public Playlist copy(Playlist clone) {
-        this.days = clone.days;
-        this.dates = clone.dates;
-        this.start = clone.start;
+        this.type = clone.type;
+        this.name = clone.name;
+        this.description = clone.description;
+        this.active = clone.active;
+        this.urlOrFolder = clone.urlOrFolder;
         return this;
     }
 }

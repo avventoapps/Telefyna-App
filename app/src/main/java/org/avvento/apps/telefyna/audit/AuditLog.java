@@ -9,6 +9,7 @@ public class AuditLog {
         MAINTENANCE("Ran maintenance"),
         PLAYLIST(SPLITTER + "[ Preparing to play playlist: %s"),
         PLAYLIST_PLAY(SPLITTER + "] Now playing playlist: %s"),
+        PLAYLIST_EMPTY_PLAY(SPLITTER + "Attempted to play an empty playlist: %s"),
         PLAYLIST_MODIFIED("Playlist: %s is resetting resuming since it was modified %s seconds ago"),
         PLAYLIST_ITEM_CHANGE("Playing playlist: %s now playing program: %s"),
         PLAYLIST_COMPLETED("Completed playing playlist: %s"),

@@ -81,15 +81,15 @@ public class Maintenance {
                     }
                 } else {
                     programs = Monitor.instance.getProgramsByIndex().get(clone);
-                    playlist = playlists[clone].copy(playlist);
+                    playlist = playlist.copy(playlists[clone]);
                 }
-                // take the first start in a day to avoid scheduling for more than once
+                // SCHEDULING: takes the first start in a day to avoid scheduling for more than once
                 if (playlist.scheduledToday() && StringUtils.isNotBlank(playlist.getStart()) && !starts.contains(playlist.getStart())) {
-                    schedulePlayList(playlist, clone == null ? index : clone);
+                    schedulePlayList(playlist, index);
                     starts.add(playlist.getStart());
                 }
-                Monitor.instance.putProgramsByIndex(clone == null ? index : clone, programs);
-                Monitor.instance.putPlayListByIndex(clone == null ? index : clone, playlist);
+                Monitor.instance.addProgramsByIndex(programs);
+                Monitor.instance.addPlayListByIndex(playlist);
             }
             playCurrentSlot();
         }

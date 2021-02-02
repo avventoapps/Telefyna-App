@@ -72,8 +72,8 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     @Getter
     private SimpleExoPlayer player;
     @Getter
-    private Map<Integer, List<Program>> programsByIndex;
-    private Map<Integer, Playlist> playlistByIndex;
+    private List<List<Program>> programsByIndex;
+    private List<Playlist> playlistByIndex;
     private List<Program> currentBumpers;
     private File programsFolder;
 
@@ -81,12 +81,12 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         return programsFolder.getAbsolutePath();
     }
 
-    public void putProgramsByIndex(Integer index, List<Program> mediaItems) {
-        programsByIndex.put(index, mediaItems);
+    public void addProgramsByIndex(List<Program> programs) {
+        programsByIndex.add(programs);
     }
 
-    public void putPlayListByIndex(Integer index, Playlist playlist) {
-        playlistByIndex.put(index, playlist);
+    public void addPlayListByIndex(Playlist playlist) {
+        playlistByIndex.add(playlist);
     }
 
     public Integer getFirstDefaultIndex() {return 0;}
@@ -228,8 +228,8 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     private void initialization() {
         initialiseWithPermissions();
         programsFolder = getAppRootDirectory();
-        programsByIndex = new HashMap<>();
-        playlistByIndex = new HashMap<>();
+        programsByIndex = new ArrayList<>();
+        playlistByIndex = new ArrayList<>();
         maintenance.run();
         shutDownHook();
     }
@@ -270,6 +270,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                 Playlist playlist = playlistByIndex.get(index);
 
                 if(programs.isEmpty()) {
+                    Logger.log(AuditLog.Event.PLAYLIST_EMPTY_PLAY, getPlayingAtIndexLabel(index));
                     switchNow(getFirstDefaultIndex());
                 } else {
                     // reset tracking now playing if the playlist programs were modified

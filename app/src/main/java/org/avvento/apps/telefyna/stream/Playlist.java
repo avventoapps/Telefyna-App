@@ -25,6 +25,7 @@ public class Playlist {
     private String[] dates;
     // time to start stream in (HH:mm)
     private String start;
+    private boolean playingGeneralBumpers = true;
     private Type type = Type.ONLINE;
     /*
      * set url for non local folder or local folder where files should be added in the order with which they should play
@@ -32,7 +33,6 @@ public class Playlist {
      * to maintain an order when playing, name programs or folders alphabetically
      */
     private String urlOrFolder;
-    private boolean playingGeneralBumpers = true;
     // index to a playlist count from top this is cloning, must be above it. use only with day, repeats and start fields
     private Integer clone;
 
@@ -61,14 +61,13 @@ public class Playlist {
         ONLINE, LOCAL_SEQUENCED, LOCAL_RESUMING, LOCAL_RESUMING_NEXT, LOCAL_RANDOMIZED
     }
 
-    // only overrides days, dates and start but maintains the rest
+    // only overrides playingGeneralBumpers, days, dates and start but maintains the rest
     public Playlist copy(Playlist clone) {
         this.type = clone.type;
         this.name = clone.name;
         this.description = clone.description;
         this.active = clone.active;
         this.urlOrFolder = clone.urlOrFolder;
-        this.playingGeneralBumpers = clone.playingGeneralBumpers;
         return this;
     }
 }

@@ -18,6 +18,7 @@ ______
 ### FTP Remote access
 * If you want to access the filesystem remove, run an [FTP app like swiftp](https://f-droid.org/packages/be.ppareit.swiftp_free)
 * You can use FTP clients like [FileZilla](https://filezilla-project.org/) to upload both revised `config.json` and `playlist` folder/contents
+* Alternative to FTP, you can use drive auto sync such as [google drive auto syncing](https://github.com/avventoapps/avvento/releases/latest/download/drivesync.apk)
 * You can do the same `telefynaAudit` folder which is the internal device storage root path
 
 ### Playlist

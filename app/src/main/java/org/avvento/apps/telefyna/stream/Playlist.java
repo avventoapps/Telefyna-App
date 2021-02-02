@@ -32,6 +32,7 @@ public class Playlist {
      * to maintain an order when playing, name programs or folders alphabetically
      */
     private String urlOrFolder;
+    private boolean playingGeneralBumpers = true;
     // index to a playlist count from top this is cloning, must be above it. use only with day, repeats and start fields
     private Integer clone;
 
@@ -67,6 +68,7 @@ public class Playlist {
         this.description = clone.description;
         this.active = clone.active;
         this.urlOrFolder = clone.urlOrFolder;
+        this.playingGeneralBumpers = clone.playingGeneralBumpers;
         return this;
     }
 }

@@ -302,10 +302,11 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                         }
                     } else if (!playlist.getType().equals(Playlist.Type.ONLINE)) {// only add bumpers if not resuming and not online
                         // prepare bumpers
-                        File bumperFolder = new File(getBumperDirectory() + File.separator + playlist.getUrlOrFolder());
-                        File generalBumperFolder = new File(getBumperDirectory() + File.separator + "General");
-                        addBumpers(bumperFolder, false);
-                        addBumpers(generalBumperFolder, true);
+                        addBumpers(new File(getBumperDirectory() + File.separator + playlist.getUrlOrFolder()), false);
+                        if(playlist.isPlayingGeneralBumpers()) {
+                            addBumpers(new File(getBumperDirectory() + File.separator + "General"), true);
+                        }
+
                         List<MediaItem> bumperMediaItems = new ArrayList<>();
                         // add any bumpers if available only for non continuous local playlists
                         for (Program bumber : currentBumpers) {

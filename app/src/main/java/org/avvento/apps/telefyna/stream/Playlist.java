@@ -1,12 +1,14 @@
 package org.avvento.apps.telefyna.stream;
 
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,13 +17,15 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class Playlist {
+    private static String DATE_FORMAT = "dd-MM-yyyy";
+
     private String name;
     private String description;
     // by default a playlist is enabled
     private boolean active = true;
     // days of the week [1-7=Sun-Sat]: if null, runs daily
     private Integer[] days;
-    // dates to schedule for
+    // dates to schedule for, must be in DATE_FORMAT(dd-MM-yyyy)
     private String[] dates;
     // time to start stream in (HH:mm)
     private String start;
@@ -36,23 +40,17 @@ public class Playlist {
     // index to a playlist count from top this is cloning, must be above it. use only with day, repeats and start fields
     private Integer clone;
 
-    public boolean isClone() {
-        return clone != null;
-    }
-
-    // clone is not zero index based
-    public Integer getClone() {
-        return clone == null ? null : clone;
-    }
     public boolean scheduledToday() {
-        if(!isActive()) {
+        if(!isActive() || StringUtils.isBlank(start)) {
             return false;
+        } else if(ArrayUtils.isEmpty(days) && ArrayUtils.isEmpty(dates)) {
+            return true;
         }
         Calendar now = Calendar.getInstance();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-        List<Integer> playoutDays = (days == null || days.length == 0) ? null : Arrays.asList(days);
-        List<String> playoutDates = (dates == null || dates.length == 0) ? new ArrayList<>() : Arrays.asList(dates);
-        boolean dayScheduled = playoutDays == null ? true : playoutDays.contains(now.get(Calendar.DAY_OF_WEEK));
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+        List<Integer> playoutDays = ArrayUtils.isEmpty(days) ? new ArrayList<>() : Arrays.asList(days);
+        List<String> playoutDates = ArrayUtils.isEmpty(dates) ? new ArrayList<>() : Arrays.asList(dates);
+        boolean dayScheduled = playoutDays.contains(now.get(Calendar.DAY_OF_WEEK));
         boolean dateScheduled = playoutDates.contains(dateFormat.format(now.getTime()));
         return dayScheduled || dateScheduled;
     }
@@ -70,4 +68,5 @@ public class Playlist {
         this.urlOrFolder = clone.urlOrFolder;
         return this;
     }
+
 }

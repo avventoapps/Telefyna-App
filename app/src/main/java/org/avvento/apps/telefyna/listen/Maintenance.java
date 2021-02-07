@@ -10,7 +10,6 @@ import android.webkit.MimeTypeMap;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.util.MimeTypes;
 
-import org.apache.commons.lang3.StringUtils;
 import org.avvento.apps.telefyna.Monitor;
 import org.avvento.apps.telefyna.audit.AuditLog;
 import org.avvento.apps.telefyna.audit.Logger;
@@ -33,6 +32,7 @@ import androidx.annotation.RequiresApi;
 public class Maintenance {
 
     private Map<String, CurrentPlaylist> startedSlotsToday;
+    private Map<String, PendingIntent> pendingIntents;
     private static int CODE = 0;
 
     private void logMaintenance() {
@@ -42,6 +42,7 @@ public class Maintenance {
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void prepareSchedule() {
         startedSlotsToday = new HashMap<>();
+        pendingIntents = new HashMap<>();
         Monitor.instance.initialiseConfiguration();
         schedule();
         logMaintenance();
@@ -49,6 +50,8 @@ public class Maintenance {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void run() {
+        String url = Monitor.instance.extractYoutubeUrl("https://www.youtube.com/watch?v=6sG5c9xoSlg");
+
         prepareSchedule();
         Monitor.instance.getHandler().postDelayed(new Runnable() {// maintainer
             public void run() {
@@ -83,16 +86,27 @@ public class Maintenance {
                     programs = Monitor.instance.getProgramsByIndex().get(clone);
                     playlist = playlist.copy(playlists[clone]);
                 }
-                // SCHEDULING: takes the first start in a day to avoid scheduling for more than once
-                if (playlist.scheduledToday() && StringUtils.isNotBlank(playlist.getStart()) && !starts.contains(playlist.getStart())) {
-                    schedulePlayList(playlist, index);
-                    starts.add(playlist.getStart());
+
+                if (playlist.scheduledToday()) {
+                    schedulePlaylistAtStart(playlist, index, starts);
                 }
                 Monitor.instance.addProgramsByIndex(programs);
                 Monitor.instance.addPlayListByIndex(playlist);
             }
             playCurrentSlot();
         }
+    }
+
+    private void schedulePlaylistAtStart(Playlist playlist, int index, List<String> starts) {
+        // was scheduled, remove existing playlist to reschedule a new later one
+        String start = playlist.getStart();
+        if(starts.contains(start)) {
+            Monitor.instance.getAlarmManager().cancel(pendingIntents.get(start));
+            startedSlotsToday.remove(start);
+            starts.remove(start);
+        }
+        schedulePlayList(playlist, index);
+        starts.add(start);
     }
 
     private Program extractProgramFromFile(File file) {
@@ -142,12 +156,14 @@ public class Maintenance {
         } else {
             Intent intent = new Intent(Monitor.instance, PlaylistScheduler.class);
             intent.putExtra(PlaylistScheduler.PLAYLIST_INDEX, index);
-            schedule(intent, nextTime(hour, min));
+            schedule(intent, nextTime(hour, min), playlist.getStart());
         }
     }
 
-    private void schedule(Intent intent, long mills) {
+
+    private void schedule(Intent intent, long mills, String start) {
         PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(Monitor.instance, CODE++, intent, 0);
+        pendingIntents.put(start, alarmPendingIntent);
         Monitor.instance.getAlarmManager().setExact(AlarmManager.RTC_WAKEUP, mills, alarmPendingIntent);
     }
 

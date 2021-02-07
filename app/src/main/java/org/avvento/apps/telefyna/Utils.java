@@ -7,6 +7,7 @@ import org.avvento.apps.telefyna.audit.Logger;
 
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLConnection;
 
 import androidx.annotation.RequiresApi;
 
@@ -16,7 +17,9 @@ public class Utils {
     public static boolean internetConnected() {
         try {
             // credit to google for creating exoplayer here
-            (new URL("http://www.google.com")).openConnection().connect();
+            URLConnection conn = (new URL("http://www.google.com")).openConnection();
+            conn.connect();
+            conn.getInputStream().close();
             return true;
         } catch (IOException e) {
             Logger.log(AuditLog.Event.ERROR, e.getMessage());

@@ -14,13 +14,11 @@ import android.os.Handler;
 import android.os.StrictMode;
 import android.view.WindowManager;
 
-import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.PlayerNotificationManager;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.gson.Gson;
@@ -42,9 +40,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -257,22 +253,25 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void switchNow(int index) {
+        currentBumpers = new ArrayList<>();
+        player = buildPlayer();
+        int secondDefaultIndex = getSecondDefaultIndex();
+
+        // setup objects, skip playlist with nothing to play
+        List<Program> programs = programsByIndex.get(index);
+        Playlist playlist = playlistByIndex.get(index);
+
         if(nowPlayingIndex == null || nowPlayingIndex != index) {// leave current program to proceed if it's the same being loaded
-            int secondDefaultIndex = getSecondDefaultIndex();
-            if(!Utils.internetConnected() && secondDefaultIndex != index) {
+            if(!Utils.internetConnected() && secondDefaultIndex != index && Playlist.Type.ONLINE.equals(playlist.getType())) {
                 switchNow(secondDefaultIndex);
             } else {
-                currentBumpers = new ArrayList<>();
-                player = buildPlayer();
-
-                // setup objects, skip playlist with nothing to play
-                List<Program> programs = programsByIndex.get(index);
-                Playlist playlist = playlistByIndex.get(index);
-
                 if(programs.isEmpty()) {
                     Logger.log(AuditLog.Event.PLAYLIST_EMPTY_PLAY, getPlayingAtIndexLabel(index));
                     switchNow(getFirstDefaultIndex());
                 } else {
+                    // log now playing
+                    cacheNowPlaying();
+
                     // reset tracking now playing if the playlist programs were modified
                     long modifiedOffset = playlistModified(index);
                     if (modifiedOffset > 0) {
@@ -288,18 +287,23 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                     if (Playlist.Type.LOCAL_RANDOMIZED.equals(playlist.getType())) {
                         Collections.shuffle(programItems);
                     }
+                    int program = 0;
+                    long position = 0;
                     // resume local resumable programs
                     if (playlist.getType().name().startsWith(Playlist.Type.LOCAL_RESUMING.name())) {
                         int nextProgram = getSharedPlaylistMediaItem(index);
                         long nextSeekTo = getSharedPlaylistSeekTo(index);
-                        if (nextProgram > 0 && nextSeekTo > 0) {
-                            if (playlist.getType().equals(Playlist.Type.LOCAL_RESUMING_NEXT) && nextProgram == programItems.size() - 1) {
+                        if (playlist.getType().equals(Playlist.Type.LOCAL_RESUMING_NEXT)) {
+                            if(nextProgram == programItems.size() - 1) {// last
+                                nextProgram = 0;
+                            } else {
                                 nextProgram++; // next program excluding bumpers
-                                nextSeekTo = C.POSITION_UNSET;
                             }
-                            player.seekTo(nextProgram, nextSeekTo);
-                            Logger.log(AuditLog.Event.RETRIEVE_NOW_PLAYING_RESUME, playlist.getName(), programs.get(nextProgram).getName(), nextSeekTo);
+                            nextSeekTo = 0;
                         }
+                        program = nextProgram;
+                        position = nextSeekTo;
+                        Logger.log(AuditLog.Event.RETRIEVE_NOW_PLAYING_RESUME, playlist.getName(), programs.get(nextProgram).getName(), nextSeekTo);
                     } else if (!playlist.getType().equals(Playlist.Type.ONLINE)) {// only add bumpers if not resuming and not online
                         // prepare bumpers
                         addBumpers(new File(getBumperDirectory() + File.separator + playlist.getUrlOrFolder()), false);
@@ -315,6 +319,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                         programItems.addAll(0, bumperMediaItems);
                     }
                     player.setMediaItems(programItems);
+                    player.seekTo(program, position);
                     player.prepare();
                     Player current = ((PlayerView) findViewById(R.id.player)).getPlayer();
                     if (current != null) {
@@ -340,8 +345,6 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
             }
             playerView.setPlayer(player);
             Logger.log(AuditLog.Event.PLAYLIST_PLAY,  getNowPlayingPlaylistLabel());
-
-            cacheNowPlaying();
         }
     }
 
@@ -351,7 +354,6 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         if(nowPlayingIndex != null) {
             if (state == Player.STATE_ENDED) {
                 Logger.log(AuditLog.Event.PLAYLIST_COMPLETED, getNowPlayingPlaylistLabel());
-                resetTrackingNowPlaying(nowPlayingIndex);
                 switchNow(getFirstDefaultIndex());
             } else if (state == Player.STATE_BUFFERING && Playlist.Type.ONLINE.equals(playlistByIndex.get(nowPlayingIndex).getType())) {
                 player.seekTo(player.getContentDuration());// hack

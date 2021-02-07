@@ -50,8 +50,6 @@ public class Maintenance {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void run() {
-        String url = Monitor.instance.extractYoutubeUrl("https://www.youtube.com/watch?v=6sG5c9xoSlg");
-
         prepareSchedule();
         Monitor.instance.getHandler().postDelayed(new Runnable() {// maintainer
             public void run() {

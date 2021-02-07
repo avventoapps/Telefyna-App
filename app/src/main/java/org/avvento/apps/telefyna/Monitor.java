@@ -37,6 +37,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -375,13 +376,16 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     public void onPlayerError(ExoPlaybackException error) {
         Logger.log(AuditLog.Event.ERROR, String.format("%s: %s", error.getCause().toString(), error.getMessage()));
         cacheNowPlaying();
-        reload();
+        // keep reloading existing program if internet is on and off
+        if(error.getCause().getCause() instanceof UnknownHostException || error.getCause().getCause() instanceof IOException) {
+            reload();
+        }
     }
 
     // TODO reload?
     private void reload() {
-        /*player.prepare();
-        player.play();*/
+        player.prepare();
+        player.play();
     }
 
     private String getPlayingAtIndexLabel(Integer index) {

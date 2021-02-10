@@ -37,8 +37,10 @@ ______
 * For local playlists, if active and nothing is defined or completed, the default playlist will be played
 * `type` can either be `ONLINE` (stream/default), or `LOCAL_SEQUENCED` (local ordered folder) or `LOCAL_RESUMING` (local resuming folder), or `LOCAL_RESUMING_NEXT` (local resuming from next program) or `LOCAL_RANDOMIZED` (local random folder)
 * For `type`s `LOCAL_SEQUENCED`, `LOCAL_RANDOMIZED`
+* Each playlist can load bumpers from 3 or less folders listed below
 * You can define bumpers (ads, promos etc) to play as the `LOCAL_SEQUENCED` or `LOCAL_RANDOMIZED` playlist starts in `bumper` folder in a sub folder named same value as your playlist's `urlOrFolder`
-* Add `General` folder in `bumper` folder for general ads to play before all bumpers & programs
+* You can add folder named after `specialBumperFolder` value to tag any playlist to play bumpers located in `specialBumperFolder` folder 
+* You can add `General` folder in `bumper` folder for general ads to play before all bumpers & programs
 * All playlist are enabled by default, to disable one, set `active=false`
 * `clone` allows you to copy a playlist defined up by its order/number/count (starts from 0) and manage separate/override `start` or `days` or `dates`
 * A field left out in config is by default set to `null`
@@ -49,6 +51,7 @@ For any questions or queries, please email the support team at apps@avventohome.
 
 
 ## TODO
+- [ ] Test setupLocalPrograms: addedFirstItem
 - [ ] handle current play at switch not buffering video
 - [ ] Add stop or change audit event
 - [ ] log every keypress

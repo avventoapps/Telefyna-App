@@ -29,7 +29,15 @@ public class Playlist {
     private String[] dates;
     // time to start stream in (HH:mm)
     private String start;
+    /*
+     * Each playlist can access 3 bumper folders and bumpers are only for local non resuming playlists;
+     *  general (can be disabled by setting playingGeneralBumpers = false),
+     *  specialBumpers
+     *  one named after urlOrFolder
+     */
     private boolean playingGeneralBumpers = true;
+    // a name for folder in bumpers for special ones, this can be shared by other playlists by using the same name
+    private String specialBumperFolder;
     private Type type = Type.ONLINE;
     /*
      * set url for non local folder or local folder where files should be added in the order with which they should play

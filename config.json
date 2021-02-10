@@ -10,7 +10,8 @@
       "name": "1-Fillers",
       "description": "This is the second default playlist, it plays whenever there's no internet or it's disconnected",
       "type": "LOCAL_RANDOMIZED",
-      "urlOrFolder": "Fillers"
+      "urlOrFolder": "Fillers",
+      "specialBumperFolder": "special"
     },
     {
       "name": "2-3ABN-N Network",

@@ -5,6 +5,7 @@ public class AuditLog {
     private static String SPLITTER = "--------------------------------------------------------------";
 
     public enum Event {
+        HEARTBEAT("TELEFYNA has been turned: %s"),
         CONFIGURATION("Initialized configurations"),
         MAINTENANCE("Ran maintenance"),
         PLAYLIST(SPLITTER + "[ Preparing to play playlist: %s"),

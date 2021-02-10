@@ -50,6 +50,7 @@ public class Maintenance {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void run() {
+        Logger.log(AuditLog.Event.HEARTBEAT, "ON");
         prepareSchedule();
         Monitor.instance.getHandler().postDelayed(new Runnable() {// maintainer
             public void run() {
@@ -120,7 +121,7 @@ public class Maintenance {
                 if (file.isDirectory()) {
                     setupLocalPrograms(programs, file, addedFirstItem);
                 } else {
-                    if (j == 0 && !addedFirstItem) {
+                    if (j == 0 && !addedFirstItem) {// first in the folder if not yet addedFirstItem
                         programs.add(0, extractProgramFromFile(file));
                         addedFirstItem = true;
                     } else {

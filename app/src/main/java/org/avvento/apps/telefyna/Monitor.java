@@ -228,7 +228,6 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         programsByIndex = new ArrayList<>();
         playlistByIndex = new ArrayList<>();
         maintenance.run();
-        shutDownHook();
     }
 
     private void cacheNowPlaying() {
@@ -245,10 +244,10 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         return player;
     }
 
-    private void addBumpers(File bumperFolder, boolean addedFirstItem) {
+    private void addBumpers(List<Program> bumpers, File bumperFolder, boolean addedFirstItem) {
         if (bumperFolder.exists() && bumperFolder.listFiles().length > 0) {
-            maintenance.setupLocalPrograms(currentBumpers, bumperFolder, addedFirstItem);
-            Collections.reverse(currentBumpers);
+            maintenance.setupLocalPrograms(bumpers, bumperFolder, addedFirstItem);
+            Collections.reverse(bumpers);
         }
     }
 
@@ -306,16 +305,27 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                         position = nextSeekTo;
                         Logger.log(AuditLog.Event.RETRIEVE_NOW_PLAYING_RESUME, playlist.getName(), programs.get(nextProgram).getName(), nextSeekTo);
                     } else if (!playlist.getType().equals(Playlist.Type.ONLINE)) {// only add bumpers if not resuming and not online
-                        // prepare bumpers
-                        addBumpers(new File(getBumperDirectory() + File.separator + playlist.getUrlOrFolder()), false);
+                        String bumperFolder = getBumperDirectory();
+                        List<Program> generalBumpers = new ArrayList<>(), specialBumpers = new ArrayList<>(), playListBumpers = new ArrayList<>();
+                        // prepare general bumpers
                         if(playlist.isPlayingGeneralBumpers()) {
-                            addBumpers(new File(getBumperDirectory() + File.separator + "General"), true);
+                            addBumpers(generalBumpers, new File(bumperFolder + File.separator + "General"), false);
                         }
+                        // prepare special bumpers
+                        String specialBumperFolder = playlist.getSpecialBumperFolder();
+                        if(StringUtils.isNotBlank(specialBumperFolder)) {
+                            addBumpers(specialBumpers, new File(bumperFolder + File.separator + specialBumperFolder), false);
+                        }
+                        // prepare playlist specific bumpers
+                        addBumpers(playListBumpers, new File(bumperFolder + File.separator + playlist.getUrlOrFolder()), false);
+                        currentBumpers.addAll(generalBumpers);
+                        currentBumpers.addAll(specialBumpers);
+                        currentBumpers.addAll(playListBumpers);
 
                         List<MediaItem> bumperMediaItems = new ArrayList<>();
                         // add any bumpers if available only for non continuous local playlists
-                        for (Program bumber : currentBumpers) {
-                            bumperMediaItems.add(bumber.getMediaItem());
+                        for (Program bumper : currentBumpers) {
+                            bumperMediaItems.add(bumper.getMediaItem());
                         }
                         programItems.addAll(0, bumperMediaItems);
                     }
@@ -406,12 +416,8 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     }
 
     private void shutDownHook() {
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            public void run() {
-                // TODO anything to do here
-                cacheNowPlaying();
-            }
-        });
+        cacheNowPlaying();
+        Logger.log(AuditLog.Event.HEARTBEAT, "OFF");
     }
 
     @Override

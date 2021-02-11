@@ -49,9 +49,9 @@ public class Playlist {
     private Integer clone;
 
     public boolean scheduledToday() {
-        if(!isActive() || StringUtils.isBlank(start)) {
+        if (!isActive() || StringUtils.isBlank(start)) {
             return false;
-        } else if(ArrayUtils.isEmpty(days) && ArrayUtils.isEmpty(dates)) {
+        } else if (ArrayUtils.isEmpty(days) && ArrayUtils.isEmpty(dates)) {
             return true;
         }
         Calendar now = Calendar.getInstance();
@@ -63,18 +63,20 @@ public class Playlist {
         return dayScheduled || dateScheduled;
     }
 
-    public enum Type {
-        ONLINE, LOCAL_SEQUENCED, LOCAL_RESUMING, LOCAL_RESUMING_NEXT, LOCAL_RANDOMIZED
-    }
-
-    // only overrides playingGeneralBumpers, days, dates and start but maintains the rest
+    // only overrides days, dates and start but maintains the rest
     public Playlist copy(Playlist clone) {
         this.type = clone.type;
         this.name = clone.name;
         this.description = clone.description;
         this.active = clone.active;
         this.urlOrFolder = clone.urlOrFolder;
+        this.playingGeneralBumpers = clone.playingGeneralBumpers;
+        this.specialBumperFolder = clone.specialBumperFolder;
         return this;
+    }
+
+    public enum Type {
+        ONLINE, LOCAL_SEQUENCED, LOCAL_RESUMING, LOCAL_RESUMING_NEXT, LOCAL_RANDOMIZED
     }
 
 }

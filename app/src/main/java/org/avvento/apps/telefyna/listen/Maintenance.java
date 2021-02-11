@@ -3,7 +3,6 @@ package org.avvento.apps.telefyna.listen;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.webkit.MimeTypeMap;
 
@@ -11,6 +10,7 @@ import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.util.MimeTypes;
 
 import org.avvento.apps.telefyna.Monitor;
+import org.avvento.apps.telefyna.Utils;
 import org.avvento.apps.telefyna.audit.AuditLog;
 import org.avvento.apps.telefyna.audit.Logger;
 import org.avvento.apps.telefyna.stream.Config;
@@ -19,7 +19,6 @@ import org.avvento.apps.telefyna.stream.Program;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
@@ -31,9 +30,9 @@ import androidx.annotation.RequiresApi;
 
 public class Maintenance {
 
+    private static int CODE = 0;
     private Map<String, CurrentPlaylist> startedSlotsToday;
     private Map<String, PendingIntent> pendingIntents;
-    private static int CODE = 0;
 
     private void logMaintenance() {
         Logger.log(AuditLog.Event.MAINTENANCE);
@@ -64,7 +63,7 @@ public class Maintenance {
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void schedule() {
         Config config = Monitor.instance.getConfiguration();
-        if(config != null) {
+        if (config != null) {
             Playlist[] playlists = config.getPlaylists();
             List<String> starts = new ArrayList<>();
             for (int index = 0; index < playlists.length; index++) {
@@ -78,7 +77,7 @@ public class Maintenance {
                         File localPlaylistFolder = Monitor.instance.getDirectoryToPlaylist(playlist.getUrlOrFolder());
                         if (localPlaylistFolder.exists() && localPlaylistFolder.listFiles().length > 0) {
                             boolean addedFirstItem = false;
-                            setupLocalPrograms(programs, localPlaylistFolder, addedFirstItem);
+                            Utils.setupLocalPrograms(programs, localPlaylistFolder, addedFirstItem);
                         }
                     }
                 } else {
@@ -99,7 +98,7 @@ public class Maintenance {
     private void schedulePlaylistAtStart(Playlist playlist, int index, List<String> starts) {
         // was scheduled, remove existing playlist to reschedule a new later one
         String start = playlist.getStart();
-        if(starts.contains(start)) {
+        if (starts.contains(start)) {
             Monitor.instance.getAlarmManager().cancel(pendingIntents.get(start));
             startedSlotsToday.remove(start);
             starts.remove(start);
@@ -108,33 +107,9 @@ public class Maintenance {
         starts.add(start);
     }
 
-    private Program extractProgramFromFile(File file) {
-        return new Program(file.getAbsolutePath().split(Monitor.instance.getProgramsFolderPath())[1], MediaItem.fromUri(Uri.fromFile(file)));
-    }
-
-    public void setupLocalPrograms(List<Program> programs, File fileOrFolder, boolean addedFirstItem) {
-        if(fileOrFolder.exists()) {
-            File[] fileOrFolderList = fileOrFolder.listFiles();
-            Arrays.sort(fileOrFolderList);// ordering programs alphabetically
-            for (int j = 0; j < fileOrFolderList.length; j++) {
-                File file = fileOrFolderList[j];
-                if (file.isDirectory()) {
-                    setupLocalPrograms(programs, file, addedFirstItem);
-                } else {
-                    if (j == 0 && !addedFirstItem) {// first in the folder if not yet addedFirstItem
-                        programs.add(0, extractProgramFromFile(file));
-                        addedFirstItem = true;
-                    } else {
-                        programs.add(extractProgramFromFile(file));
-                    }
-                }
-            }
-        }
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void playCurrentSlot() {
-        if(!startedSlotsToday.isEmpty()) {
+        if (!startedSlotsToday.isEmpty()) {
             List<String> slots = startedSlotsToday.keySet().stream().collect(Collectors.toList());
             Collections.sort(slots, Collections.reverseOrder());
             CurrentPlaylist currentPlaylist = startedSlotsToday.get(slots.get(0));

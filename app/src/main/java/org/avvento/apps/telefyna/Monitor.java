@@ -51,13 +51,13 @@ import androidx.core.content.ContextCompat;
 import lombok.Getter;
 
 public class Monitor extends AppCompatActivity implements PlayerNotificationManager.NotificationListener, Player.EventListener {
-    public static final String PREFERENCES = "TelefynaPrefs" ;
+    public static final String PREFERENCES = "TelefynaPrefs";
     private static final String PLAYLIST_PLAY = "PLAYLIST_PLAY";
     private static final String PLAYLIST_LAST_MODIFIED = "PLAYLIST_LAST_MODIFIED";
     private static final String PLAYLIST_SEEK_TO = "PLAYLIST_SEEK_TO";
     private static final String PLAYLIST_PLAY_FORMAT = "%s-%d";
-    private SharedPreferences sharedpreferences;
     public static Monitor instance;
+    private SharedPreferences sharedpreferences;
     @Getter
     private Config configuration;
     @Getter
@@ -86,13 +86,18 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         playlistByIndex.add(playlist);
     }
 
-    public Integer getFirstDefaultIndex() {return 0;}
-    private Integer getSecondDefaultIndex() {return 1;}
+    public Integer getFirstDefaultIndex() {
+        return 0;
+    }
+
+    private Integer getSecondDefaultIndex() {
+        return 1;
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private List<MediaItem> extractingMediaItemsFromPrograms(List<Program> programs) {
         List<MediaItem> mediaItems = new ArrayList<>();
-        for(Program program : programs) {
+        for (Program program : programs) {
             mediaItems.add(program.getMediaItem());
         }
         return mediaItems;
@@ -103,18 +108,18 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     }
 
     private long playlistModified(int index) {
-        return getLastModifiedFor(index) -  getSharedPlaylistLastModified(index);
+        return getLastModifiedFor(index) - getSharedPlaylistLastModified(index);
     }
 
     private void trackingNowPlaying(Integer index, int at, long seekTo) {
-        if(playlistByIndex.get(index).getType().name().startsWith(Playlist.Type.LOCAL_RESUMING.name())) {
+        if (playlistByIndex.get(index).getType().name().startsWith(Playlist.Type.LOCAL_RESUMING.name())) {
             cachePlayingAt(index, at, seekTo);
         }
     }
 
     private void cachePlayingAt(Integer index, int at, long seekTo) {
         String programName = getMediaItemName(index, at);
-        if(StringUtils.isNotBlank(programName)) {// exclude bumpers
+        if (StringUtils.isNotBlank(programName)) {// exclude bumpers
             SharedPreferences.Editor editor = sharedpreferences.edit();
             editor.putInt(getPlaylistPlayKey(index), at);
             editor.putLong(getPlaylistSeekTo(index), seekTo);
@@ -125,9 +130,9 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     }
 
     private String getMediaItemName(int index, int at) {
-        if(currentBumpers.isEmpty() || (at > currentBumpers.size())) {
+        if (currentBumpers.isEmpty() || (at > currentBumpers.size())) {
             List<Program> programs = programsByIndex.get(index);
-            if(programs.size() > at) {
+            if (programs.size() > at) {
                 return programs.get(at).getName();
             }
         }
@@ -191,7 +196,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         }
         ArrayUtils.reverse(storages);
         for (File storage : storages) {
-            if(storage != null) {
+            if (storage != null) {
                 String location = storage.getAbsolutePath().substring(0, StringUtils.ordinalIndexOf(storage.getAbsolutePath(), "/", storage.getAbsolutePath().contains("emulated") ? 4 : 3));
                 return new File(location + postfix);
             }
@@ -231,7 +236,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     }
 
     private void cacheNowPlaying() {
-        if(nowPlayingIndex != null) {
+        if (nowPlayingIndex != null) {
             PlayerView playerView = findViewById(R.id.player);
             trackingNowPlaying(nowPlayingIndex, playerView.getPlayer() == null ? 0 : playerView.getPlayer().getCurrentPeriodIndex(), playerView.getPlayer() == null ? 0 : playerView.getPlayer().getCurrentPosition());
         }
@@ -246,7 +251,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
 
     private void addBumpers(List<Program> bumpers, File bumperFolder, boolean addedFirstItem) {
         if (bumperFolder.exists() && bumperFolder.listFiles().length > 0) {
-            maintenance.setupLocalPrograms(bumpers, bumperFolder, addedFirstItem);
+            Utils.setupLocalPrograms(bumpers, bumperFolder, addedFirstItem);
             Collections.reverse(bumpers);
         }
     }
@@ -261,11 +266,11 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         List<Program> programs = programsByIndex.get(index);
         Playlist playlist = playlistByIndex.get(index);
 
-        if(nowPlayingIndex == null || nowPlayingIndex != index) {// leave current program to proceed if it's the same being loaded
-            if(!Utils.internetConnected() && secondDefaultIndex != index && Playlist.Type.ONLINE.equals(playlist.getType())) {
+        if (nowPlayingIndex == null || nowPlayingIndex != index) {// leave current program to proceed if it's the same being loaded
+            if (!Utils.internetConnected() && secondDefaultIndex != index && Playlist.Type.ONLINE.equals(playlist.getType())) {
                 switchNow(secondDefaultIndex);
             } else {
-                if(programs.isEmpty()) {
+                if (programs.isEmpty()) {
                     Logger.log(AuditLog.Event.PLAYLIST_EMPTY_PLAY, getPlayingAtIndexLabel(index));
                     switchNow(getFirstDefaultIndex());
                 } else {
@@ -294,7 +299,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                         int nextProgram = getSharedPlaylistMediaItem(index);
                         long nextSeekTo = getSharedPlaylistSeekTo(index);
                         if (playlist.getType().equals(Playlist.Type.LOCAL_RESUMING_NEXT)) {
-                            if(nextProgram == programItems.size() - 1) {// last
+                            if (nextProgram == programItems.size() - 1) {// last
                                 nextProgram = 0;
                             } else {
                                 nextProgram++; // next program excluding bumpers
@@ -308,12 +313,12 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                         String bumperFolder = getBumperDirectory();
                         List<Program> generalBumpers = new ArrayList<>(), specialBumpers = new ArrayList<>(), playListBumpers = new ArrayList<>();
                         // prepare general bumpers
-                        if(playlist.isPlayingGeneralBumpers()) {
+                        if (playlist.isPlayingGeneralBumpers()) {
                             addBumpers(generalBumpers, new File(bumperFolder + File.separator + "General"), false);
                         }
                         // prepare special bumpers
                         String specialBumperFolder = playlist.getSpecialBumperFolder();
-                        if(StringUtils.isNotBlank(specialBumperFolder)) {
+                        if (StringUtils.isNotBlank(specialBumperFolder)) {
                             addBumpers(specialBumpers, new File(bumperFolder + File.separator + specialBumperFolder), false);
                         }
                         // prepare playlist specific bumpers
@@ -349,20 +354,20 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     public void onIsPlayingChanged(boolean isPlaying) {
         PlayerView playerView = findViewById(R.id.player);
         Player current = playerView.getPlayer();
-        if(current == null || !player.equals(current)) {
-            if(current != null) {
+        if (current == null || !player.equals(current)) {
+            if (current != null) {
                 current.stop();
                 current.release();
             }
             playerView.setPlayer(player);
-            Logger.log(AuditLog.Event.PLAYLIST_PLAY,  getNowPlayingPlaylistLabel());
+            Logger.log(AuditLog.Event.PLAYLIST_PLAY, getNowPlayingPlaylistLabel());
         }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onPlaybackStateChanged(int state) {
-        if(nowPlayingIndex != null) {
+        if (nowPlayingIndex != null) {
             if (state == Player.STATE_ENDED) {
                 Logger.log(AuditLog.Event.PLAYLIST_COMPLETED, getNowPlayingPlaylistLabel());
                 switchNow(getFirstDefaultIndex());
@@ -374,7 +379,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
 
     @Override
     public void onMediaItemTransition(@Nullable MediaItem mediaItem, int reason) {
-        if(nowPlayingIndex != null) {
+        if (nowPlayingIndex != null) {
             int item = ((PlayerView) findViewById(R.id.player)).getPlayer().getCurrentPeriodIndex() - 1;// last item index
             trackingNowPlaying(nowPlayingIndex, item, 0);
             Logger.log(AuditLog.Event.PLAYLIST_ITEM_CHANGE, getNowPlayingPlaylistLabel(), getMediaItemName(nowPlayingIndex, item + 1));
@@ -387,7 +392,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         Logger.log(AuditLog.Event.ERROR, String.format("%s: %s", error.getCause().toString(), error.getMessage()));
         cacheNowPlaying();
         // keep reloading existing program if internet is on and off
-        if(error.getCause().getCause() instanceof UnknownHostException || error.getCause().getCause() instanceof IOException) {
+        if (error.getCause().getCause() instanceof UnknownHostException || error.getCause().getCause() instanceof IOException) {
             reload();
         }
     }
@@ -410,7 +415,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
 
     @Override
     public void onNotificationPosted(int notificationId, Notification notification, boolean ongoing) {
-        if(getConfiguration().isDisableNotifications()) {
+        if (getConfiguration().isDisableNotifications()) {
             ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancel(notificationId);
         }
     }

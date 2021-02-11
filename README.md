@@ -1,7 +1,7 @@
 ![Telefyna](https://avventohome.org/wp-content/uploads/2020/12/telefyna.png "Telefyna")
 
 # Telefyna
-An android online/local streaming and scheduling player for audio and video suitable for TVs and radios.
+An android online & local streaming and scheduling player for audio and video suitable for TVs and radios.
 ______
 
 ## Installation
@@ -51,6 +51,9 @@ For any questions or queries, please email the support team at apps@avventohome.
 
 
 ## TODO
+- [ ] test dates down the playlist if it overwrites the schedule
+- [ ] Test playlist modification etc
+- [ ] test and fix mid night runner
 - [ ] Test setupLocalPrograms: addedFirstItem
 - [ ] handle current play at switch not buffering video
 - [ ] Add stop or change audit event
@@ -59,11 +62,8 @@ For any questions or queries, please email the support team at apps@avventohome.
 - [ ] fix swift bug, don't override, just replace (hack, skip by default, delete copy again) manually files
 - [ ] player plays another in the background sometimes
 - [ ] investigate bumpers missing when loaded from scheduler
-- [ ] Test playlist modification etc
 - [ ] handle player idling on stream, resume the play/seekTo
 - [ ] some source error unknown makes the program to switch, retry defaulting back to the program
-- [ ] test and fix mid night runner
-- [ ] Schedule once per start, ignore the rest of the slots
 - [ ] add promos/sweepers/something folder that starts the playout whether in continuing. usable for upnexts: intros folder containing another named by foldername: test symbolic links
 - [ ] add fading mechanisms than cut
 - [ ] look through TODOs
@@ -77,6 +77,7 @@ For any questions or queries, please email the support team at apps@avventohome.
 - [ ] support streaming to hls, shoutcast & loudcast (not supported); use external streaming encoder
 - [ ] ensure all wrong media files are skipped (blocked)
 - [ ] work on presentation approach (blocked)
+- [x] Schedule once per start (last), ignore the rest of the slots
 - [x] Network listener, switches to second default when internet is off, and back if slot still active
 - [x] Add continuing not by seekto `LOCAL_RESUMING_NEXT`
 - [x] Fork and add auto start using system prefs to FTP, send [PR](https://github.com/ppareit/swiftp/pull/163)

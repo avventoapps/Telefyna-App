@@ -14,13 +14,14 @@ import java.util.Calendar;
 public class Logger {
     private static SimpleDateFormat datetimeFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
-    private static SimpleDateFormat dateFormat  = new SimpleDateFormat("yyyy-MM-dd");
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
     /*
      * TODO mail, save to file
      */
     public static void log(AuditLog.Event event, Object... params) {
         String message = String.format(event.getMessage(), params);
-        if(event.equals(AuditLog.Event.ERROR)) {
+        if (event.equals(AuditLog.Event.ERROR)) {
             Log.e(event.name(), message);
         } else {
             Log.i(event.name(), message);

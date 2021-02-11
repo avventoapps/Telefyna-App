@@ -21,12 +21,12 @@ public class AuditLog {
 
         private String message;
 
-        public String getMessage() {
-            return String.format( "%s %s ", message, SEPARATOR);
-        }
-
         Event(String message) {
             this.message = message;
+        }
+
+        public String getMessage() {
+            return String.format("%s %s ", message, SEPARATOR);
         }
 
     }

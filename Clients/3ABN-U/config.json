@@ -8,7 +8,7 @@
     },
     {
       "name": "1-Fillers",
-      "description": "This is the second default playlist, it plays whenever there's no internet or it's disconnected",
+      "description": "This is the second default playlist, it plays whenever there is no internet connection",
       "type": "LOCAL_RANDOMIZED",
       "urlOrFolder": "Fillers"
     },
@@ -33,44 +33,81 @@
       "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/554145/secure/playlist.m3u8"
     },
     {
-      "name": "7-3ABN-U Ensulo ey'enkya",
-      "type": "LOCAL_RESUMING_NEXT",
-      "urlOrFolder": "EnsuloEyenkya"
-    },
-    {
-      "name": "8-3ABN-U Bwatyo Bwayogera Mukama",
+      "name": "7-3ABN-U Bwatyo Bwayogera Mukama",
       "type": "LOCAL_SEQUENCED",
       "urlOrFolder": "BwatyoBwayogeraMukama"
     },
     {
-      "name": "9-3ABN-U Manya Ebiro",
+      "name": "8-3ABN-U Manya Ebiro",
       "type": "LOCAL_SEQUENCED",
       "urlOrFolder": "ManyaEbiro"
     },
     {
-      "name": "10-3ABN-U-Julira Mukama",
+      "name": "9-3ABN-U-Julira Mukama",
       "type": "LOCAL_SEQUENCED",
       "urlOrFolder": "JuliraMukama"
     },
     {
-      "name": "11-3ABN-U-Beera Mulamu",
+      "name": "10-3ABN-U-Beera Mulamu",
       "type": "LOCAL_SEQUENCED",
       "urlOrFolder": "BeeraMulamu"
     },
     {
-      "name": "12-3ABN-U-Yimba Nange",
+      "name": "11-3ABN-U-Yimba Nange",
       "type": "LOCAL_SEQUENCED",
       "urlOrFolder": "YimbaNange"
     },
     {
-      "name": "13-3ABN-U-Obutonde bwogera",
+      "name": "12-3ABN-U-Obutonde bwogera",
       "type": "LOCAL_SEQUENCED",
       "urlOrFolder": "ObutondeBwogera"
     },
     {
-      "name": "14-3ABN-U-Ennyimba",
+      "name": "13-3ABN-U-Ennyimba",
       "type": "LOCAL_RANDOMIZED",
       "urlOrFolder": "Ennyimba"
+    },
+    {
+      "name": "14-3ABN-U Ensulo ey'enkya Sun",
+      "type": "LOCAL_SEQUENCED",
+      "urlOrFolder": "EnsuloEyenkyaSun",
+      "specialBumperFolder": "EnsuloEyenkya"
+    },
+    {
+      "name": "15-3ABN-U Ensulo ey'enkya Mon",
+      "type": "LOCAL_SEQUENCED",
+      "urlOrFolder": "EnsuloEyenkyaMon",
+      "specialBumperFolder": "EnsuloEyenkya"
+    },
+    {
+      "name": "16-3ABN-U Ensulo ey'enkya Tue",
+      "type": "LOCAL_SEQUENCED",
+      "urlOrFolder": "EnsuloEyenkyaTue",
+      "specialBumperFolder": "EnsuloEyenkya"
+    },
+    {
+      "name": "17-3ABN-U Ensulo ey'enkya Wed",
+      "type": "LOCAL_SEQUENCED",
+      "urlOrFolder": "EnsuloEyenkyaWed",
+      "specialBumperFolder": "EnsuloEyenkya"
+    },
+    {
+      "name": "18-3ABN-U Ensulo ey'enkya Thur",
+      "type": "LOCAL_SEQUENCED",
+      "urlOrFolder": "EnsuloEyenkyaThur",
+      "specialBumperFolder": "EnsuloEyenkya"
+    },
+    {
+      "name": "19-3ABN-U Ensulo ey'enkya Fri",
+      "type": "LOCAL_SEQUENCED",
+      "urlOrFolder": "EnsuloEyenkyaFri",
+      "specialBumperFolder": "EnsuloEyenkya"
+    },
+    {
+      "name": "20-3ABN-U Ensulo ey'enkya Sat",
+      "type": "LOCAL_SEQUENCED",
+      "urlOrFolder": "EnsuloEyenkyaSat",
+      "specialBumperFolder": "EnsuloEyenkya"
     },
     {
       "clone": 3,
@@ -352,7 +389,7 @@
       ]
     },
     {
-      "clone": 8,
+      "clone": 7,
       "start": "12:00",
       "days": [
         7
@@ -511,7 +548,7 @@
       ]
     },
     {
-      "clone": 9,
+      "clone": 8,
       "start": "19:00",
       "days": [
         1,
@@ -520,7 +557,7 @@
       ]
     },
     {
-      "clone": 10,
+      "clone": 9,
       "start": "19:00",
       "days": [
         2,
@@ -529,14 +566,14 @@
       ]
     },
     {
-      "clone": 8,
+      "clone": 7,
       "start": "19:00",
       "days": [
         6
       ]
     },
     {
-      "clone": 8,
+      "clone": 7,
       "start": "20:00",
       "days": [
         1,
@@ -548,21 +585,21 @@
       ]
     },
     {
-      "clone": 13,
+      "clone": 12,
       "start": "20:00",
       "days": [
         6
       ]
     },
     {
-      "clone": 14,
+      "clone": 13,
       "start": "20:30",
       "days": [
         6
       ]
     },
     {
-      "clone": 11,
+      "clone": 10,
       "start": "21:00",
       "days": [
         1,
@@ -571,7 +608,7 @@
       ]
     },
     {
-      "clone": 12,
+      "clone": 11,
       "start": "21:00",
       "days": [
         2,
@@ -580,7 +617,7 @@
       ]
     },
     {
-      "clone": 9,
+      "clone": 8,
       "start": "21:00",
       "days": [
         6

@@ -8,7 +8,7 @@
     },
     {
       "name": "1-Fillers",
-      "description": "This is the second default playlist, it plays whenever there's no internet or it's disconnected",
+      "description": "This is the second default playlist, it plays whenever there is no internet or it is disconnected",
       "type": "LOCAL_RANDOMIZED",
       "urlOrFolder": "Fillers",
       "specialBumperFolder": "special"

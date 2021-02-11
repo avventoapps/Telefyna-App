@@ -73,6 +73,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     private List<Playlist> playlistByIndex;
     private List<Program> currentBumpers;
     private File programsFolder;
+    private boolean secondDefaultRepeatable = false;
 
     public String getProgramsFolderPath() {
         return programsFolder.getAbsolutePath();
@@ -130,11 +131,9 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     }
 
     private String getMediaItemName(int index, int at) {
-        if (currentBumpers.isEmpty() || (at > currentBumpers.size())) {
-            List<Program> programs = programsByIndex.get(index);
-            if (programs.size() > at) {
-                return programs.get(at).getName();
-            }
+        List<Program> items = (!currentBumpers.isEmpty() && (at < currentBumpers.size())) ? currentBumpers : programsByIndex.get(index);
+        if (items.size() > at) {
+            return items.get(at).getName();
         }
         return null;
     }
@@ -266,7 +265,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         List<Program> programs = programsByIndex.get(index);
         Playlist playlist = playlistByIndex.get(index);
 
-        if (nowPlayingIndex == null || nowPlayingIndex != index) {// leave current program to proceed if it's the same being loaded
+        if (nowPlayingIndex == null || nowPlayingIndex != index || secondDefaultRepeatable) {// leave current program to proceed if it's the same being loaded
             if (!Utils.internetConnected() && secondDefaultIndex != index && Playlist.Type.ONLINE.equals(playlist.getType())) {
                 switchNow(secondDefaultIndex);
             } else {
@@ -345,6 +344,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                     player.addListener(instance);
                     player.setPlayWhenReady(true);
                     nowPlayingIndex = index;
+                    secondDefaultRepeatable = false;
                 }
             }
         }
@@ -370,6 +370,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         if (nowPlayingIndex != null) {
             if (state == Player.STATE_ENDED) {
                 Logger.log(AuditLog.Event.PLAYLIST_COMPLETED, getNowPlayingPlaylistLabel());
+                secondDefaultRepeatable = true;
                 switchNow(getFirstDefaultIndex());
             } else if (state == Player.STATE_BUFFERING && Playlist.Type.ONLINE.equals(playlistByIndex.get(nowPlayingIndex).getType())) {
                 player.seekTo(player.getContentDuration());// hack

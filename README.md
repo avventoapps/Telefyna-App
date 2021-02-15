@@ -15,10 +15,10 @@ ______
 ### Device
 * set `disableNotifications` to false to disable notifications
 
-### FTP Remote access
-* If you want to access the filesystem remove, run an [FTP app like swiftp](https://f-droid.org/packages/be.ppareit.swiftp_free)
+### Remote access
+* If you want to access the filesystem remove, run an [FTP app like swiftp](https://github.com/avventoapps/avvento/releases/latest/download/swiftp.apk)
 * You can use FTP clients like [FileZilla](https://filezilla-project.org/) to upload both revised `config.json` and `playlist` folder/contents
-* Alternative to FTP, you can use drive auto sync such as [google drive auto syncing](https://github.com/avventoapps/avvento/releases/latest/download/drivesync.apk)
+* Alternatively you can auto sync local to device folder with something like [drivesync](https://github.com/avventoapps/avvento/releases/download/1.0/drivesync.apk)
 * You can do the same `telefynaAudit` folder which is the internal device storage root path
 
 ### Playlist
@@ -35,7 +35,7 @@ ______
 * Playlist `start` should be in format `HH:mm` eg `12:00` for mid-day, hours are in 24 hour
 * `urlOrFolder`, stream url or local folder containing alphabetically ordered playlist folders
 * For local playlists, if active and nothing is defined or completed, the default playlist will be played
-* `type` can either be `ONLINE` (stream/default), or `LOCAL_SEQUENCED` (local ordered folder) or `LOCAL_RESUMING` (local resuming folder), or `LOCAL_RESUMING_NEXT` (local resuming from next program) or `LOCAL_RANDOMIZED` (local random folder)
+* `type` can either be `ONLINE` (stream/default), or `LOCAL_SEQUENCED` (local ordered folder) or `LOCAL_RESUMING` (local resuming folder), or `LOCAL_RESUMING_SAME` (local resuming from same non completed program), or `LOCAL_RESUMING_NEXT` (local resuming from next program) or `LOCAL_RANDOMIZED` (local random folder)
 * For `type`s `LOCAL_SEQUENCED`, `LOCAL_RANDOMIZED`
 * Each playlist can load bumpers from 3 or less folders listed below
 * You can define bumpers (ads, promos etc) to play as the `LOCAL_SEQUENCED` or `LOCAL_RANDOMIZED` playlist starts in `bumper` folder in a sub folder named same value as your playlist's `urlOrFolder`
@@ -64,11 +64,13 @@ For any questions or queries, please email the support team at apps@avventohome.
 - [ ] investigate bumpers missing when loaded from scheduler
 - [ ] handle player idling on stream, resume the play/seekTo
 - [ ] some source error unknown makes the program to switch, retry defaulting back to the program
-- [ ] add promos/sweepers/something folder that starts the playout whether in continuing. usable for upnexts: intros folder containing another named by foldername: test symbolic links
+links
+- [ ] support youtube links and streams
 - [ ] add fading mechanisms than cut
 - [ ] look through TODOs
 - [ ] locally backup/download streaming content
-- [ ] Build schedule builder & viewer for the `config.json`
+- [ ] Build schedule GUI builder & viewer for the `config.json`
+- [ ] build reports from audits
 - [ ] write tests
 - [ ] play video with different or additional audio/slave
 - [ ] float another layer on video stream for ads, logo etc
@@ -77,7 +79,7 @@ For any questions or queries, please email the support team at apps@avventohome.
 - [ ] support streaming to hls, shoutcast & loudcast (not supported); use external streaming encoder
 - [ ] ensure all wrong media files are skipped (blocked)
 - [ ] work on presentation approach (blocked)
-- [x] Schedule once per start (last), ignore the rest of the slots
+- [x] add promos/sweepers/something folder that starts the playout whether in continuing. usable for upnexts: intros folder containing another named by foldername: test symbolic - [x] Schedule once per start (last), ignore the rest of the slots
 - [x] Network listener, switches to second default when internet is off, and back if slot still active
 - [x] Add continuing not by seekto `LOCAL_RESUMING_NEXT`
 - [x] Fork and add auto start using system prefs to FTP, send [PR](https://github.com/ppareit/swiftp/pull/163)

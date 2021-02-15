@@ -76,7 +76,12 @@ public class Playlist {
     }
 
     public enum Type {
-        ONLINE, LOCAL_SEQUENCED, LOCAL_RESUMING, LOCAL_RESUMING_NEXT, LOCAL_RANDOMIZED
+        ONLINE, // online streaming, Tested supported formats; HLS 
+        LOCAL_SEQUENCED, // organizes program alphabetically considering their tree
+        LOCAL_RESUMING, // resuming the same program from the last playing duration
+        LOCAL_RESUMING_SAME, // resuming the same program from the start
+        LOCAL_RESUMING_NEXT, // resuming the next program from the start
+        LOCAL_RANDOMIZED // randlomy selects programs
     }
 
 }

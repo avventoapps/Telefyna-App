@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.StrictMode;
+import android.view.KeyEvent;
 import android.view.WindowManager;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -40,6 +41,7 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
@@ -256,7 +258,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void switchNow(int index) {
+    public void switchNow(int index, boolean isCurrentSlot) {
         currentBumpers = new ArrayList<>();
         player = buildPlayer();
         int secondDefaultIndex = getSecondDefaultIndex();
@@ -267,11 +269,11 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
 
         if (nowPlayingIndex == null || nowPlayingIndex != index || secondDefaultRepeatable) {// leave current program to proceed if it's the same being loaded
             if (!Utils.internetConnected() && secondDefaultIndex != index && Playlist.Type.ONLINE.equals(playlist.getType())) {
-                switchNow(secondDefaultIndex);
+                switchNow(secondDefaultIndex, false);
             } else {
                 if (programs.isEmpty()) {
                     Logger.log(AuditLog.Event.PLAYLIST_EMPTY_PLAY, getPlayingAtIndexLabel(index));
-                    switchNow(getFirstDefaultIndex());
+                    switchNow(getFirstDefaultIndex(), false);
                 } else {
                     // log now playing
                     cacheNowPlaying();
@@ -290,6 +292,8 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                     // handle resuming local playlists
                     if (Playlist.Type.LOCAL_RANDOMIZED.equals(playlist.getType())) {
                         Collections.shuffle(programItems);
+                    } else if (Playlist.Type.LOCAL_SEQUENCED.equals(playlist.getType())) {
+                        // this is handled by default by Utils#setupLocalPrograms
                     }
                     int program = 0;
                     long position = 0;
@@ -303,6 +307,8 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                             } else {
                                 nextProgram++; // next program excluding bumpers
                             }
+                            nextSeekTo = 0;
+                        } else if (playlist.getType().equals(Playlist.Type.LOCAL_RESUMING_SAME)) {
                             nextSeekTo = 0;
                         }
                         program = nextProgram;
@@ -333,6 +339,9 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                         }
                         programItems.addAll(0, bumperMediaItems);
                     }
+                    if (isCurrentSlot && !playlist.getType().equals(Playlist.Type.ONLINE)) {
+                        position = position + getAfterStartMills(playlist);
+                    }
                     player.setMediaItems(programItems);
                     player.seekTo(program, position);
                     player.prepare();
@@ -348,6 +357,17 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                 }
             }
         }
+    }
+
+    private long getAfterStartMills(Playlist playlist) {
+        Integer hour = Integer.parseInt(playlist.getStart().split(":")[0]);
+        Integer min = Integer.parseInt(playlist.getStart().split(":")[1]);
+        Calendar now = Calendar.getInstance();
+        Calendar start = Calendar.getInstance();
+        start.set(Calendar.HOUR_OF_DAY, hour);
+        start.set(Calendar.MINUTE, min);
+        start.set(Calendar.SECOND, 0);
+        return now.getTimeInMillis() - start.getTimeInMillis();
     }
 
     @Override
@@ -371,7 +391,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
             if (state == Player.STATE_ENDED) {
                 Logger.log(AuditLog.Event.PLAYLIST_COMPLETED, getNowPlayingPlaylistLabel());
                 secondDefaultRepeatable = true;
-                switchNow(getFirstDefaultIndex());
+                switchNow(getFirstDefaultIndex(), false);
             } else if (state == Player.STATE_BUFFERING && Playlist.Type.ONLINE.equals(playlistByIndex.get(nowPlayingIndex).getType())) {
                 player.seekTo(player.getContentDuration());// hack
             }
@@ -490,5 +510,12 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     public void onBackPressed() {
         //moveTaskToBack(false);
     }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        Logger.log(AuditLog.Event.KEY_DOWN, keyCode);
+        return super.onKeyDown(keyCode, event);
+    }
+
 
 }

@@ -113,9 +113,9 @@ public class Maintenance {
             List<String> slots = startedSlotsToday.keySet().stream().collect(Collectors.toList());
             Collections.sort(slots, Collections.reverseOrder());
             CurrentPlaylist currentPlaylist = startedSlotsToday.get(slots.get(0));
-            Monitor.instance.switchNow(currentPlaylist.getIndex());
+            Monitor.instance.switchNow(currentPlaylist.getIndex(), true);
         } else { // play first default
-            Monitor.instance.switchNow(Monitor.instance.getFirstDefaultIndex());
+            Monitor.instance.switchNow(Monitor.instance.getFirstDefaultIndex(), false);
         }
     }
 

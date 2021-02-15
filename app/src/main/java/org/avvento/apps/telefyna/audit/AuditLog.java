@@ -6,6 +6,7 @@ public class AuditLog {
 
     public enum Event {
         HEARTBEAT("TELEFYNA has been turned: %s"),
+        KEY_DOWN("Key: %d has been pressed down"),
         CONFIGURATION("Initialized configurations"),
         MAINTENANCE("Ran maintenance"),
         PLAYLIST(SPLITTER + "[ Preparing to play playlist: %s"),
@@ -16,7 +17,6 @@ public class AuditLog {
         PLAYLIST_COMPLETED("Completed playing playlist: %s"),
         CACHE_NOW_PLAYING_RESUME("Playlist: %s will next be resuming program: %s at: %d"),
         RETRIEVE_NOW_PLAYING_RESUME("Resuming Playlist: %s program: %s at: %d"),
-        NETWORK_STATE("Network Is %sAvailable"),
         ERROR("%s");
 
         private String message;

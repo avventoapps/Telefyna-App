@@ -15,6 +15,6 @@ public class PlaylistScheduler extends BroadcastReceiver {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onReceive(Context context, Intent intent) {
-        Monitor.instance.switchNow(intent.getIntExtra(PLAYLIST_INDEX, Monitor.instance.getFirstDefaultIndex()));
+        Monitor.instance.switchNow(intent.getIntExtra(PLAYLIST_INDEX, Monitor.instance.getFirstDefaultIndex()), false);
     }
 }

@@ -7,6 +7,8 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -33,6 +35,7 @@ import org.avvento.apps.telefyna.listen.Maintenance;
 import org.avvento.apps.telefyna.stream.Config;
 import org.avvento.apps.telefyna.stream.Playlist;
 import org.avvento.apps.telefyna.stream.Program;
+import org.avvento.apps.telefyna.stream.Seek;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -43,7 +46,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -89,10 +96,12 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         playlistByIndex.add(playlist);
     }
 
+    // This is the first default playlist, it plays whenever nothing is scheduled or is available
     public Integer getFirstDefaultIndex() {
         return 0;
     }
 
+    // This is the second default playlist, it plays whenever there is no internet connection
     private Integer getSecondDefaultIndex() {
         return 1;
     }
@@ -115,7 +124,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     }
 
     private void trackingNowPlaying(Integer index, int at, long seekTo) {
-        if (playlistByIndex.get(index).getType().name().startsWith(Playlist.Type.LOCAL_RESUMING.name())) {
+        if (isResuming(playlistByIndex.get(index))) {
             cachePlayingAt(index, at, seekTo);
         }
     }
@@ -133,9 +142,11 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     }
 
     private String getMediaItemName(int index, int at) {
-        List<Program> items = (!currentBumpers.isEmpty() && (at < currentBumpers.size())) ? currentBumpers : programsByIndex.get(index);
-        if (items.size() > at) {
-            return items.get(at).getName();
+        boolean isBumpers = (!currentBumpers.isEmpty() && (at < currentBumpers.size()));
+        List<Program> programs = programsByIndex.get(index);
+        List<Program> items = isBumpers ? currentBumpers : programs;
+        if (items.size() > 0) {
+            return items.get(isBumpers ? at : at - programs.size()).getName();
         }
         return null;
     }
@@ -261,6 +272,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     public void switchNow(int index, boolean isCurrentSlot) {
         currentBumpers = new ArrayList<>();
         player = buildPlayer();
+        int firstDefaultIndex = getFirstDefaultIndex();
         int secondDefaultIndex = getSecondDefaultIndex();
 
         // setup objects, skip playlist with nothing to play
@@ -270,16 +282,20 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         if (nowPlayingIndex == null || nowPlayingIndex != index || secondDefaultRepeatable) {// leave current program to proceed if it's the same being loaded
             if (!Utils.internetConnected() && secondDefaultIndex != index && Playlist.Type.ONLINE.equals(playlist.getType())) {
                 switchNow(secondDefaultIndex, false);
+                return;
             } else {
                 if (programs.isEmpty()) {
                     Logger.log(AuditLog.Event.PLAYLIST_EMPTY_PLAY, getPlayingAtIndexLabel(index));
-                    switchNow(getFirstDefaultIndex(), false);
+                    switchNow(firstDefaultIndex, false);
+                    return;
                 } else {
                     // log now playing
                     cacheNowPlaying();
 
                     // reset tracking now playing if the playlist programs were modified
                     long modifiedOffset = playlistModified(index);
+                    List<MediaItem> bumperMediaItems = new ArrayList<>();
+
                     if (modifiedOffset > 0) {
                         Logger.log(AuditLog.Event.PLAYLIST_MODIFIED, getPlayingAtIndexLabel(index), modifiedOffset / 1000);
                         resetTrackingNowPlaying(index);
@@ -298,7 +314,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                     int program = 0;
                     long position = 0;
                     // resume local resumable programs
-                    if (playlist.getType().name().startsWith(Playlist.Type.LOCAL_RESUMING.name())) {
+                    if (isResuming(playlist)) {
                         int nextProgram = getSharedPlaylistMediaItem(index);
                         long nextSeekTo = getSharedPlaylistSeekTo(index);
                         if (playlist.getType().equals(Playlist.Type.LOCAL_RESUMING_NEXT)) {
@@ -332,15 +348,26 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                         currentBumpers.addAll(specialBumpers);
                         currentBumpers.addAll(playListBumpers);
 
-                        List<MediaItem> bumperMediaItems = new ArrayList<>();
                         // add any bumpers if available only for non continuous local playlists
-                        for (Program bumper : currentBumpers) {
-                            bumperMediaItems.add(bumper.getMediaItem());
+                        if (!isResuming(playlist)) {
+                            for (Program bumper : currentBumpers) {
+                                bumperMediaItems.add(bumper.getMediaItem());
+                            }
+                            programItems.addAll(0, bumperMediaItems);
                         }
-                        programItems.addAll(0, bumperMediaItems);
                     }
+                    // playing current local slot, TODO support more than one program
                     if (isCurrentSlot && !playlist.getType().equals(Playlist.Type.ONLINE)) {
-                        position = position + getAfterStartMills(playlist);
+                        Seek seek = seekCurrentSlot(playlist, programItems, program, position);
+                        if(seek != null) {
+                            Logger.log(AuditLog.Event.PLAYLIST_PLAY_CURRENT_SLOT, getPlayingAtIndexLabel(index), getMediaItemName(index, seek.getProgram()), formatDuration(seek.getPosition()));
+                            program = seek.getProgram();
+                            position = seek.getPosition();
+                        } else {
+                            switchNow(firstDefaultIndex, false);
+                            return;
+                        }
+
                     }
                     player.setMediaItems(programItems);
                     player.seekTo(program, position);
@@ -359,15 +386,73 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         }
     }
 
-    private long getAfterStartMills(Playlist playlist) {
+    private Seek seekCurrentSlot(Playlist playlist, List<MediaItem> programItems, int program, long position) {
+        return getNonCompletedSlot(position, program, getStart(playlist).getTimeInMillis(), programItems, isResuming(playlist) || playlist.getType().equals(Playlist.Type.LOCAL_RANDOMIZED));
+    }
+
+    // if playlist is resuming, no bumpers play; next plays next program, same plays the former un completed else exact time is resumed
+    private boolean isResuming(Playlist playlist) {
+        return playlist.getType().name().startsWith(Playlist.Type.LOCAL_RESUMING.name());
+    }
+
+    // retrieve video duration in milliseconds
+    private long getDuration(String path) {
+        MediaPlayer mMediaPlayer = null;
+        long duration = 0;
+        try {
+            mMediaPlayer = new MediaPlayer();
+            mMediaPlayer.setDataSource(instance, Uri.parse(path));
+            mMediaPlayer.prepare();
+            duration = mMediaPlayer.getDuration();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (mMediaPlayer != null) {
+                mMediaPlayer.reset();
+                mMediaPlayer.release();
+                mMediaPlayer = null;
+            }
+        }
+        return duration;
+    }
+
+    private String formatDuration(long millis) {
+        return String.format("%d:%d:%d",
+                TimeUnit.MILLISECONDS.toHours(millis),
+                TimeUnit.MILLISECONDS.toMinutes(millis),
+                TimeUnit.MILLISECONDS.toSeconds(millis));
+    }
+
+    private Seek getNonCompletedSlot(Long position, Integer program, Long startTime, List<MediaItem> mediaItems, boolean skip) {
+        if(skip) {
+            return new Seek(program, position);
+        } else {
+            Map<Long, Seek> previousSlots = new HashMap<>();
+            for (int i = 0; i < mediaItems.size(); i++) {
+                long now = Calendar.getInstance().getTimeInMillis();
+                long duration = getDuration(mediaItems.get(i).mediaId);
+                if (duration + startTime > now) {
+                    long pos = now - startTime;
+                    previousSlots.put(now - duration, new Seek(i,  pos));
+                }
+            }
+            if (!previousSlots.isEmpty()) {
+                List<Long> mls = previousSlots.keySet().stream().collect(Collectors.toList());
+                Collections.sort(mls, Collections.reverseOrder());
+                return previousSlots.get(mls.get(0));
+            }
+            return null;
+        }
+    }
+
+    private Calendar getStart(Playlist playlist) {
         Integer hour = Integer.parseInt(playlist.getStart().split(":")[0]);
         Integer min = Integer.parseInt(playlist.getStart().split(":")[1]);
-        Calendar now = Calendar.getInstance();
         Calendar start = Calendar.getInstance();
         start.set(Calendar.HOUR_OF_DAY, hour);
         start.set(Calendar.MINUTE, min);
         start.set(Calendar.SECOND, 0);
-        return now.getTimeInMillis() - start.getTimeInMillis();
+        return start;
     }
 
     @Override
@@ -516,6 +601,5 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         Logger.log(AuditLog.Event.KEY_DOWN, keyCode);
         return super.onKeyDown(keyCode, event);
     }
-
 
 }

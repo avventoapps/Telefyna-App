@@ -25,6 +25,7 @@ public class Utils {
         try {
             // credit to google for creating exoplayer here
             URLConnection conn = (new URL("http://www.google.com")).openConnection();
+            conn.setConnectTimeout(250);
             conn.connect();
             conn.getInputStream().close();
             return true;

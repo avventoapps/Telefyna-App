@@ -17,6 +17,7 @@ public class AuditLog {
         PLAYLIST_COMPLETED("Completed playing playlist: %s"),
         CACHE_NOW_PLAYING_RESUME("Playlist: %s will next be resuming program: %s at: %d"),
         RETRIEVE_NOW_PLAYING_RESUME("Resuming Playlist: %s program: %s at: %d"),
+        PLAYLIST_PLAY_CURRENT_SLOT("Playing current playlist: %s program: %s at: %s"),
         ERROR("%s");
 
         private String message;

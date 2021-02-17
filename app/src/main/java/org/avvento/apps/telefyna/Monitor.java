@@ -146,7 +146,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         List<Program> programs = programsByIndex.get(index);
         List<Program> items = isBumpers ? currentBumpers : programs;
         if (items.size() > 0) {
-            return items.get(isBumpers ? at : at - programs.size()).getName();
+            return items.get(isBumpers ? at : at - (programs.size() - 1)).getName();
         }
         return null;
     }
@@ -357,13 +357,13 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                         }
                     }
                     // playing current local slot, TODO support more than one program
-                    if (isCurrentSlot && !playlist.getType().equals(Playlist.Type.ONLINE)) {
+                    if (isCurrentSlot) {
                         Seek seek = seekCurrentSlot(playlist, programItems, program, position);
                         if(seek != null) {
                             Logger.log(AuditLog.Event.PLAYLIST_PLAY_CURRENT_SLOT, getPlayingAtIndexLabel(index), getMediaItemName(index, seek.getProgram()), formatDuration(seek.getPosition()));
                             program = seek.getProgram();
                             position = seek.getPosition();
-                        } else {
+                        } else { // slot is ended, switch to first default
                             switchNow(firstDefaultIndex, false);
                             return;
                         }
@@ -387,7 +387,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     }
 
     private Seek seekCurrentSlot(Playlist playlist, List<MediaItem> programItems, int program, long position) {
-        return getNonCompletedSlot(position, program, getStart(playlist).getTimeInMillis(), programItems, isResuming(playlist) || playlist.getType().equals(Playlist.Type.LOCAL_RANDOMIZED));
+        return getImmediateNonCompletedSlot(position, program, playlist, programItems);
     }
 
     // if playlist is resuming, no bumpers play; next plays next program, same plays the former un completed else exact time is resumed
@@ -417,30 +417,26 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     }
 
     private String formatDuration(long millis) {
-        return String.format("%d:%d:%d",
-                TimeUnit.MILLISECONDS.toHours(millis),
-                TimeUnit.MILLISECONDS.toMinutes(millis),
-                TimeUnit.MILLISECONDS.toSeconds(millis));
+        long hours = TimeUnit.MILLISECONDS.toHours(millis);
+        long mins = TimeUnit.MILLISECONDS.toMinutes(millis - TimeUnit.HOURS.toMillis(hours));
+        long secs = TimeUnit.MILLISECONDS.toSeconds(millis - TimeUnit.MINUTES.toMillis(mins));
+        return String.format("%02d:%02d:%02d", hours, mins, secs);
     }
 
-    private Seek getNonCompletedSlot(Long position, Integer program, Long startTime, List<MediaItem> mediaItems, boolean skip) {
-        if(skip) {
+    private Seek getImmediateNonCompletedSlot(Long position, Integer program, Playlist playlist, List<MediaItem> mediaItems) {
+        long startTime = getStart(playlist).getTimeInMillis();
+        if(isResuming(playlist) || playlist.getType().equals(Playlist.Type.LOCAL_RANDOMIZED) || playlist.getType().equals(Playlist.Type.ONLINE)) {
             return new Seek(program, position);
         } else {
-            Map<Long, Seek> previousSlots = new HashMap<>();
-            for (int i = 0; i < mediaItems.size(); i++) {
+            for (int i = 0; i < mediaItems.size(); i++) {// mediaItems are well ordered
                 long now = Calendar.getInstance().getTimeInMillis();
                 long duration = getDuration(mediaItems.get(i).mediaId);
                 if (duration + startTime > now) {
-                    long pos = now - startTime;
-                    previousSlots.put(now - duration, new Seek(i,  pos));
+                    // use the first item
+                    return new Seek(i,  now - startTime);
                 }
             }
-            if (!previousSlots.isEmpty()) {
-                List<Long> mls = previousSlots.keySet().stream().collect(Collectors.toList());
-                Collections.sort(mls, Collections.reverseOrder());
-                return previousSlots.get(mls.get(0));
-            }
+            // unseekable, slot is ended
             return null;
         }
     }
@@ -463,6 +459,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
             if (current != null) {
                 current.stop();
                 current.release();
+                current = null;
             }
             playerView.setPlayer(player);
             Logger.log(AuditLog.Event.PLAYLIST_PLAY, getNowPlayingPlaylistLabel());

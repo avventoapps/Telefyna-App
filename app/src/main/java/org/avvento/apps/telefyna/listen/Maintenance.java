@@ -34,28 +34,24 @@ public class Maintenance {
     private Map<String, CurrentPlaylist> startedSlotsToday;
     private Map<String, PendingIntent> pendingIntents;
 
-    private void logMaintenance() {
-        Logger.log(AuditLog.Event.MAINTENANCE);
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void prepareSchedule() {
+    private void triggerMaintenance() {
         startedSlotsToday = new HashMap<>();
         pendingIntents = new HashMap<>();
         Monitor.instance.initialiseConfiguration();
+        Logger.log(AuditLog.Event.MAINTENANCE);
         schedule();
-        logMaintenance();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void run() {
         Logger.log(AuditLog.Event.HEARTBEAT, "ON");
-        prepareSchedule();
+        triggerMaintenance();
         Monitor.instance.getHandler().postDelayed(new Runnable() {// maintainer
             public void run() {
-                prepareSchedule();
+                Logger.log(AuditLog.Event.MAINTENANCE);
+                triggerMaintenance();
                 Monitor.instance.getHandler().postDelayed(this, getMillsToMaintenanceTime());
-                logMaintenance();
             }
         }, getMillsToMaintenanceTime());
     }

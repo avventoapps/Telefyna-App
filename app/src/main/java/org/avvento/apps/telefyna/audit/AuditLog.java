@@ -9,15 +9,14 @@ public class AuditLog {
         KEY_DOWN("Key: %d has been pressed down"),
         CONFIGURATION("Initialized configurations"),
         MAINTENANCE("Ran maintenance"),
-        PLAYLIST(SPLITTER + "[ Preparing to play playlist: %s"),
-        PLAYLIST_PLAY(SPLITTER + "] Now playing playlist: %s"),
+        PLAYLIST(SPLITTER + "[ Preparing to play playlist: %s: %s"),
+        PLAYLIST_PLAY("Playlist: %s Playing from: %s %s"),
         PLAYLIST_EMPTY_PLAY(SPLITTER + "Attempted to play an empty playlist: %s"),
         PLAYLIST_MODIFIED("Playlist: %s is resetting resuming since it was modified %s seconds ago"),
         PLAYLIST_ITEM_CHANGE("Playing playlist: %s now playing program: %s"),
-        PLAYLIST_COMPLETED("Completed playing playlist: %s"),
+        PLAYLIST_COMPLETED(SPLITTER + "] Completed playing playlist: %s"),
         CACHE_NOW_PLAYING_RESUME("Playlist: %s will next be resuming program: %s at: %d"),
         RETRIEVE_NOW_PLAYING_RESUME("Resuming Playlist: %s program: %s at: %d"),
-        PLAYLIST_PLAY_CURRENT_SLOT("Playing current playlist: %s program: %s at: %s"),
         ERROR("%s");
 
         private String message;

@@ -49,7 +49,6 @@ public class Maintenance {
         triggerMaintenance();
         Monitor.instance.getHandler().postDelayed(new Runnable() {// maintainer
             public void run() {
-                Logger.log(AuditLog.Event.MAINTENANCE);
                 triggerMaintenance();
                 Monitor.instance.getHandler().postDelayed(this, getMillsToMaintenanceTime());
             }
@@ -131,7 +130,6 @@ public class Maintenance {
         }
     }
 
-
     private void schedule(Intent intent, long mills, String start) {
         PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(Monitor.instance, CODE++, intent, 0);
         pendingIntents.put(start, alarmPendingIntent);
@@ -148,9 +146,9 @@ public class Maintenance {
     }
 
     /*
-     * Runs at midnight
+     * Maintenance time is currently set to midnight
      */
-    private long getMillsToMaintenanceTime() {// close to midnight
+    private long getMillsToMaintenanceTime() {
         Calendar c = Calendar.getInstance();
         c.add(Calendar.DAY_OF_MONTH, 1);
         c.set(Calendar.HOUR_OF_DAY, 0);

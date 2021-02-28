@@ -194,7 +194,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
      *
      * @return
      */
-    private File getAppRootDirectory() {
+    public File getAppRootDirectory() {
         String postfix = "/telefyna";
         String mntUsb = "/mnt/usb";
         File[] storages = new File(mntUsb).listFiles();

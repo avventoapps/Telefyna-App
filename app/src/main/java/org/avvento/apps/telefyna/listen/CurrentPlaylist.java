@@ -9,6 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
+// TODO rename to a better meaningful name
 public class CurrentPlaylist {
     private int index;
     private Playlist playlist;

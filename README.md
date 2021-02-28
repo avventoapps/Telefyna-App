@@ -51,6 +51,9 @@ For any questions or queries, please email the support team at apps@avventohome.
 
 
 ## TODO
+- [ ] make Telefyna device specific, mantain a file with device ids supported and at running if the device isn't granted show video demo to help them get in touch at mail@avventohome.org
+- [ ] investigate playning slot at 20:57. it played from start
+- [ ] Create a telefyna LOCAL_RANDOMIZED special which loads folders and plays one at a time or set logic for it
 - [ ] test dates down the playlist if it overwrites the schedule
 - [ ] Test playlist modification etc
 - [ ] test and fix mid night runner
@@ -79,7 +82,9 @@ links
 - [ ] support streaming to hls, shoutcast & loudcast (not supported); use external streaming encoder
 - [ ] ensure all wrong media files are skipped (blocked)
 - [ ] work on presentation approach (blocked)
-- [x] add promos/sweepers/something folder that starts the playout whether in continuing. usable for upnexts: intros folder containing another named by foldername: test symbolic - [x] Schedule once per start (last), ignore the rest of the slots
+- [ ] support more formats such as SRT
+- [x] add promos/sweepers/something folder that starts the playout whether in continuing. usable for upnexts: intros folder containing another named by foldername: test symbolic 
+- [x] Schedule once per start (last), ignore the rest of the slots
 - [x] Network listener, switches to second default when internet is off, and back if slot still active
 - [x] Add continuing not by seekto `LOCAL_RESUMING_NEXT`
 - [x] Fork and add auto start using system prefs to FTP, send [PR](https://github.com/ppareit/swiftp/pull/163)

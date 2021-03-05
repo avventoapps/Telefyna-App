@@ -34,13 +34,21 @@ public class Maintenance {
     private Map<String, CurrentPlaylist> startedSlotsToday;
     private Map<String, PendingIntent> pendingIntents;
 
+    /**
+     * Called when Telefyns is lauched and everyday at midnight
+     */
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void triggerMaintenance() {
-        startedSlotsToday = new HashMap<>();
-        pendingIntents = new HashMap<>();
         Monitor.instance.initialiseConfiguration();
-        Logger.log(AuditLog.Event.MAINTENANCE);
-        schedule();
+        // switch to firstDefault when automation is turned off
+        if(Monitor.instance.getConfiguration().isAutomationDisabled()) {
+            Monitor.instance.switchNow(Monitor.instance.getFirstDefaultIndex(), false);
+        } else {
+            startedSlotsToday = new HashMap<>();
+            pendingIntents = new HashMap<>();
+            Logger.log(AuditLog.Event.MAINTENANCE);
+            schedule();
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)

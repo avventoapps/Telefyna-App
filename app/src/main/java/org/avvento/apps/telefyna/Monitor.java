@@ -101,7 +101,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         playlistByIndex.add(playlist);
     }
 
-    // This is the first default playlist, it plays whenever nothing is scheduled or is available
+    // This is the first default playlist, it plays whenever automation is disabled ot nothing is scheduled/available
     public Integer getFirstDefaultIndex() {
         return 0;
     }
@@ -522,7 +522,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
 
     @Override
     public void onNotificationPosted(int notificationId, Notification notification, boolean ongoing) {
-        if (getConfiguration().isDisableNotifications()) {
+        if (getConfiguration().isNotificationsDisabled()) {
             ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancel(notificationId);
         }
     }

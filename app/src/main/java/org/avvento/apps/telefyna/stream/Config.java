@@ -11,6 +11,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class Config {
-    private boolean disableNotifications = true;
+    /**
+     * Update whenever a change to your configuration is made so you can track your configurations well
+     */
+    private String version;
+    private String name;
+    private boolean automationDisabled;
+    private boolean notificationsDisabled;
     private Playlist[] playlists;
 }

@@ -1,0 +1,29 @@
+.my-timepicker-div{
+  position: absolute;
+  z-index: 5;
+  text-align: center;
+  border: solid 1px;
+  border-radius: 5px;
+  border-color: #cccccc;
+  background-color: white;
+}
+
+.my-timepicker-div div{
+  /* reset the negative margin caused by class="row" */
+  margin: 0rem;
+}
+
+.my-timepicker-div option:disabled{
+  color: #bbb;
+  font-style: italic;
+}
+
+.my-timepicker-div span{
+  padding-right: 0.1rem;
+  padding-left: 0.1rem;
+}
+
+.my-timepicker-div .ampm-button{
+  width: 3rem;
+  height: 3rem;
+}

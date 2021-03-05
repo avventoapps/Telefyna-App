@@ -1,0 +1,55 @@
+body {
+    text-align: center;
+    background-color: black;
+    color: white;
+}
+
+.modal-dialog {
+    max-width: unset;
+}
+
+.section {
+    margin: 10px 10px 10px 10px;
+    padding: 4px 4px 4px 4px;
+    border: 1px solid #9b9c9c;
+    border-radius: 5px;
+}
+
+.section.action {
+    margin: 0px 0px 0px 0px;
+}
+
+.section .action, .modal-body input {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.section .action .action-content {
+    margin: auto;
+}
+
+.modal{
+    background-color: white;
+    color: black;
+    width:75%;
+    height: 70%;
+}
+
+.config-result {
+    background-color: rgb(231, 234, 236);
+    color: black;
+    text-align: left;
+}
+
+.action-submit {
+    
+}
+
+#footer {
+    color: gray;
+    font-size: 20px;
+}
+
+#footer label {
+    font-size: 12px;
+}

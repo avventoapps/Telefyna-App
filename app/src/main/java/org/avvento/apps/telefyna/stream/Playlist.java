@@ -19,23 +19,18 @@ import lombok.Setter;
 public class Playlist {
     private static String DATE_FORMAT = "dd-MM-yyyy";
 
+    private boolean active;
+    private Date lastModified;
     private String name;
     private String description;
-    // by default a playlist is enabled
-    private boolean active = true;
-    // days of the week [1-7=Sun-Sat]: if null, runs daily
-    private Integer[] days;
-    // dates to schedule for, must be in DATE_FORMAT(dd-MM-yyyy)
-    private String[] dates;
-    // time to start stream in (HH:mm)
-    private String start;
+    
     /*
      * Each playlist can access 3 bumper folders and bumpers are only for local non resuming playlists;
      *  general (can be disabled by setting playingGeneralBumpers = false),
      *  specialBumpers
      *  one named after urlOrFolder
      */
-    private boolean playingGeneralBumpers = true;
+    private boolean playingGeneralBumpers;
     // a name for folder in bumpers for special ones, this can be shared by other playlists by using the same name
     private String specialBumperFolder;
     private Type type = Type.ONLINE;
@@ -45,6 +40,12 @@ public class Playlist {
      * to maintain an order when playing, name programs or folders alphabetically
      */
     private String urlOrFolder;
+    // days of the week [1-7=Sun-Sat]: if null, runs daily
+    private Integer[] days;
+    // dates to schedule for, must be in DATE_FORMAT(dd-MM-yyyy)
+    private String[] dates;
+    // time to start stream in (HH:mm)
+    private String start;
     // index to a playlist count from top this is cloning, must be above it. use only with day, repeats and start fields
     private Integer clone;
 

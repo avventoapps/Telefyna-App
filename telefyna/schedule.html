@@ -1,0 +1,20 @@
+<div class="section action">
+    Weekly Day(s)
+    <select class="form-control multiselect-ui" multiple ng-model="playlist.days">
+        <option value="1">Sunday</option>
+        <option value="2">Monday</option>
+        <option value="3">Tuesday</option>
+        <option value="4">Wednesday</option>
+        <option value="5">Thursday</option>
+        <option value="6">Friday</option>
+        <option value="7">Saturady</option>
+    </select>
+</div>
+<div class="section action">
+    Future Date(s)
+    <input type="text" class="form-control date" ng-model="datePickerValue" ng-change="setPlaylistDate()">
+</div>
+<div class="section action">
+    * Start Time *
+    <input type="text" class="form-control timepicker" required ng-model="playlist.start">
+</div>

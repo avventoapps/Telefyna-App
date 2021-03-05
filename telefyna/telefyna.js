@@ -41,7 +41,10 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function ($cookie
             if(!$scope.isNotClone(playlist)) {
                 playlist.name = $scope.config.playlists[playlist.clone].name;
             }
-            name = playlist.name + " #" + index;
+            name = playlist.name + " #" + index 
+                + (playlist.start ? " | @" + playlist.start : "")
+                + (playlist.days && playlist.days.length > 0 ? " | Days:" + playlist.days.join(",") : "")
+                + (playlist.dates && playlist.dates.length > 0 ? " | " + playlist.dates.join(",") : "");
         }
         return name;
     }

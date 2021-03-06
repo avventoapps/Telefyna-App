@@ -81,37 +81,47 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function ($cookie
     }
 
     $scope.revise = function() {
-        $scope.modify();
-        $scope.config.playlists[$scope.edit] = $scope.playlist;
-        jQuery("#close-edit").click();
-        $scope.clear();
+        if($scope.edit) {
+            $scope.modify();
+            $scope.config.playlists[$scope.edit] = $scope.playlist;
+            jQuery("#close-edit").click();
+            $scope.clear();
+        } else {
+            alert("Select a playlist to edit");
+        }
     }
 
     $scope.clone = function() {
-        $scope.modify();
-        $scope.config.playlists.push($scope.playlist);
-        jQuery("#close-clone").click();
-        $scope.clear();
+        if($scope.edit) {
+            $scope.modify();
+            $scope.config.playlists.push($scope.playlist);
+            jQuery("#close-clone").click();
+            $scope.clear();
+        } else {
+            alert("Select a playlist to copy");
+        }
     }
 
     $scope.delete = function() {
-        if($scope.deletable.length > 0) {
-            $scope.modify();
-            angular.forEach($scope.deletable, function(i, key1) {
-                var playlist = $scope.config.playlists[i];
-                // remove clones
-                angular.forEach($scope.config.playlists, function(p, key2) {
-                    if(!$scope.isNotClone(p) && i == p.clone) {
-                        delete $scope.config.playlists[key2];
-                    }
+        if(confirm("Do you want to proceed with Deleting Selected Playlists?")) {
+            if($scope.deletable.length > 0) {
+                $scope.modify();
+                angular.forEach($scope.deletable, function(i, key1) {
+                    var playlist = $scope.config.playlists[i];
+                    // remove clones
+                    angular.forEach($scope.config.playlists, function(p, key2) {
+                        if(!$scope.isNotClone(p) && i == p.clone) {
+                            delete $scope.config.playlists[key2];
+                        }
+                    });
+                    delete $scope.config.playlists[key1];
                 });
-                delete $scope.config.playlists[key1];
-            });
-            $scope.config.playlists = $scope.config.playlists.filter(function (el) {
-                return el;
-            });
-            jQuery("#close-delete").click();
-            $scope.clear();
+                $scope.config.playlists = $scope.config.playlists.filter(function (el) {
+                    return el;
+                });
+                jQuery("#close-delete").click();
+                $scope.clear();
+            }
         }
     }
 
@@ -140,6 +150,14 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function ($cookie
         $scope.datePickerValue = undefined;
         $scope.edit = undefined;
         $scope.deletable = [];
+    }
+
+    $scope.clearConfig = function() {
+        if(confirm("Do you want to proceed with Clearing Configuration?")) {
+            $scope.config = {};
+            $scope.config.playlists = [];
+            $scope.clear();
+        }
     }
 
     $scope.setPlaylistDate = function() {

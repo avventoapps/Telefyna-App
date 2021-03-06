@@ -20,7 +20,8 @@ public class Playlist {
     private static String DATE_FORMAT = "dd-MM-yyyy";
 
     private boolean active;
-    private Date lastModified;
+    // lastModified date: Date#toLocaleString
+    private String lastModified;
     private String name;
     private String description;
     

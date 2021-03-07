@@ -4,6 +4,9 @@
 The best simplest performing online stream & local file scheduling auto player for TV broadcasting.
 ______
 
+## Infrastructure
+![Telefyna Infrastructure](telefyna/telefynaDesign.png "Telefyna Infrastructure")
+
 ## Installation
 * Download the [APK from here](https://github.com/avventoapps/avvento/releases/latest/download/telefyna.apk) and install it, grant the app Storage permission and reload it if necessary
 

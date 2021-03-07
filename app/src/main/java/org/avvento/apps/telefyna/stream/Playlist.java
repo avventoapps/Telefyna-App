@@ -19,7 +19,7 @@ import lombok.Setter;
 public class Playlist {
     private static String DATE_FORMAT = "dd-MM-yyyy";
 
-    private boolean active;
+    private boolean active = true;
     // lastModified date: Date#toLocaleString
     private String lastModified;
     private String name;

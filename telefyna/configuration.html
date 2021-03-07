@@ -19,12 +19,15 @@
         
         <link rel="stylesheet" href="res/telefyna.css">
         <script src="telefyna.js"></script>
+
+        <title>Configuring Telefyna</title>
     </head>
 
     <body ng-app="Telefyna" ng-controller="Config" center-block>
-        <div >
-            <h1>|Configuring|</h1>
-            <img src="telefyna.png" alt="Telefyna Icon" width="150" height="150">
+        <div>
+            <h3>|Configuring|</h3>
+            <img src="telefyna.png" alt="Telefyna Icon" width="150" height="150"><br>
+            <label class="slogan">The best simplest performing online stream & local file scheduling auto player for TV broadcasting</label>
             
             <!-- Other configurations before playlists-->
             <div class="section">
@@ -88,6 +91,9 @@
                                     <input type="text" class="form-control" required ng-model="playlist.urlOrFolder">
                                 </div>
                                 <div class="section action">
+                                    <label class="checkbox-inline"><input type="checkbox" ng-model="playlist.playingGeneralBumpers"> Playing General Bumpers</label>
+                                </div>
+                                <div class="section action">
                                     Special Bumper folder name
                                     <input type="text" class="form-control" ng-model="playlist.specialBumperFolder">
                                 </div>
@@ -107,6 +113,7 @@
                                     Future Date(s)
                                     <input type="text" class="form-control date" ng-model="datePickerValue" ng-change="setPlaylistDate()">
                                 </div>
+                                If no Days or Dates are selected but start Time is defined, the playlist schedules daily
                                 <div class="section action">
                                     Start Time
                                     <input type="text" class="form-control timepicker" ng-model="playlist.start">
@@ -137,7 +144,7 @@
                                     {{error}}
                                 </div>
                                 <div class="section action">
-                                    * Select Non Copied Playlist to edit *
+                                    * Select Playlist to edit *
                                     <select class="form-control" required ng-model="edit" ng-change="renderEdit()">
                                         <option ng-repeat="p in config.playlists" ng-if="isNotClone(p)" value="{{$index}}">{{name($index)}}</option>
                                     </select>
@@ -169,6 +176,13 @@
                                     <input type="text" class="form-control" required ng-model="playlist.urlOrFolder">
                                 </div>
                                 <div class="section action">
+                                    <label class="checkbox-inline"><input type="checkbox" ng-model="playlist.playingGeneralBumpers"> Playing General Bumpers</label>
+                                </div>
+                                <div class="section action">
+                                    Special Bumper folder name
+                                    <input type="text" class="form-control" ng-model="playlist.specialBumperFolder">
+                                </div>
+                                <div class="section action">
                                     Weekly Day(s)
                                     <select class="form-control multiselect-ui" multiple ng-model="playlist.days">
                                         <option value="1">1.Sunday</option>
@@ -184,17 +198,12 @@
                                     Future Date(s)
                                     <input type="text" class="form-control date" ng-model="datePickerValue" ng-change="setPlaylistDate()">
                                 </div>
+                                If no Days or Dates are selected but start Time is defined, the playlist schedules daily
                                 <div class="section action">
                                     Start Time
                                     <input type="text" class="form-control timepicker" ng-model="playlist.start">
                                 </div>
-                                <div class="section action">
-                                    <label class="checkbox-inline"><input type="checkbox" ng-model="playlist.playingGeneralBumpers"> Playing General Bumpers</label>
-                                </div>
-                                <div class="section action">
-                                    Special Bumper folder name
-                                    <input type="text" class="form-control" ng-model="playlist.specialBumperFolder">
-                                </div>
+                                
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-info" ng-click="clear()">Clear</button>
@@ -216,9 +225,12 @@
                                 <span aria-hidden="true">&times;</span>
                               </button>
                             </div>
+                            <div class="alert alert-danger section action" role="alert" ng-show="error">
+                                {{error}}
+                            </div>
                             <div class="modal-body">
                                 <div class="section action">
-                                    * Select Parent Non Copied Playlist *
+                                    * Select Parent Playlist *
                                     <select class="form-control" required ng-model="playlist.clone">
                                         <option ng-repeat="p in config.playlists" ng-if="isNotClone(p)" value="{{$index}}">{{name($index)}}</option>
                                     </select>
@@ -239,6 +251,7 @@
                                     Future Date(s)
                                     <input type="text" class="form-control date" ng-model="datePickerValue" ng-change="setPlaylistDate()">
                                 </div>
+                                If no Days or Dates are selected but start Time is defined, the playlist schedules daily
                                 <div class="section action">
                                     * Start Time *
                                     <input type="text" class="form-control timepicker" required ng-model="playlist.start">
@@ -285,8 +298,24 @@
                     </div>
                 </div>
 
-                <!-- Import/Export -->
+                <!-- Demo/Import/Export -->
                 <div class="action">
+                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#demo">Demo</button>
+                    <div class="modal fade action-content" id="demo" role="dialog">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Telefyna Configuration Demonstration</h5>
+                                  </div>
+                                <div class="modal-body">
+                                    <iframe width="560" height="315" src="https://www.youtube.com/embed/jTlgO9NGFdE" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" id="close-delete" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <button type="file" class="btn btn-info" onclick="jQuery('#import-config').click()">Import</button>
                     <input type="file" hidden id="import-config" ng-model="configFile" onchange="angular.element(this).scope().importConfig(event)">
                     <button type="button" class="btn btn-success" ng-disabled="config.playlists.length == 0" ng-click="exportConfig()">Export</button>

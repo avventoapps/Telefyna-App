@@ -1,7 +1,7 @@
 ![Telefyna](https://avventohome.org/wp-content/uploads/2020/12/telefyna.png "Telefyna")
 
 # Telefyna
-An android online & local streaming and scheduling player for audio and video suitable for TVs and radios.
+The best simplest performing online stream & local file scheduling auto player for TV broadcasting.
 ______
 
 ## Installation
@@ -51,6 +51,7 @@ For any questions or queries, please email the support team at apps@avventohome.
 
 
 ## TODO
+- [ ] support auto installing of config under resources if non exists at first run
 - [ ] make Telefyna device specific, mantain a file with device ids supported and at running if the device isn't granted show video demo to help them get in touch at mail@avventohome.org
 - [ ] investigate playning slot at 20:57. it played from start
 - [ ] Create a telefyna LOCAL_RANDOMIZED special which loads folders and plays one at a time or set logic for it

@@ -16,7 +16,7 @@ public class Config {
      */
     private String version;
     private String name;
-    private boolean automationDisabled;
-    private boolean notificationsDisabled;
+    private boolean automationDisabled = false;
+    private boolean notificationsDisabled = true;
     private Playlist[] playlists;
 }

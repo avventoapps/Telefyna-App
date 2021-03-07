@@ -14,6 +14,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function ($cookie
     $scope.config = {};
     $scope.config.playlists = [];
     $scope.playlist = {};
+    $scope.playlist.active = false;
     $scope.error;
     $scope.datePickerValue;
     $scope.edit;
@@ -62,13 +63,18 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function ($cookie
     }
 
     $scope.add = function() {
-        $scope.modify();
-        $scope.verifyPlaylist();
-        if(!$scope.error) {
-            $scope.config.playlists.push($scope.playlist);
-            jQuery("#close-add").click();
-            $scope.clear();
+        if($scope.playlist.type) {
+            $scope.modify();
+            $scope.verifyPlaylist();
+            if(!$scope.error) {
+                $scope.config.playlists.push($scope.playlist);
+                jQuery("#close-add").click();
+                $scope.clear();
+            } else {
+                jQuery("#add").scrollTop(0);
+            }
         } else {
+            $scope.error = "Type is required";
             jQuery("#add").scrollTop(0);
         }
     }
@@ -81,24 +87,31 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function ($cookie
     }
 
     $scope.revise = function() {
-        if($scope.edit) {
-            $scope.modify();
-            $scope.config.playlists[$scope.edit] = $scope.playlist;
-            jQuery("#close-edit").click();
-            $scope.clear();
+        if($scope.playlist.type) {
+            if($scope.edit) {
+                $scope.modify();
+                $scope.config.playlists[$scope.edit] = $scope.playlist;
+                jQuery("#close-edit").click();
+                $scope.clear();
+            } else {
+                $scope.error = "Select a playlist to edit";
+                jQuery("#edit").scrollTop(0);
+            }
         } else {
-            alert("Select a playlist to edit");
+            $scope.error = "Type is required";
+            jQuery("#edit").scrollTop(0);
         }
     }
 
     $scope.clone = function() {
-        if($scope.edit) {
+        if($scope.clone) {
             $scope.modify();
             $scope.config.playlists.push($scope.playlist);
             jQuery("#close-clone").click();
             $scope.clear();
         } else {
-            alert("Select a playlist to copy");
+            $scope.error = "Select a playlist to copy";
+            jQuery("#clone").scrollTop(0);
         }
     }
 
@@ -146,6 +159,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function ($cookie
 
     $scope.clear = function() {
         $scope.playlist = {};
+        $scope.playlist.active = false;
         $scope.error = undefined;
         $scope.datePickerValue = undefined;
         $scope.edit = undefined;

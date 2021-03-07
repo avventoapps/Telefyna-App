@@ -4,9 +4,6 @@
 The best simplest performing online stream & local file scheduling auto player for TV broadcasting.
 ______
 
-## Infrastructure
-![Telefyna Infrastructure](telefyna/telefynaDesign.png "Telefyna Infrastructure")
-
 ## Infrastructure/Demo
 [![Telefyna Demo](telefyna/telefynaDesign.png)](https://youtu.be/jTlgO9NGFdE)
 

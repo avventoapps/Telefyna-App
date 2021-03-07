@@ -7,6 +7,9 @@ ______
 ## Infrastructure
 ![Telefyna Infrastructure](telefyna/telefynaDesign.png "Telefyna Infrastructure")
 
+## Infrastructure/Demo
+[![Telefyna Demo](telefyna/telefynaDesign.png)](https://youtu.be/jTlgO9NGFdE)
+
 ## Installation
 * Download the [APK from here](https://github.com/avventoapps/avvento/releases/latest/download/telefyna.apk) and install it, grant the app Storage permission and reload it if necessary
 

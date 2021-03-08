@@ -5,6 +5,7 @@
 
         <link rel="stylesheet" href="res/bootstrap.min.css">
         <script src="res/jquery.min.js"></script>
+        <script src="res/popper.min.js"></script>
         <script src="res/bootstrap.min.js"></script>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -16,9 +17,14 @@
         <link rel="stylesheet" href="res/datepicker.css">
         <link rel="stylesheet" href="res/timepicker.css">
         <script src="res/timepicker.js"></script>
+
+        <script src="res/jQuery.print.js"></script>
         
+        <link rel="stylesheet" href="res/bootstrap-colorselector.min.css">
+        <script src="res/bootstrap-colorselector.min.js"></script>
+
         <link rel="stylesheet" href="res/telefyna.css">
-        <script src="telefyna.js"></script>
+        <script src="res/telefyna.js"></script>
 
         <title>Configuring Telefyna</title>
     </head>
@@ -56,9 +62,6 @@
                           <form class="modal-content" ng-submit="add()">
                             <div class="modal-header">
                               <h5 class="modal-title">Create a new Playlist</h5>
-                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                              </button>
                             </div>
                             <div class="modal-body">
                                 <div class="alert alert-danger section action" role="alert" ng-show="error">
@@ -87,6 +90,25 @@
                                     </select>
                                 </div>
                                 <div class="section action">
+                                    Color
+                                    <select class="color-selector" ng-model="playlist.color">
+                                        <option value="#00cc99" data-color="#00cc99"></option>
+                                        <option value="#00ccff" data-color="#00ccff"></option>
+                                        <option value="#6666ff" data-color="#6666ff"></option>
+                                        <option value="#ccffff" data-color="#ccffff"></option>
+                                        <option value="#ffff66" data-color="#ffff66"></option>
+                                        <option value="#66ff33" data-color="#66ff33"></option>
+                                        <option value="#ff6600" data-color="#ff6600"></option>
+                                        <option value="#ff33cc" data-color="#ff33cc"></option>
+                                        <option value="#666699" data-color="#666699"></option>
+                                        <option value="#e0ebeb" data-color="#e0ebeb"></option>
+                                        <option value="#990099" data-color="#990099"></option>
+                                        <option value="#993333" data-color="#993333"></option>
+                                        <option value="#808080" data-color="#808080"></option>
+                                        <option value="#ccccff" data-color="#ccccff"></option>
+                                    </select>
+                                </div>
+                                <div class="section action">
                                     * Stream URL Or Local folder name *
                                     <input type="text" class="form-control" required ng-model="playlist.urlOrFolder">
                                 </div>
@@ -100,17 +122,17 @@
                                 <div class="section action">
                                     Weekly Day(s)
                                     <select class="form-control multiselect-ui" multiple ng-model="playlist.days">
-                                        <option value="1">1.Sunday</option>
-                                        <option value="2">2.Monday</option>
-                                        <option value="3">3.Tuesday</option>
-                                        <option value="4">4.Wednesday</option>
-                                        <option value="5">4.Thursday</option>
-                                        <option value="6">6.Friday</option>
-                                        <option value="7">7.Saturady</option>
+                                        <option value="1">{{getDayName(1)}}</option>
+                                        <option value="2">{{getDayName(2)}}</option>
+                                        <option value="3">{{getDayName(3)}}</option>
+                                        <option value="4">{{getDayName(4)}}</option>
+                                        <option value="5">{{getDayName(5)}}</option>
+                                        <option value="6">{{getDayName(6)}}</option>
+                                        <option value="7">{{getDayName(7)}}</option>
                                     </select>
                                 </div>
                                 <div class="section action">
-                                    Future Date(s)
+                                    Date(s)
                                     <input type="text" class="form-control date" ng-model="datePickerValue" ng-change="setPlaylistDate()">
                                 </div>
                                 If no Days or Dates are selected but start Time is defined, the playlist schedules daily
@@ -135,9 +157,6 @@
                           <form class="modal-content" ng-submit="revise()">
                             <div class="modal-header">
                               <h5 class="modal-title">Edit an existing Playlist</h5>
-                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                              </button>
                             </div>
                             <div class="modal-body">
                                 <div class="alert alert-danger section action" role="alert" ng-show="error">
@@ -146,7 +165,7 @@
                                 <div class="section action">
                                     * Select Playlist to edit *
                                     <select class="form-control" required ng-model="edit" ng-change="renderEdit()">
-                                        <option ng-repeat="p in config.playlists" ng-if="isNotClone(p)" value="{{$index}}">{{name($index)}}</option>
+                                        <option ng-repeat="p in config.playlists" ng-if="isNotClone(p)" value="{{$index}}">{{name($index, true)}}</option>
                                     </select>
                                 </div>
                                 <div class="section action">
@@ -171,6 +190,25 @@
                                         <option value="LOCAL_RESUMING_NEXT">Local next resuming folder</option>
                                     </select>
                                 </div>
+                                <div class="section action"  id="edit-color">
+                                    Color
+                                    <select class="color-selector" ng-model="playlist.color">
+                                        <option value="#00cc99" data-color="#00cc99"></option>
+                                        <option value="#00ccff" data-color="#00ccff"></option>
+                                        <option value="#6666ff" data-color="#6666ff"></option>
+                                        <option value="#ccffff" data-color="#ccffff"></option>
+                                        <option value="#ffff66" data-color="#ffff66"></option>
+                                        <option value="#66ff33" data-color="#66ff33"></option>
+                                        <option value="#ff6600" data-color="#ff6600"></option>
+                                        <option value="#ff33cc" data-color="#ff33cc"></option>
+                                        <option value="#666699" data-color="#666699"></option>
+                                        <option value="#e0ebeb" data-color="#e0ebeb"></option>
+                                        <option value="#990099" data-color="#990099"></option>
+                                        <option value="#993333" data-color="#993333"></option>
+                                        <option value="#808080" data-color="#808080"></option>
+                                        <option value="#ccccff" data-color="#ccccff"></option>
+                                    </select>
+                                </div>
                                 <div class="section action">
                                     * Stream URL Or Local folder name *
                                     <input type="text" class="form-control" required ng-model="playlist.urlOrFolder">
@@ -185,17 +223,17 @@
                                 <div class="section action">
                                     Weekly Day(s)
                                     <select class="form-control multiselect-ui" multiple ng-model="playlist.days">
-                                        <option value="1">1.Sunday</option>
-                                        <option value="2">2.Monday</option>
-                                        <option value="3">3.Tuesday</option>
-                                        <option value="4">4.Wednesday</option>
-                                        <option value="5">4.Thursday</option>
-                                        <option value="6">6.Friday</option>
-                                        <option value="7">7.Saturady</option>
+                                        <option value="1">{{getDayName(1)}}</option>
+                                        <option value="2">{{getDayName(2)}}</option>
+                                        <option value="3">{{getDayName(3)}}</option>
+                                        <option value="4">{{getDayName(4)}}</option>
+                                        <option value="5">{{getDayName(5)}}</option>
+                                        <option value="6">{{getDayName(6)}}</option>
+                                        <option value="7">{{getDayName(7)}}</option>
                                     </select>
                                 </div>
                                 <div class="section action">
-                                    Future Date(s)
+                                    Date(s)
                                     <input type="text" class="form-control date" ng-model="datePickerValue" ng-change="setPlaylistDate()">
                                 </div>
                                 If no Days or Dates are selected but start Time is defined, the playlist schedules daily
@@ -221,9 +259,6 @@
                           <form class="modal-content" ng-submit="clone()">
                             <div class="modal-header">
                               <h5 class="modal-title">Copy an existing Playlist</h5>
-                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                              </button>
                             </div>
                             <div class="alert alert-danger section action" role="alert" ng-show="error">
                                 {{error}}
@@ -232,23 +267,23 @@
                                 <div class="section action">
                                     * Select Parent Playlist *
                                     <select class="form-control" required ng-model="playlist.clone">
-                                        <option ng-repeat="p in config.playlists" ng-if="isNotClone(p)" value="{{$index}}">{{name($index)}}</option>
+                                        <option ng-repeat="p in config.playlists" ng-if="isNotClone(p)" value="{{$index}}">{{name($index, true)}}</option>
                                     </select>
                                 </div>
                                 <div class="section action">
                                     Weekly Day(s)
                                     <select class="form-control multiselect-ui" multiple ng-model="playlist.days">
-                                        <option value="1">1.Sunday</option>
-                                        <option value="2">2.Monday</option>
-                                        <option value="3">3.Tuesday</option>
-                                        <option value="4">4.Wednesday</option>
-                                        <option value="5">4.Thursday</option>
-                                        <option value="6">6.Friday</option>
-                                        <option value="7">7.Saturady</option>
+                                        <option value="1">{{getDayName(1)}}</option>
+                                        <option value="2">{{getDayName(2)}}</option>
+                                        <option value="3">{{getDayName(3)}}</option>
+                                        <option value="4">{{getDayName(4)}}</option>
+                                        <option value="5">{{getDayName(5)}}</option>
+                                        <option value="6">{{getDayName(6)}}</option>
+                                        <option value="7">{{getDayName(7)}}</option>
                                     </select>
                                 </div>
                                 <div class="section action">
-                                    Future Date(s)
+                                    Date(s)
                                     <input type="text" class="form-control date" ng-model="datePickerValue" ng-change="setPlaylistDate()">
                                 </div>
                                 If no Days or Dates are selected but start Time is defined, the playlist schedules daily
@@ -276,15 +311,12 @@
                             <form class="modal-content" ng-submit="delete()">
                             <div class="modal-header">
                               <h5 class="modal-title">Delete Exisiting Playlist(s) And their respective Copies</h5>
-                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                              </button>
                             </div>
                             <div class="modal-body">
                                 <div class="section action">
                                     Select Playlists(s)
                                     <select id="playlists-delete" class="form-control multiselect-ui" multiple ng-model="deletable">
-                                        <option ng-repeat="p in config.playlists" value="{{$index}}">{{name($index)}}</option>
+                                        <option ng-repeat="p in config.playlists" value="{{$index}}">{{name($index, true)}}</option>
                                     </select>
                                 </div>
                             </div>
@@ -321,14 +353,74 @@
                     </div>
                     <button type="file" class="btn btn-info" onclick="jQuery('#import-config').click()">Import</button>
                     <input type="file" hidden id="import-config" ng-model="configFile" onchange="angular.element(this).scope().importConfig(event)">
+                    <!-- Preview -->
+                    <button type="button" class="btn btn-success" ng-disabled="config.playlists.length == 0" data-toggle="modal" data-target="#preview" ng-click="initPreviewData()">Preview Schedule</button>
+                    <div class="modal fade action-content" id="preview" role="dialog">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content preview-print">
+                                <div class="modal-header" id="print-title">
+                                    <h5 class="modal-title">Telefyna's broadcasting schedule for:</h5>
+                                    <h4>{{config.name}}</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <h5>Weekly</h5>
+                                    <table class="table table-striped">
+                                        <thead>
+                                          <tr>
+                                            <th scope="col">StartTime</th>
+                                            <th scope="col">1-Sunday</th>
+                                            <th scope="col">2-Monday</th>
+                                            <th scope="col">3-Tuesday</th>
+                                            <th scope="col">4-Wednesday</th>
+                                            <th scope="col">5-Thursday</th>
+                                            <th scope="col">6-Friday</th>
+                                            <th scope="col">7-Saturday</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                          <tr ng-repeat="program in previewData.weekly">
+                                            <td>{{program.start}}</th>
+                                            <td class="{{classifyColor(program.slots[1].color)}}">{{program.slots[1].name}}</td>
+                                            <td class="{{classifyColor(program.slots[2].color)}}">{{program.slots[2].name}}</td>
+                                            <td class="{{classifyColor(program.slots[3].color)}}">{{program.slots[3].name}}</td>
+                                            <td class="{{classifyColor(program.slots[4].color)}}">{{program.slots[4].name}}</td>
+                                            <td class="{{classifyColor(program.slots[5].color)}}">{{program.slots[5].name}}</td>
+                                            <td class="{{classifyColor(program.slots[6].color)}}">{{program.slots[6].name}}</td>
+                                            <td class="{{classifyColor(program.slots[7].color)}}">{{program.slots[7].name}}</td>
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                      <h5>Dates</h5>
+                                      <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                              <th scope="col">Time</th>
+                                              <th scope="col">Playlist</th>
+                                            </tr>
+                                          </thead>
+                                        <tbody>
+                                          <tr ng-repeat="program in previewData.dated">
+                                            <td>{{program.at}}</td>
+                                            <td style="background-color:{{program.color}}">{{program.name}}</td>
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                </div>
+                                <div class="modal-footer no-print">
+                                    <button type="button" class="btn btn-success" onclick="jQuery('.preview-print').print({globalStyles: true, stylesheet: 'res/telefyna.css'})">Print</button>
+                                    <button type="button" class="btn btn-danger" id="close-preview" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <button type="button" class="btn btn-success" ng-disabled="config.playlists.length == 0" ng-click="exportConfig()">Export</button>
                 </div>
             </div>
 
             <!-- Results -->
-            <div class="section config-result">
+            <!--div class="section config-result">
                 <pre>{{config | json: 2}}</pre>
-            </div>
+            </div-->
             <a id="export" hidden></a>
             <div id="footer">
                 apps@avventohome.org

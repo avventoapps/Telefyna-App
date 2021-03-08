@@ -24,6 +24,8 @@ public class Playlist {
     private String lastModified;
     private String name;
     private String description;
+    // preview web color
+    private String color;
     
     /*
      * Each playlist can access 3 bumper folders and bumpers are only for local non resuming playlists;

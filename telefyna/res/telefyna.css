@@ -28,21 +28,23 @@ body {
     margin: auto;
 }
 
-.modal{
+.modal {
     background-color: white;
     color: black;
     width:75%;
-    height: 70%;
+    height: 90%;
+}
+
+#preview {
+    width:100%;
+    height: 100%;
+    -webkit-print-color-adjust:exact;
 }
 
 .config-result {
     background-color: rgb(231, 234, 236);
     color: black;
     text-align: left;
-}
-
-.action-submit {
-    
 }
 
 #footer, .slogan {
@@ -52,4 +54,73 @@ body {
 
 #footer label, .slogan {
     font-size: 12px;
+}
+
+.preview-print {
+    color: black;
+}
+#print-title {
+    text-align: center;
+}
+
+th, td {
+    border-left: 1px solid #dee2e6;
+    border-right: 1px solid #dee2e6;
+}
+
+/* Preview backgrounds */
+._00cc99 {
+    background-color: #00cc99;
+}
+
+._00ccff {
+    background-color: #00ccff;
+}
+
+._6666ff {
+    background-color: #6666ff;
+}
+                                     
+._ccffff {
+    background-color: #ccffff;
+}
+
+._ffff66 {
+    background-color: #ffff66;
+}
+
+._66ff33 {
+    background-color: #66ff33;
+}
+
+._ff6600 {
+    background-color: #ff6600;
+}
+
+._ff33cc {
+    background-color: #ff33cc;
+}
+
+._666699 {
+    background-color: #666699;
+}
+
+._e0ebeb {
+    background-color: #e0ebeb;
+}
+
+._990099 {
+    background-color: #990099;
+}
+
+._993333 {
+    background-color: #993333;
+}
+
+._808080 {
+    background-color: #808080;
+}
+
+._ccccff {
+    background-color: #ccccff;
 }

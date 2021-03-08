@@ -1,159 +1,180 @@
 {
   "name": "3ABN-TV Uganda proposed",
   "version": "1.0",
-  "lastModified": "05/03/2021, 19:06:24",
+  "lastModified": "08/03/2021, 15:14:03",
   "automationDisabled": false,
   "notificationsDisabled": true,
   "playlists": [
     {
-      "name": "0-3ABN-I International",
-      "type":"ONLINE",
+      "name": "International",
+      "type": "ONLINE",
       "description": "This is the first default playlist, it plays whenever nothing is scheduled or is available",
       "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652312/secure/master.m3u8",
-      "active": true
+      "active": true,
+      "color": "#00ccff"
     },
     {
-      "name": "1-Fillers",
+      "name": "Fillers",
       "description": "This is the second default playlist, it plays whenever there is no internet connection",
       "type": "LOCAL_RANDOMIZED",
       "urlOrFolder": "Fillers",
       "active": true,
-      "playingGeneralBumpers": true
+      "playingGeneralBumpers": true,
+      "color": "#00cc99"
     },
     {
-      "name": "2-3ABN-N Network",
-      "type":"ONLINE",
+      "name": "Network",
+      "type": "ONLINE",
       "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652042/secure/master.m3u8",
-      "active": true
+      "active": true,
+      "color": "#6666ff"
     },
     {
-      "name": "3-3ABN-P Proclaim",
-      "type":"ONLINE",
+      "name": "Proclaim",
+      "type": "ONLINE",
       "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652317/secure/master.m3u8",
-      "active": true
+      "active": true,
+      "color": "#990099"
     },
     {
-      "name": "4-3ABN-D DareToDream",
-      "type":"ONLINE",
+      "name": "DareToDream",
+      "type": "ONLINE",
       "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652313/secure/master.m3u8",
-      "active": true
+      "active": true,
+      "color": "#990099"
     },
     {
-      "name": "5-3ABN-K Kids",
-      "type":"ONLINE",
+      "name": "Kids",
+      "type": "ONLINE",
       "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652318/secure/master.m3u8",
-      "active": true
+      "active": true,
+      "color": "#ffff66"
     },
     {
-      "name": "6-3ABN-M PraiseHimMusic",
-      "type":"ONLINE",
+      "name": "PraiseHimMusic",
+      "type": "ONLINE",
       "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/554145/secure/playlist.m3u8",
-      "active": true
+      "active": true,
+      "color": "#ccccff"
     },
     {
-      "name": "7-3ABN-U Bwatyo Bwayogera Mukama",
+      "name": "Bwatyo Bwayogera Mukama",
       "type": "LOCAL_SEQUENCED",
       "urlOrFolder": "BwatyoBwayogeraMukama",
       "active": true,
-      "playingGeneralBumpers": true
+      "playingGeneralBumpers": true,
+      "color": "#66ff33"
     },
     {
-      "name": "8-3ABN-U Manya Ebiro",
+      "name": "Manya Ebiro",
       "type": "LOCAL_SEQUENCED",
       "urlOrFolder": "ManyaEbiro",
       "active": true,
-      "playingGeneralBumpers": true
+      "playingGeneralBumpers": true,
+      "color": "#66ff33"
     },
     {
-      "name": "9-3ABN-U-Julira Mukama",
+      "name": "Julira Mukama",
       "type": "LOCAL_SEQUENCED",
       "urlOrFolder": "JuliraMukama",
       "active": true,
-      "playingGeneralBumpers": true
+      "playingGeneralBumpers": true,
+      "color": "#66ff33"
     },
     {
-      "name": "10-3ABN-U-Beera Mulamu",
+      "name": "Beera Mulamu",
       "type": "LOCAL_SEQUENCED",
       "urlOrFolder": "BeeraMulamu",
       "active": true,
-      "playingGeneralBumpers": true
+      "playingGeneralBumpers": true,
+      "color": "#66ff33"
     },
     {
-      "name": "11-3ABN-U-Yimba Nange",
+      "name": "Yimba Nange",
       "type": "LOCAL_SEQUENCED",
       "urlOrFolder": "YimbaNange",
       "active": true,
-      "playingGeneralBumpers": true
+      "playingGeneralBumpers": true,
+      "color": "#66ff33"
     },
     {
-      "name": "12-3ABN-U-Obutonde bwogera",
+      "name": "Obutonde bwogera",
       "type": "LOCAL_SEQUENCED",
       "urlOrFolder": "ObutondeBwogera",
       "active": true,
-      "playingGeneralBumpers": true
+      "playingGeneralBumpers": true,
+      "color": "#66ff33"
     },
     {
-      "name": "13-3ABN-U-Ennyimba",
+      "name": "Ennyimba",
       "type": "LOCAL_RANDOMIZED",
       "urlOrFolder": "Ennyimba",
       "active": true,
-      "playingGeneralBumpers": true
+      "playingGeneralBumpers": true,
+      "color": "#66ff33"
     },
     {
-      "name": "14-3ABN-U Ensulo ey'enkya Sun",
+      "name": "Ensulo ey'enkya-Sun",
       "type": "LOCAL_SEQUENCED",
       "urlOrFolder": "EnsuloEyenkyaSun",
       "active": true,
       "playingGeneralBumpers": true,
-      "specialBumperFolder": "EnsuloEyenkya"
+      "specialBumperFolder": "EnsuloEyenkya",
+      "color": "#66ff33"
     },
     {
-      "name": "15-3ABN-U Ensulo ey'enkya Mon",
+      "name": "Ensulo ey'enkya-Mon",
       "type": "LOCAL_SEQUENCED",
       "urlOrFolder": "EnsuloEyenkyaMon",
       "active": true,
       "playingGeneralBumpers": true,
-      "specialBumperFolder": "EnsuloEyenkya"
+      "specialBumperFolder": "EnsuloEyenkya",
+      "color": "#66ff33"
     },
     {
-      "name": "16-3ABN-U Ensulo ey'enkya Tue",
+      "name": "Ensulo ey'enkya-Tue",
       "type": "LOCAL_SEQUENCED",
       "urlOrFolder": "EnsuloEyenkyaTue",
       "active": true,
       "playingGeneralBumpers": true,
-      "specialBumperFolder": "EnsuloEyenkya"
+      "specialBumperFolder": "EnsuloEyenkya",
+      "color": "#66ff33"
     },
     {
-      "name": "17-3ABN-U Ensulo ey'enkya Wed",
+      "name": "Ensulo ey'enkya-Wed",
       "type": "LOCAL_SEQUENCED",
       "urlOrFolder": "EnsuloEyenkyaWed",
       "active": true,
       "playingGeneralBumpers": true,
-      "specialBumperFolder": "EnsuloEyenkya"
+      "specialBumperFolder": "EnsuloEyenkya",
+      "color": "#66ff33"
     },
     {
-      "name": "18-3ABN-U Ensulo ey'enkya Thur",
+      "name": "Ensulo ey'enkya-Thur",
       "type": "LOCAL_SEQUENCED",
       "urlOrFolder": "EnsuloEyenkyaThur",
       "active": true,
       "playingGeneralBumpers": true,
-      "specialBumperFolder": "EnsuloEyenkya"
+      "specialBumperFolder": "EnsuloEyenkya",
+      "color": "#66ff33"
     },
     {
-      "name": "19-3ABN-U Ensulo ey'enkya Fri",
+      "name": "Ensulo ey'enkya-Fri",
       "type": "LOCAL_SEQUENCED",
       "urlOrFolder": "EnsuloEyenkyaFri",
       "active": true,
       "playingGeneralBumpers": true,
-      "specialBumperFolder": "EnsuloEyenkya"
+      "specialBumperFolder": "EnsuloEyenkya",
+      "color": "#66ff33"
     },
     {
-      "name": "20-3ABN-U Ensulo ey'enkya Sat",
+      "name": "Ensulo ey'enkya-Sat",
       "type": "LOCAL_SEQUENCED",
       "urlOrFolder": "EnsuloEyenkyaSat",
       "active": true,
       "playingGeneralBumpers": true,
-      "specialBumperFolder": "EnsuloEyenkya"
+      "specialBumperFolder": "EnsuloEyenkya",
+      "color": "#66ff33"
     },
     {
       "clone": 3,
@@ -166,7 +187,7 @@
         5,
         6
       ],
-      "name": "3-3ABN-P Proclaim"
+      "name": "Proclaim"
     },
     {
       "clone": 4,
@@ -174,12 +195,12 @@
       "days": [
         7
       ],
-      "name": "4-3ABN-D DareToDream"
+      "name": "DareToDream"
     },
     {
       "clone": 6,
       "start": "01:00",
-      "name": "6-3ABN-M PraiseHimMusic"
+      "name": "PraiseHimMusic"
     },
     {
       "clone": 2,
@@ -187,7 +208,7 @@
       "days": [
         1
       ],
-      "name": "2-3ABN-N Network"
+      "name": "Network"
     },
     {
       "clone": 0,
@@ -199,7 +220,7 @@
         6,
         7
       ],
-      "name": "0-3ABN-I International"
+      "name": "International"
     },
     {
       "clone": 3,
@@ -207,7 +228,7 @@
       "days": [
         4
       ],
-      "name": "3-3ABN-P Proclaim"
+      "name": "Proclaim"
     },
     {
       "clone": 6,
@@ -216,7 +237,7 @@
         1,
         2
       ],
-      "name": "6-3ABN-M PraiseHimMusic"
+      "name": "PraiseHimMusic"
     },
     {
       "clone": 3,
@@ -226,7 +247,7 @@
         6,
         7
       ],
-      "name": "3-3ABN-P Proclaim"
+      "name": "Proclaim"
     },
     {
       "clone": 2,
@@ -235,7 +256,7 @@
         4,
         5
       ],
-      "name": "2-3ABN-N Network"
+      "name": "Network"
     },
     {
       "clone": 0,
@@ -244,7 +265,7 @@
         1,
         2
       ],
-      "name": "0-3ABN-I International"
+      "name": "International"
     },
     {
       "clone": 3,
@@ -253,7 +274,7 @@
         1,
         2
       ],
-      "name": "3-3ABN-P Proclaim"
+      "name": "Proclaim"
     },
     {
       "clone": 0,
@@ -263,7 +284,7 @@
         6,
         7
       ],
-      "name": "0-3ABN-I International"
+      "name": "International"
     },
     {
       "clone": 4,
@@ -271,7 +292,7 @@
       "days": [
         5
       ],
-      "name": "4-3ABN-D DareToDream"
+      "name": "DareToDream"
     },
     {
       "clone": 0,
@@ -282,7 +303,7 @@
         3,
         4
       ],
-      "name": "0-3ABN-I International"
+      "name": "International"
     },
     {
       "clone": 6,
@@ -290,7 +311,7 @@
       "days": [
         6
       ],
-      "name": "6-3ABN-M PraiseHimMusic"
+      "name": "PraiseHimMusic"
     },
     {
       "clone": 2,
@@ -298,7 +319,7 @@
       "days": [
         7
       ],
-      "name": "2-3ABN-N Network"
+      "name": "Network"
     },
     {
       "clone": 14,
@@ -306,7 +327,7 @@
       "days": [
         1
       ],
-      "name": "14-3ABN-U Ensulo ey'enkya Sun"
+      "name": "Ensulo ey'enkya-Sun"
     },
     {
       "clone": 15,
@@ -314,7 +335,7 @@
       "days": [
         2
       ],
-      "name": "15-3ABN-U Ensulo ey'enkya Mon"
+      "name": "Ensulo ey'enkya-Mon"
     },
     {
       "clone": 16,
@@ -322,7 +343,7 @@
       "days": [
         3
       ],
-      "name": "16-3ABN-U Ensulo ey'enkya Tue"
+      "name": "Ensulo ey'enkya-Tue"
     },
     {
       "clone": 17,
@@ -330,7 +351,7 @@
       "days": [
         4
       ],
-      "name": "17-3ABN-U Ensulo ey'enkya Wed"
+      "name": "Ensulo ey'enkya-Wed"
     },
     {
       "clone": 18,
@@ -338,7 +359,7 @@
       "days": [
         5
       ],
-      "name": "18-3ABN-U Ensulo ey'enkya Thur"
+      "name": "Ensulo ey'enkya-Thur"
     },
     {
       "clone": 19,
@@ -346,7 +367,7 @@
       "days": [
         6
       ],
-      "name": "19-3ABN-U Ensulo ey'enkya Fri"
+      "name": "Ensulo ey'enkya-Fri"
     },
     {
       "clone": 20,
@@ -354,7 +375,7 @@
       "days": [
         7
       ],
-      "name": "20-3ABN-U Ensulo ey'enkya Sat"
+      "name": "Ensulo ey'enkya-Sat"
     },
     {
       "clone": 0,
@@ -367,7 +388,7 @@
         5,
         6
       ],
-      "name": "0-3ABN-I International"
+      "name": "International"
     },
     {
       "clone": 4,
@@ -375,7 +396,7 @@
       "days": [
         7
       ],
-      "name": "4-3ABN-D DareToDream"
+      "name": "DareToDream"
     },
     {
       "clone": 4,
@@ -385,7 +406,7 @@
         5,
         6
       ],
-      "name": "4-3ABN-D DareToDream"
+      "name": "DareToDream"
     },
     {
       "clone": 4,
@@ -393,7 +414,7 @@
       "days": [
         1
       ],
-      "name": "4-3ABN-D DareToDream"
+      "name": "DareToDream"
     },
     {
       "clone": 3,
@@ -404,7 +425,7 @@
         4,
         5
       ],
-      "name": "3-3ABN-P Proclaim"
+      "name": "Proclaim"
     },
     {
       "clone": 0,
@@ -413,7 +434,7 @@
         1,
         6
       ],
-      "name": "0-3ABN-I International"
+      "name": "International"
     },
     {
       "clone": 5,
@@ -421,7 +442,7 @@
       "days": [
         7
       ],
-      "name": "5-3ABN-K Kids"
+      "name": "Kids"
     },
     {
       "clone": 5,
@@ -434,7 +455,7 @@
         5,
         6
       ],
-      "name": "5-3ABN-K Kids"
+      "name": "Kids"
     },
     {
       "clone": 0,
@@ -442,7 +463,7 @@
       "days": [
         7
       ],
-      "name": "0-3ABN-I International"
+      "name": "International"
     },
     {
       "clone": 3,
@@ -450,7 +471,7 @@
       "days": [
         7
       ],
-      "name": "3-3ABN-P Proclaim"
+      "name": "Proclaim"
     },
     {
       "clone": 2,
@@ -458,7 +479,7 @@
       "days": [
         1
       ],
-      "name": "2-3ABN-N Network"
+      "name": "Network"
     },
     {
       "clone": 0,
@@ -467,7 +488,7 @@
         2,
         6
       ],
-      "name": "0-3ABN-I International"
+      "name": "International"
     },
     {
       "clone": 3,
@@ -477,7 +498,7 @@
         4,
         5
       ],
-      "name": "3-3ABN-P Proclaim"
+      "name": "Proclaim"
     },
     {
       "clone": 4,
@@ -485,7 +506,7 @@
       "days": [
         7
       ],
-      "name": "4-3ABN-D DareToDream"
+      "name": "DareToDream"
     },
     {
       "clone": 6,
@@ -493,7 +514,7 @@
       "days": [
         7
       ],
-      "name": "6-3ABN-M PraiseHimMusic"
+      "name": "PraiseHimMusic"
     },
     {
       "clone": 0,
@@ -502,7 +523,7 @@
         1,
         3
       ],
-      "name": "0-3ABN-I International"
+      "name": "International"
     },
     {
       "clone": 4,
@@ -510,7 +531,7 @@
       "days": [
         4
       ],
-      "name": "4-3ABN-D DareToDream"
+      "name": "DareToDream"
     },
     {
       "clone": 2,
@@ -518,7 +539,7 @@
       "days": [
         6
       ],
-      "name": "2-3ABN-N Network"
+      "name": "Network"
     },
     {
       "clone": 7,
@@ -526,7 +547,7 @@
       "days": [
         7
       ],
-      "name": "7-3ABN-U Bwatyo Bwayogera Mukama"
+      "name": "Bwatyo Bwayogera Mukama"
     },
     {
       "clone": 6,
@@ -536,7 +557,7 @@
         3,
         5
       ],
-      "name": "6-3ABN-M PraiseHimMusic"
+      "name": "PraiseHimMusic"
     },
     {
       "clone": 4,
@@ -545,7 +566,7 @@
         2,
         6
       ],
-      "name": "4-3ABN-D DareToDream"
+      "name": "DareToDream"
     },
     {
       "clone": 0,
@@ -553,7 +574,7 @@
       "days": [
         7
       ],
-      "name": "0-3ABN-I International"
+      "name": "International"
     },
     {
       "clone": 0,
@@ -562,7 +583,7 @@
         1,
         2
       ],
-      "name": "0-3ABN-I International"
+      "name": "International"
     },
     {
       "clone": 3,
@@ -571,7 +592,7 @@
         4,
         7
       ],
-      "name": "3-3ABN-P Proclaim"
+      "name": "Proclaim"
     },
     {
       "clone": 2,
@@ -581,7 +602,7 @@
         5,
         6
       ],
-      "name": "2-3ABN-N Network"
+      "name": "Network"
     },
     {
       "clone": 6,
@@ -590,7 +611,7 @@
         3,
         6
       ],
-      "name": "6-3ABN-M PraiseHimMusic"
+      "name": "PraiseHimMusic"
     },
     {
       "clone": 4,
@@ -599,7 +620,7 @@
         4,
         5
       ],
-      "name": "4-3ABN-D DareToDream"
+      "name": "DareToDream"
     },
     {
       "clone": 2,
@@ -608,7 +629,7 @@
         3,
         6
       ],
-      "name": "2-3ABN-N Network"
+      "name": "Network"
     },
     {
       "clone": 3,
@@ -620,7 +641,7 @@
         4,
         5
       ],
-      "name": "3-3ABN-P Proclaim"
+      "name": "Proclaim"
     },
     {
       "clone": 0,
@@ -628,7 +649,7 @@
       "days": [
         6
       ],
-      "name": "0-3ABN-I International"
+      "name": "International"
     },
     {
       "clone": 0,
@@ -638,7 +659,7 @@
         2,
         7
       ],
-      "name": "0-3ABN-I International"
+      "name": "International"
     },
     {
       "clone": 2,
@@ -647,7 +668,7 @@
         4,
         5
       ],
-      "name": "2-3ABN-N Network"
+      "name": "Network"
     },
     {
       "clone": 5,
@@ -655,7 +676,7 @@
       "days": [
         3
       ],
-      "name": "5-3ABN-K Kids"
+      "name": "Kids"
     },
     {
       "clone": 5,
@@ -663,7 +684,7 @@
       "days": [
         1
       ],
-      "name": "5-3ABN-K Kids"
+      "name": "Kids"
     },
     {
       "clone": 2,
@@ -671,7 +692,7 @@
       "days": [
         2
       ],
-      "name": "2-3ABN-N Network"
+      "name": "Network"
     },
     {
       "clone": 3,
@@ -680,7 +701,7 @@
         3,
         7
       ],
-      "name": "3-3ABN-P Proclaim"
+      "name": "Proclaim"
     },
     {
       "clone": 6,
@@ -689,7 +710,7 @@
         4,
         6
       ],
-      "name": "6-3ABN-M PraiseHimMusic"
+      "name": "PraiseHimMusic"
     },
     {
       "clone": 0,
@@ -697,7 +718,7 @@
       "days": [
         4
       ],
-      "name": "0-3ABN-I International"
+      "name": "International"
     },
     {
       "clone": 8,
@@ -707,7 +728,7 @@
         3,
         5
       ],
-      "name": "8-3ABN-U Manya Ebiro"
+      "name": "Manya Ebiro"
     },
     {
       "clone": 9,
@@ -717,7 +738,7 @@
         4,
         7
       ],
-      "name": "9-3ABN-U-Julira Mukama"
+      "name": "Julira Mukama"
     },
     {
       "clone": 7,
@@ -725,7 +746,7 @@
       "days": [
         6
       ],
-      "name": "7-3ABN-U Bwatyo Bwayogera Mukama"
+      "name": "Bwatyo Bwayogera Mukama"
     },
     {
       "clone": 7,
@@ -738,7 +759,7 @@
         5,
         7
       ],
-      "name": "7-3ABN-U Bwatyo Bwayogera Mukama"
+      "name": "Bwatyo Bwayogera Mukama"
     },
     {
       "clone": 12,
@@ -746,7 +767,7 @@
       "days": [
         6
       ],
-      "name": "12-3ABN-U-Obutonde bwogera"
+      "name": "Obutonde bwogera"
     },
     {
       "clone": 13,
@@ -754,7 +775,7 @@
       "days": [
         6
       ],
-      "name": "13-3ABN-U-Ennyimba"
+      "name": "Ennyimba"
     },
     {
       "clone": 10,
@@ -764,7 +785,7 @@
         3,
         5
       ],
-      "name": "10-3ABN-U-Beera Mulamu"
+      "name": "Beera Mulamu"
     },
     {
       "clone": 11,
@@ -774,7 +795,7 @@
         4,
         7
       ],
-      "name": "11-3ABN-U-Yimba Nange"
+      "name": "Yimba Nange"
     },
     {
       "clone": 8,
@@ -782,7 +803,7 @@
       "days": [
         6
       ],
-      "name": "8-3ABN-U Manya Ebiro"
+      "name": "Manya Ebiro"
     },
     {
       "clone": 3,
@@ -794,7 +815,7 @@
         4,
         5
       ],
-      "name": "3-3ABN-P Proclaim"
+      "name": "Proclaim"
     },
     {
       "clone": 4,
@@ -802,7 +823,7 @@
       "days": [
         6
       ],
-      "name": "4-3ABN-D DareToDream"
+      "name": "DareToDream"
     },
     {
       "clone": 0,
@@ -810,7 +831,7 @@
       "days": [
         7
       ],
-      "name": "0-3ABN-I International"
+      "name": "International"
     },
     {
       "clone": 6,
@@ -819,7 +840,7 @@
         1,
         6
       ],
-      "name": "6-3ABN-M PraiseHimMusic"
+      "name": "PraiseHimMusic"
     },
     {
       "clone": 2,
@@ -830,7 +851,7 @@
         4,
         5
       ],
-      "name": "2-3ABN-N Network"
+      "name": "Network"
     },
     {
       "clone": 4,
@@ -838,7 +859,7 @@
       "days": [
         6
       ],
-      "name": "4-3ABN-D DareToDream"
+      "name": "DareToDream"
     },
     {
       "clone": 3,
@@ -846,7 +867,7 @@
       "days": [
         7
       ],
-      "name": "3-3ABN-P Proclaim"
+      "name": "Proclaim"
     },
     {
       "clone": 2,
@@ -854,7 +875,7 @@
       "days": [
         7
       ],
-      "name": "2-3ABN-N Network"
+      "name": "Network"
     }
   ]
 }

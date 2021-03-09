@@ -3,8 +3,10 @@
 This project contains a client side application for managing Telefyna's configurations which includes programming/scheduling
 
 ## TODO
+- [ ] add current program tracking on the schedule preview
+- [ ] fill up colors for proceeding slots
 - [ ] fix or support caching config on client side
-- [x] Build entire schedule preview, use http://bootstrap-colorselector.flaute.com/
+- [x] Build entire schedule preview
 - [x] Binding config.json to dom elements in memory
 - [x] Import & export config.json
 - [x] Automation, Notification Disabling triggering etc

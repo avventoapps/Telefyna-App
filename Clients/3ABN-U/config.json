@@ -1,7 +1,7 @@
 {
   "name": "3ABN-TV Uganda proposed",
   "version": "1.0",
-  "lastModified": "08/03/2021, 15:14:03",
+  "lastModified": "09/03/2021, 15:47:26",
   "automationDisabled": false,
   "notificationsDisabled": true,
   "playlists": [
@@ -34,7 +34,7 @@
       "type": "ONLINE",
       "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652317/secure/master.m3u8",
       "active": true,
-      "color": "#990099"
+      "color": "#808080"
     },
     {
       "name": "DareToDream",
@@ -55,7 +55,7 @@
       "type": "ONLINE",
       "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/554145/secure/playlist.m3u8",
       "active": true,
-      "color": "#ccccff"
+      "color": "#ff6600"
     },
     {
       "name": "Bwatyo Bwayogera Mukama",
@@ -71,7 +71,7 @@
       "urlOrFolder": "ManyaEbiro",
       "active": true,
       "playingGeneralBumpers": true,
-      "color": "#66ff33"
+      "color": "#99ff99"
     },
     {
       "name": "Julira Mukama",
@@ -79,7 +79,7 @@
       "urlOrFolder": "JuliraMukama",
       "active": true,
       "playingGeneralBumpers": true,
-      "color": "#66ff33"
+      "color": "#ccffcc"
     },
     {
       "name": "Beera Mulamu",
@@ -87,7 +87,7 @@
       "urlOrFolder": "BeeraMulamu",
       "active": true,
       "playingGeneralBumpers": true,
-      "color": "#66ff33"
+      "color": "#336600"
     },
     {
       "name": "Yimba Nange",
@@ -95,7 +95,7 @@
       "urlOrFolder": "YimbaNange",
       "active": true,
       "playingGeneralBumpers": true,
-      "color": "#66ff33"
+      "color": "#66ffcc"
     },
     {
       "name": "Obutonde bwogera",
@@ -103,7 +103,7 @@
       "urlOrFolder": "ObutondeBwogera",
       "active": true,
       "playingGeneralBumpers": true,
-      "color": "#66ff33"
+      "color": "#ccffff"
     },
     {
       "name": "Ennyimba",
@@ -111,7 +111,7 @@
       "urlOrFolder": "Ennyimba",
       "active": true,
       "playingGeneralBumpers": true,
-      "color": "#66ff33"
+      "color": "#ccffff"
     },
     {
       "name": "Ensulo ey'enkya-Sun",
@@ -120,7 +120,7 @@
       "active": true,
       "playingGeneralBumpers": true,
       "specialBumperFolder": "EnsuloEyenkya",
-      "color": "#66ff33"
+      "color": "#00cc99"
     },
     {
       "name": "Ensulo ey'enkya-Mon",
@@ -129,7 +129,7 @@
       "active": true,
       "playingGeneralBumpers": true,
       "specialBumperFolder": "EnsuloEyenkya",
-      "color": "#66ff33"
+      "color": "#00cc99"
     },
     {
       "name": "Ensulo ey'enkya-Tue",
@@ -138,7 +138,7 @@
       "active": true,
       "playingGeneralBumpers": true,
       "specialBumperFolder": "EnsuloEyenkya",
-      "color": "#66ff33"
+      "color": "#00cc99"
     },
     {
       "name": "Ensulo ey'enkya-Wed",
@@ -147,7 +147,7 @@
       "active": true,
       "playingGeneralBumpers": true,
       "specialBumperFolder": "EnsuloEyenkya",
-      "color": "#66ff33"
+      "color": "#00cc99"
     },
     {
       "name": "Ensulo ey'enkya-Thur",
@@ -156,7 +156,7 @@
       "active": true,
       "playingGeneralBumpers": true,
       "specialBumperFolder": "EnsuloEyenkya",
-      "color": "#66ff33"
+      "color": "#00cc99"
     },
     {
       "name": "Ensulo ey'enkya-Fri",
@@ -165,7 +165,7 @@
       "active": true,
       "playingGeneralBumpers": true,
       "specialBumperFolder": "EnsuloEyenkya",
-      "color": "#66ff33"
+      "color": "#00cc99"
     },
     {
       "name": "Ensulo ey'enkya-Sat",
@@ -174,7 +174,7 @@
       "active": true,
       "playingGeneralBumpers": true,
       "specialBumperFolder": "EnsuloEyenkya",
-      "color": "#66ff33"
+      "color": "#00cc99"
     },
     {
       "clone": 3,
@@ -187,7 +187,8 @@
         5,
         6
       ],
-      "name": "Proclaim"
+      "name": "Proclaim",
+      "color": "#808080"
     },
     {
       "clone": 4,
@@ -195,12 +196,14 @@
       "days": [
         7
       ],
-      "name": "DareToDream"
+      "name": "DareToDream",
+      "color": "#990099"
     },
     {
       "clone": 6,
       "start": "01:00",
-      "name": "PraiseHimMusic"
+      "name": "PraiseHimMusic",
+      "color": "#ff6600"
     },
     {
       "clone": 2,
@@ -208,7 +211,8 @@
       "days": [
         1
       ],
-      "name": "Network"
+      "name": "Network",
+      "color": "#6666ff"
     },
     {
       "clone": 0,
@@ -220,7 +224,8 @@
         6,
         7
       ],
-      "name": "International"
+      "name": "International",
+      "color": "#00ccff"
     },
     {
       "clone": 3,
@@ -228,7 +233,8 @@
       "days": [
         4
       ],
-      "name": "Proclaim"
+      "name": "Proclaim",
+      "color": "#808080"
     },
     {
       "clone": 6,
@@ -237,7 +243,8 @@
         1,
         2
       ],
-      "name": "PraiseHimMusic"
+      "name": "PraiseHimMusic",
+      "color": "#ff6600"
     },
     {
       "clone": 3,
@@ -247,7 +254,8 @@
         6,
         7
       ],
-      "name": "Proclaim"
+      "name": "Proclaim",
+      "color": "#808080"
     },
     {
       "clone": 2,
@@ -256,7 +264,8 @@
         4,
         5
       ],
-      "name": "Network"
+      "name": "Network",
+      "color": "#6666ff"
     },
     {
       "clone": 0,
@@ -265,7 +274,8 @@
         1,
         2
       ],
-      "name": "International"
+      "name": "International",
+      "color": "#00ccff"
     },
     {
       "clone": 3,
@@ -274,7 +284,8 @@
         1,
         2
       ],
-      "name": "Proclaim"
+      "name": "Proclaim",
+      "color": "#808080"
     },
     {
       "clone": 0,
@@ -284,7 +295,8 @@
         6,
         7
       ],
-      "name": "International"
+      "name": "International",
+      "color": "#00ccff"
     },
     {
       "clone": 4,
@@ -292,7 +304,8 @@
       "days": [
         5
       ],
-      "name": "DareToDream"
+      "name": "DareToDream",
+      "color": "#990099"
     },
     {
       "clone": 0,
@@ -300,10 +313,10 @@
       "days": [
         1,
         2,
-        3,
         4
       ],
-      "name": "International"
+      "name": "International",
+      "color": "#00ccff"
     },
     {
       "clone": 6,
@@ -311,7 +324,8 @@
       "days": [
         6
       ],
-      "name": "PraiseHimMusic"
+      "name": "PraiseHimMusic",
+      "color": "#ff6600"
     },
     {
       "clone": 2,
@@ -319,7 +333,8 @@
       "days": [
         7
       ],
-      "name": "Network"
+      "name": "Network",
+      "color": "#6666ff"
     },
     {
       "clone": 14,
@@ -327,7 +342,8 @@
       "days": [
         1
       ],
-      "name": "Ensulo ey'enkya-Sun"
+      "name": "Ensulo ey'enkya-Sun",
+      "color": "#00cc99"
     },
     {
       "clone": 15,
@@ -335,7 +351,8 @@
       "days": [
         2
       ],
-      "name": "Ensulo ey'enkya-Mon"
+      "name": "Ensulo ey'enkya-Mon",
+      "color": "#00cc99"
     },
     {
       "clone": 16,
@@ -343,7 +360,8 @@
       "days": [
         3
       ],
-      "name": "Ensulo ey'enkya-Tue"
+      "name": "Ensulo ey'enkya-Tue",
+      "color": "#00cc99"
     },
     {
       "clone": 17,
@@ -351,7 +369,8 @@
       "days": [
         4
       ],
-      "name": "Ensulo ey'enkya-Wed"
+      "name": "Ensulo ey'enkya-Wed",
+      "color": "#00cc99"
     },
     {
       "clone": 18,
@@ -359,7 +378,8 @@
       "days": [
         5
       ],
-      "name": "Ensulo ey'enkya-Thur"
+      "name": "Ensulo ey'enkya-Thur",
+      "color": "#00cc99"
     },
     {
       "clone": 19,
@@ -367,7 +387,8 @@
       "days": [
         6
       ],
-      "name": "Ensulo ey'enkya-Fri"
+      "name": "Ensulo ey'enkya-Fri",
+      "color": "#00cc99"
     },
     {
       "clone": 20,
@@ -375,7 +396,8 @@
       "days": [
         7
       ],
-      "name": "Ensulo ey'enkya-Sat"
+      "name": "Ensulo ey'enkya-Sat",
+      "color": "#00cc99"
     },
     {
       "clone": 0,
@@ -388,7 +410,8 @@
         5,
         6
       ],
-      "name": "International"
+      "name": "International",
+      "color": "#00ccff"
     },
     {
       "clone": 4,
@@ -396,7 +419,8 @@
       "days": [
         7
       ],
-      "name": "DareToDream"
+      "name": "DareToDream",
+      "color": "#990099"
     },
     {
       "clone": 4,
@@ -406,7 +430,8 @@
         5,
         6
       ],
-      "name": "DareToDream"
+      "name": "DareToDream",
+      "color": "#990099"
     },
     {
       "clone": 4,
@@ -414,7 +439,8 @@
       "days": [
         1
       ],
-      "name": "DareToDream"
+      "name": "DareToDream",
+      "color": "#990099"
     },
     {
       "clone": 3,
@@ -425,7 +451,8 @@
         4,
         5
       ],
-      "name": "Proclaim"
+      "name": "Proclaim",
+      "color": "#808080"
     },
     {
       "clone": 0,
@@ -434,7 +461,8 @@
         1,
         6
       ],
-      "name": "International"
+      "name": "International",
+      "color": "#00ccff"
     },
     {
       "clone": 5,
@@ -442,7 +470,8 @@
       "days": [
         7
       ],
-      "name": "Kids"
+      "name": "Kids",
+      "color": "#ffff66"
     },
     {
       "clone": 5,
@@ -455,7 +484,8 @@
         5,
         6
       ],
-      "name": "Kids"
+      "name": "Kids",
+      "color": "#ffff66"
     },
     {
       "clone": 0,
@@ -463,7 +493,8 @@
       "days": [
         7
       ],
-      "name": "International"
+      "name": "International",
+      "color": "#00ccff"
     },
     {
       "clone": 3,
@@ -471,7 +502,8 @@
       "days": [
         7
       ],
-      "name": "Proclaim"
+      "name": "Proclaim",
+      "color": "#808080"
     },
     {
       "clone": 2,
@@ -479,7 +511,8 @@
       "days": [
         1
       ],
-      "name": "Network"
+      "name": "Network",
+      "color": "#6666ff"
     },
     {
       "clone": 0,
@@ -488,7 +521,8 @@
         2,
         6
       ],
-      "name": "International"
+      "name": "International",
+      "color": "#00ccff"
     },
     {
       "clone": 3,
@@ -498,7 +532,8 @@
         4,
         5
       ],
-      "name": "Proclaim"
+      "name": "Proclaim",
+      "color": "#808080"
     },
     {
       "clone": 4,
@@ -506,7 +541,8 @@
       "days": [
         7
       ],
-      "name": "DareToDream"
+      "name": "DareToDream",
+      "color": "#990099"
     },
     {
       "clone": 6,
@@ -514,7 +550,8 @@
       "days": [
         7
       ],
-      "name": "PraiseHimMusic"
+      "name": "PraiseHimMusic",
+      "color": "#ff6600"
     },
     {
       "clone": 0,
@@ -523,7 +560,8 @@
         1,
         3
       ],
-      "name": "International"
+      "name": "International",
+      "color": "#00ccff"
     },
     {
       "clone": 4,
@@ -531,7 +569,8 @@
       "days": [
         4
       ],
-      "name": "DareToDream"
+      "name": "DareToDream",
+      "color": "#990099"
     },
     {
       "clone": 2,
@@ -539,7 +578,8 @@
       "days": [
         6
       ],
-      "name": "Network"
+      "name": "Network",
+      "color": "#6666ff"
     },
     {
       "clone": 7,
@@ -547,7 +587,8 @@
       "days": [
         7
       ],
-      "name": "Bwatyo Bwayogera Mukama"
+      "name": "Bwatyo Bwayogera Mukama",
+      "color": "#66ff33"
     },
     {
       "clone": 6,
@@ -557,7 +598,8 @@
         3,
         5
       ],
-      "name": "PraiseHimMusic"
+      "name": "PraiseHimMusic",
+      "color": "#ff6600"
     },
     {
       "clone": 4,
@@ -566,7 +608,8 @@
         2,
         6
       ],
-      "name": "DareToDream"
+      "name": "DareToDream",
+      "color": "#990099"
     },
     {
       "clone": 0,
@@ -574,7 +617,8 @@
       "days": [
         7
       ],
-      "name": "International"
+      "name": "International",
+      "color": "#00ccff"
     },
     {
       "clone": 0,
@@ -583,7 +627,8 @@
         1,
         2
       ],
-      "name": "International"
+      "name": "International",
+      "color": "#00ccff"
     },
     {
       "clone": 3,
@@ -592,7 +637,8 @@
         4,
         7
       ],
-      "name": "Proclaim"
+      "name": "Proclaim",
+      "color": "#808080"
     },
     {
       "clone": 2,
@@ -602,7 +648,8 @@
         5,
         6
       ],
-      "name": "Network"
+      "name": "Network",
+      "color": "#6666ff"
     },
     {
       "clone": 6,
@@ -611,7 +658,8 @@
         3,
         6
       ],
-      "name": "PraiseHimMusic"
+      "name": "PraiseHimMusic",
+      "color": "#ff6600"
     },
     {
       "clone": 4,
@@ -620,7 +668,8 @@
         4,
         5
       ],
-      "name": "DareToDream"
+      "name": "DareToDream",
+      "color": "#990099"
     },
     {
       "clone": 2,
@@ -629,7 +678,8 @@
         3,
         6
       ],
-      "name": "Network"
+      "name": "Network",
+      "color": "#6666ff"
     },
     {
       "clone": 3,
@@ -641,7 +691,8 @@
         4,
         5
       ],
-      "name": "Proclaim"
+      "name": "Proclaim",
+      "color": "#808080"
     },
     {
       "clone": 0,
@@ -649,7 +700,8 @@
       "days": [
         6
       ],
-      "name": "International"
+      "name": "International",
+      "color": "#00ccff"
     },
     {
       "clone": 0,
@@ -659,7 +711,8 @@
         2,
         7
       ],
-      "name": "International"
+      "name": "International",
+      "color": "#00ccff"
     },
     {
       "clone": 2,
@@ -668,7 +721,8 @@
         4,
         5
       ],
-      "name": "Network"
+      "name": "Network",
+      "color": "#6666ff"
     },
     {
       "clone": 5,
@@ -676,7 +730,8 @@
       "days": [
         3
       ],
-      "name": "Kids"
+      "name": "Kids",
+      "color": "#ffff66"
     },
     {
       "clone": 5,
@@ -684,7 +739,8 @@
       "days": [
         1
       ],
-      "name": "Kids"
+      "name": "Kids",
+      "color": "#ffff66"
     },
     {
       "clone": 2,
@@ -692,7 +748,8 @@
       "days": [
         2
       ],
-      "name": "Network"
+      "name": "Network",
+      "color": "#6666ff"
     },
     {
       "clone": 3,
@@ -701,7 +758,8 @@
         3,
         7
       ],
-      "name": "Proclaim"
+      "name": "Proclaim",
+      "color": "#808080"
     },
     {
       "clone": 6,
@@ -710,7 +768,8 @@
         4,
         6
       ],
-      "name": "PraiseHimMusic"
+      "name": "PraiseHimMusic",
+      "color": "#ff6600"
     },
     {
       "clone": 0,
@@ -718,7 +777,8 @@
       "days": [
         4
       ],
-      "name": "International"
+      "name": "International",
+      "color": "#00ccff"
     },
     {
       "clone": 8,
@@ -728,7 +788,8 @@
         3,
         5
       ],
-      "name": "Manya Ebiro"
+      "name": "Manya Ebiro",
+      "color": "#99ff99"
     },
     {
       "clone": 9,
@@ -738,7 +799,8 @@
         4,
         7
       ],
-      "name": "Julira Mukama"
+      "name": "Julira Mukama",
+      "color": "#ccffcc"
     },
     {
       "clone": 7,
@@ -746,7 +808,8 @@
       "days": [
         6
       ],
-      "name": "Bwatyo Bwayogera Mukama"
+      "name": "Bwatyo Bwayogera Mukama",
+      "color": "#66ff33"
     },
     {
       "clone": 7,
@@ -759,7 +822,8 @@
         5,
         7
       ],
-      "name": "Bwatyo Bwayogera Mukama"
+      "name": "Bwatyo Bwayogera Mukama",
+      "color": "#66ff33"
     },
     {
       "clone": 12,
@@ -767,7 +831,8 @@
       "days": [
         6
       ],
-      "name": "Obutonde bwogera"
+      "name": "Obutonde bwogera",
+      "color": "#ccffff"
     },
     {
       "clone": 13,
@@ -775,7 +840,8 @@
       "days": [
         6
       ],
-      "name": "Ennyimba"
+      "name": "Ennyimba",
+      "color": "#ccffff"
     },
     {
       "clone": 10,
@@ -785,7 +851,8 @@
         3,
         5
       ],
-      "name": "Beera Mulamu"
+      "name": "Beera Mulamu",
+      "color": "#336600"
     },
     {
       "clone": 11,
@@ -795,7 +862,8 @@
         4,
         7
       ],
-      "name": "Yimba Nange"
+      "name": "Yimba Nange",
+      "color": "#66ffcc"
     },
     {
       "clone": 8,
@@ -803,7 +871,8 @@
       "days": [
         6
       ],
-      "name": "Manya Ebiro"
+      "name": "Manya Ebiro",
+      "color": "#99ff99"
     },
     {
       "clone": 3,
@@ -815,7 +884,8 @@
         4,
         5
       ],
-      "name": "Proclaim"
+      "name": "Proclaim",
+      "color": "#808080"
     },
     {
       "clone": 4,
@@ -823,7 +893,8 @@
       "days": [
         6
       ],
-      "name": "DareToDream"
+      "name": "DareToDream",
+      "color": "#990099"
     },
     {
       "clone": 0,
@@ -831,7 +902,8 @@
       "days": [
         7
       ],
-      "name": "International"
+      "name": "International",
+      "color": "#00ccff"
     },
     {
       "clone": 6,
@@ -840,7 +912,8 @@
         1,
         6
       ],
-      "name": "PraiseHimMusic"
+      "name": "PraiseHimMusic",
+      "color": "#ff6600"
     },
     {
       "clone": 2,
@@ -851,7 +924,8 @@
         4,
         5
       ],
-      "name": "Network"
+      "name": "Network",
+      "color": "#6666ff"
     },
     {
       "clone": 4,
@@ -859,7 +933,8 @@
       "days": [
         6
       ],
-      "name": "DareToDream"
+      "name": "DareToDream",
+      "color": "#990099"
     },
     {
       "clone": 3,
@@ -867,7 +942,8 @@
       "days": [
         7
       ],
-      "name": "Proclaim"
+      "name": "Proclaim",
+      "color": "#808080"
     },
     {
       "clone": 2,
@@ -875,7 +951,8 @@
       "days": [
         7
       ],
-      "name": "Network"
+      "name": "Network",
+      "color": "#6666ff"
     }
   ]
 }

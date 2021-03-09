@@ -54,6 +54,8 @@ For any questions or queries, please email the support team at apps@avventohome.
 
 
 ## TODO
+- [ ] support logo, lowerthirds etc: https://github.com/google/ExoPlayer/issues/8648 | https://exoplayer.dev/ui-components.html#customization
+- [ ] SRT support: https://github.com/google/ExoPlayer/issues/8647
 - [ ] support auto installing of config under resources if non exists at first run
 - [ ] make Telefyna device specific, mantain a file with device ids supported and at running if the device isn't granted show video demo to help them get in touch at mail@avventohome.org
 - [ ] investigate playning slot at 20:57. it played from start

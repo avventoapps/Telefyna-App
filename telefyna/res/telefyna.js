@@ -342,12 +342,23 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function ($cookie
     }
 
     // color in #code format
-    $scope.classifyColor = function(color) {
-        var claz;
-        if(color) {
-            claz = color.replace("#", "_");
+    $scope.classifyColor = function(color, index, day) {
+        if(color && $scope.previewData.weekly[index].slots[day]) {
+            var claz = color.replace("#", "_");
+            $scope.previewData.weekly[index].slots[day].claz = claz;
+        
+            // color the next vacant slots with upper slot
+            for(var i = index + 1; i < $scope.previewData.weekly.length; i++) {
+                if($scope.previewData.weekly[i].slots[day] && $scope.previewData.weekly[i].slots[day].name) {//available slot, breakout
+                    break;
+                }
+                if($scope.previewData.weekly[i].slots[day] == undefined) {
+                    $scope.previewData.weekly[i].slots[day] = {claz: claz};
+                } else {
+                    $scope.previewData.weekly[i].slots[day].claz = claz;
+                }
+            }
         }
-        return claz;
+        
     }
-
 });

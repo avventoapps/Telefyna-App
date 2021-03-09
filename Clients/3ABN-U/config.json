@@ -1,7 +1,7 @@
 {
-  "name": "3ABN-TV Uganda proposed",
+  "name": "3ABN-TV Uganda",
   "version": "1.0",
-  "lastModified": "09/03/2021, 15:47:26",
+  "lastModified": "09/03/2021, 21:01:56",
   "automationDisabled": false,
   "notificationsDisabled": true,
   "playlists": [
@@ -925,15 +925,6 @@
       ],
       "name": "Network",
       "color": "#6666ff"
-    },
-    {
-      "clone": 4,
-      "start": "23:00",
-      "days": [
-        6
-      ],
-      "name": "DareToDream",
-      "color": "#990099"
     },
     {
       "clone": 3,

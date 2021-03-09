@@ -217,7 +217,7 @@
                         </div>
                       </div>
 
-                    <!-- Schedule -->
+                    <!-- Schedule/Copy -->
                     <button type="button" class="btn btn-info" data-toggle="modal" data-target="#clone" ng-disabled="config.playlists.length == 0">Schedule Playlist</button>
                     <div class="modal fade action-content" id="clone" role="dialog">
                         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -225,7 +225,8 @@
                             <div class="modal-header">
                               <h5 class="modal-title">Schedule an existing Playlist</h5>
                             </div>
-                            Schedules are not editable, revisions are only possible by deleting a schedule and re-adding it
+                            Schedules are not editable, revisions are only possible by deleting a schedule and re-adding it.<br>
+                            The last added schedule overrides the previous one if they share a slot
                             <div class="alert alert-danger section action" role="alert" ng-show="error">
                                 {{error}}
                             </div>
@@ -330,7 +331,8 @@
                                     <img src="telefyna.png" alt="Telefyna Icon" width="50" height="50"><br>
                                     <h4>{{config.name}}'s schedule</h4>
                                 </div>
-                                <div class="modal-body table-responsive">
+                                <!--.table-responsive breaks print-->
+                                <div class="modal-body">
                                     <h5>Weekly</h5>
                                     <table class="table table-striped">
                                         <thead>

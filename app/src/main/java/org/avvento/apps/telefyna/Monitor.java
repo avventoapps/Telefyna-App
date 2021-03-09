@@ -467,7 +467,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
             if (state == Player.STATE_ENDED) {
                 Logger.log(AuditLog.Event.PLAYLIST_COMPLETED, getNowPlayingPlaylistLabel());
                 secondDefaultRepeatable = true;
-                switchNow(getFirstDefaultIndex(), false);
+                switchNow(getSecondDefaultIndex(), false);
             } else if (state == Player.STATE_BUFFERING && Playlist.Type.ONLINE.equals(playlistByIndex.get(nowPlayingIndex).getType())) {
                 player.seekTo(player.getContentDuration());// hack
             }

@@ -3,8 +3,8 @@
 This project contains a client side application for managing Telefyna's configurations which includes programming/scheduling
 
 ## TODO
-- [ ] add current program tracking on the schedule preview
-- [ ] fix or support caching config on client side
+- [ ] add current program tracking on the schedule preview | Not necessary
+- [x] fix or support caching config on client side
 - [x] fill up colors for proceeding slots
 - [x] Build entire schedule preview
 - [x] Binding config.json to dom elements in memory

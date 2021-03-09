@@ -10,12 +10,12 @@ jQuery(function() {
 });
 
 angular.module("Telefyna", ['ngCookies']).controller('Config', function ($cookies, $scope) {
-    /* TODO fix cookies
-    if(!$cookies || !$cookies.getObject("config")) {
-        
-    }*/
-    $scope.config = {};
-    $scope.config.playlists = [];
+    if(window.localStorage.config) {
+        $scope.config = JSON.parse(window.localStorage.config);
+    } else {
+        $scope.config = {};
+        $scope.config.playlists = [];
+    }
     $scope.playlist = {};
     $scope.playlist.active = false;
     $scope.error;
@@ -29,7 +29,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function ($cookie
             const reader = new FileReader()
             reader.onload = (e) => {
                 $scope.config = JSON.parse(reader.result);
-                // TODO investigate why next line adds name attribute to clone playlists
+                window.localStorage.config = JSON.stringify($scope.config);
                 $scope.$apply();
             }
             reader.readAsText(file);
@@ -82,10 +82,11 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function ($cookie
 
     $scope.add = function() {
         if($scope.playlist.type) {
-            $scope.modify();
+            $scope.modifying();
             $scope.verifyPlaylist();
             if(!$scope.error) {
                 $scope.config.playlists.push($scope.playlist);
+                window.localStorage.config = JSON.stringify($scope.config);
                 jQuery("#close-add").click();
                 $scope.clear();
             } else {
@@ -109,8 +110,9 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function ($cookie
     $scope.revise = function() {
         if($scope.playlist.type) {
             if($scope.edit) {
-                $scope.modify();
+                $scope.modifying();
                 $scope.config.playlists[$scope.edit] = $scope.playlist;
+                window.localStorage.config = JSON.stringify($scope.config);
                 jQuery("#close-edit").click();
                 $scope.clear();
             } else {
@@ -125,7 +127,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function ($cookie
 
     $scope.clone = function() {
         if($scope.playlist.clone) {
-            $scope.modify();
+            $scope.modifying();
             $scope.config.playlists.push($scope.playlist);
             jQuery("#close-clone").click();
             $scope.clear();
@@ -138,7 +140,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function ($cookie
     $scope.delete = function() {
         if(confirm("Do you want to proceed with Deleting Selected Playlists?")) {
             if($scope.deletable.length > 0) {
-                $scope.modify();
+                $scope.modifying();
                 angular.forEach($scope.deletable, function(i, key1) {
                     var playlist = $scope.config.playlists[i];
                     // remove clones
@@ -152,6 +154,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function ($cookie
                 $scope.config.playlists = $scope.config.playlists.filter(function (el) {
                     return el;
                 });
+                window.localStorage.config = JSON.stringify($scope.config);
                 jQuery("#close-delete").click();
                 $scope.clear();
             }
@@ -166,15 +169,11 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function ($cookie
         // TODO cache, export out to downloads
     }
 
-    $scope.modify = function() {
+    $scope.modifying = function() {
         $scope.config.lastModified = new Date().toLocaleString();
         $scope.error = undefined;  
         $scope.edit = undefined;
-        /* TODO fix local storage: CACHE THE MOST RECENT DEVICE CONFIG
-            var expireDate = new Date(); 
-            expireDate.setDate(expireDate.getDate() + 365 * 3); // keep for atleast 3 years
-            $cookies.putObject('config', $scope.config, {expires: expireDate});
-            */
+        window.localStorage.config = JSON.stringify($scope.config);
     }
 
     $scope.clear = function() {
@@ -191,6 +190,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function ($cookie
 
     $scope.clearConfig = function() {
         if(confirm("Do you want to proceed with Clearing Configuration?")) {
+            delete window.localStorage.config;
             $scope.config = {};
             $scope.config.playlists = [];
             $scope.clear();
@@ -353,6 +353,6 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function ($cookie
                 }
             }
         }
-        
     }
+
 });

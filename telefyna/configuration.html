@@ -40,17 +40,17 @@
                 <label class="checkbox-inline">Last Modified: <b>{{config.lastModified}}</b></label>
                 <div class="section action">
                     Name
-                    <input type="text" class="form-control flex-wrap" ng-model="config.name" ng-change="modify()">
+                    <input type="text" class="form-control flex-wrap" ng-model="config.name" ng-change="modifying()">
                 </div>
                 <div class="section action">
                     Version
-                    <input type="text" class="form-control flex-wrap" ng-model="config.version" ng-change="modify()">
+                    <input type="text" class="form-control flex-wrap" ng-model="config.version" ng-change="modifying()">
                 </div>
                 <div class="form-check form-switch">
-                    <label class="checkbox-inline"><input type="checkbox" ng-model="config.automationDisabled" ng-change="modify()"> Disable Automation</label>
+                    <label class="checkbox-inline"><input type="checkbox" ng-model="config.automationDisabled" ng-change="modifying()"> Disable Automation</label>
                 </div>
                 <div class="form-check form-switch">
-                    <label class="checkbox-inline"><input type="checkbox" ng-model="config.notificationsDisabled" ng-change="modify()"> Disable Notifications</label>
+                    <label class="checkbox-inline"><input type="checkbox" ng-model="config.notificationsDisabled" ng-change="modifying()"> Disable Notifications</label>
                 </div>
                 <div class="action">
                     <!-- Create -->

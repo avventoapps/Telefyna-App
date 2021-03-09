@@ -59,7 +59,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function ($cookie
             }
             name = playlist.name;
             if(fullySpecified == true) {
-                name = name + " #" + index 
+                name = name + " #" + (index + 1) 
                     + (playlist.start ? " | @" + playlist.start : "")
                     + (playlist.days && playlist.days.length > 0 ? " | Days:" + playlist.days.join(",") : "")
                     + (playlist.dates && playlist.dates.length > 0 ? " | " + playlist.dates.join(",") : "");

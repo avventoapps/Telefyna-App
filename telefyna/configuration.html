@@ -345,48 +345,52 @@
                                 </div>
                                 <!--.table-responsive breaks print-->
                                 <div class="modal-body">
-                                    <h5>Weekly</h5>
-                                    <table class="table table-striped">
-                                        <thead>
-                                          <tr>
-                                            <th scope="col">StartTime</th>
-                                            <th scope="col">1-Sunday</th>
-                                            <th scope="col">2-Monday</th>
-                                            <th scope="col">3-Tuesday</th>
-                                            <th scope="col">4-Wednesday</th>
-                                            <th scope="col">5-Thursday</th>
-                                            <th scope="col">6-Friday</th>
-                                            <th scope="col">7-Saturday</th>
-                                          </tr>
-                                        </thead>
-                                        <tbody>
-                                          <tr ng-repeat="(key, program) in previewData.weekly">
-                                            <td>{{program.start}}</td>
-                                            <td ng-init="classifyColor(program.slots[1].color, key, 1)" class="{{program.slots[1].claz}}">{{program.slots[1].name}}</td>
-                                            <td ng-init="classifyColor(program.slots[2].color, key, 2)" class="{{program.slots[2].claz}}">{{program.slots[2].name}}</td>
-                                            <td ng-init="classifyColor(program.slots[3].color, key, 3)" class="{{program.slots[3].claz}}">{{program.slots[3].name}}</td>
-                                            <td ng-init="classifyColor(program.slots[4].color, key, 4)" class="{{program.slots[4].claz}}">{{program.slots[4].name}}</td>
-                                            <td ng-init="classifyColor(program.slots[5].color, key, 5)" class="{{program.slots[5].claz}}">{{program.slots[5].name}}</td>
-                                            <td ng-init="classifyColor(program.slots[6].color, key, 6)" class="{{program.slots[6].claz}}">{{program.slots[6].name}}</td>
-                                            <td ng-init="classifyColor(program.slots[7].color, key, 7)" class="{{program.slots[7].claz}}">{{program.slots[7].name}}</td>
-                                          </tr>
-                                        </tbody>
-                                      </table>
-                                      <h5>Dates</h5>
-                                      <table class="table table-striped">
-                                        <thead>
+                                    <div ng-if="previewData.weekly.length > 0">
+                                        <h5>Weekly</h5>
+                                        <table class="table table-striped">
+                                            <thead>
                                             <tr>
-                                              <th scope="col">Time</th>
-                                              <th scope="col">Playlist</th>
+                                                <th scope="col">StartTime</th>
+                                                <th scope="col">1-Sunday</th>
+                                                <th scope="col">2-Monday</th>
+                                                <th scope="col">3-Tuesday</th>
+                                                <th scope="col">4-Wednesday</th>
+                                                <th scope="col">5-Thursday</th>
+                                                <th scope="col">6-Friday</th>
+                                                <th scope="col">7-Saturday</th>
                                             </tr>
-                                          </thead>
-                                        <tbody>
-                                          <tr ng-repeat="program in previewData.dated">
-                                            <td>{{program.at}}</td>
-                                            <td style="background-color:{{program.color}}">{{program.name}}</td>
-                                          </tr>
-                                        </tbody>
-                                      </table>
+                                            </thead>
+                                            <tbody>
+                                            <tr ng-repeat="(key, program) in previewData.weekly">
+                                                <td>{{program.start}}</td>
+                                                <td ng-init="classifyColor(program.slots[1].color, key, 1)" class="{{program.slots[1].claz}}">{{program.slots[1].name}}</td>
+                                                <td ng-init="classifyColor(program.slots[2].color, key, 2)" class="{{program.slots[2].claz}}">{{program.slots[2].name}}</td>
+                                                <td ng-init="classifyColor(program.slots[3].color, key, 3)" class="{{program.slots[3].claz}}">{{program.slots[3].name}}</td>
+                                                <td ng-init="classifyColor(program.slots[4].color, key, 4)" class="{{program.slots[4].claz}}">{{program.slots[4].name}}</td>
+                                                <td ng-init="classifyColor(program.slots[5].color, key, 5)" class="{{program.slots[5].claz}}">{{program.slots[5].name}}</td>
+                                                <td ng-init="classifyColor(program.slots[6].color, key, 6)" class="{{program.slots[6].claz}}">{{program.slots[6].name}}</td>
+                                                <td ng-init="classifyColor(program.slots[7].color, key, 7)" class="{{program.slots[7].claz}}">{{program.slots[7].name}}</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                      </div>
+                                      <div ng-if="previewData.dated.length > 0">
+                                      <h5>Dates</h5>
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                <th scope="col">Time</th>
+                                                <th scope="col">Playlist</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr ng-repeat="program in previewData.dated">
+                                                <td>{{program.at}}</td>
+                                                <td style="background-color:{{program.color}}">{{program.name}}</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                      </div>
                                 </div>
                                 <div class="modal-footer no-print">
                                     <button type="button" class="btn btn-success" onclick="jQuery('.preview-print').print({globalStyles: true, stylesheet: 'res/telefyna.css'})">Print</button>

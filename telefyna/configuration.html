@@ -28,13 +28,13 @@
 
         <title>Configuring Telefyna</title>
     </head>
-
     <body ng-app="Telefyna" ng-controller="Config" center-block>
         <div>
-            <h3>|Configuring|</h3>
-            <img src="telefyna.png" alt="Telefyna Icon" width="150" height="150"><br>
-            <label class="slogan">The best simplest performing online stream & local file scheduling auto player for TV broadcasting</label>
-            
+            <div>
+                <h3>|Configuring|</h3>
+                <img class="logo" src="telefyna.png" alt="Telefyna Icon" width="155" height="140"><br>
+                <label class="slogan">The best, simplest performing online stream & local file scheduling auto player for TV broadcasting</label>
+            </div>
             <!-- Other configurations before playlists-->
             <div class="section">
                 <label class="checkbox-inline">Last Modified: <b>{{config.lastModified}}</b></label>
@@ -52,8 +52,6 @@
                 <div class="form-check form-switch">
                     <label class="checkbox-inline"><input type="checkbox" ng-model="config.notificationsDisabled" ng-change="modify()"> Disable Notifications</label>
                 </div>
-            </div>
-            <div class="section">
                 <div class="action">
                     <!-- Create -->
                     <button type="button" class="btn btn-info" data-toggle="modal" data-target="#add">Create Playlist</button>
@@ -123,27 +121,6 @@
                                 <div class="section action">
                                     Special Bumper folder name
                                     <input type="text" class="form-control" ng-model="playlist.specialBumperFolder">
-                                </div>
-                                <div class="section action">
-                                    Weekly Day(s)
-                                    <select class="form-control multiselect-ui" multiple ng-model="playlist.days">
-                                        <option value="1">{{getDayName(1)}}</option>
-                                        <option value="2">{{getDayName(2)}}</option>
-                                        <option value="3">{{getDayName(3)}}</option>
-                                        <option value="4">{{getDayName(4)}}</option>
-                                        <option value="5">{{getDayName(5)}}</option>
-                                        <option value="6">{{getDayName(6)}}</option>
-                                        <option value="7">{{getDayName(7)}}</option>
-                                    </select>
-                                </div>
-                                <div class="section action">
-                                    Date(s)
-                                    <input type="text" class="form-control date" ng-model="datePickerValue" ng-change="setPlaylistDate()">
-                                </div>
-                                If no Days or Dates are selected but start Time is defined, the playlist schedules daily
-                                <div class="section action">
-                                    Start Time
-                                    <input type="text" class="form-control timepicker" ng-model="playlist.start">
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -230,28 +207,6 @@
                                     Special Bumper folder name
                                     <input type="text" class="form-control" ng-model="playlist.specialBumperFolder">
                                 </div>
-                                <div class="section action">
-                                    Weekly Day(s)
-                                    <select class="form-control multiselect-ui" multiple ng-model="playlist.days">
-                                        <option value="1">{{getDayName(1)}}</option>
-                                        <option value="2">{{getDayName(2)}}</option>
-                                        <option value="3">{{getDayName(3)}}</option>
-                                        <option value="4">{{getDayName(4)}}</option>
-                                        <option value="5">{{getDayName(5)}}</option>
-                                        <option value="6">{{getDayName(6)}}</option>
-                                        <option value="7">{{getDayName(7)}}</option>
-                                    </select>
-                                </div>
-                                <div class="section action">
-                                    Date(s)
-                                    <input type="text" class="form-control date" ng-model="datePickerValue" ng-change="setPlaylistDate()">
-                                </div>
-                                If no Days or Dates are selected but start Time is defined, the playlist schedules daily
-                                <div class="section action">
-                                    Start Time
-                                    <input type="text" class="form-control timepicker" ng-model="playlist.start">
-                                </div>
-                                
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-info" ng-click="clear()">Clear</button>
@@ -262,20 +217,21 @@
                         </div>
                       </div>
 
-                    <!-- Copy -->
-                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#clone" ng-disabled="config.playlists.length == 0">Copy Playlist</button>
+                    <!-- Schedule -->
+                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#clone" ng-disabled="config.playlists.length == 0">Schedule Playlist</button>
                     <div class="modal fade action-content" id="clone" role="dialog">
                         <div class="modal-dialog modal-dialog-centered" role="document">
                           <form class="modal-content" ng-submit="clone()">
                             <div class="modal-header">
-                              <h5 class="modal-title">Copy an existing Playlist</h5>
+                              <h5 class="modal-title">Schedule an existing Playlist</h5>
                             </div>
+                            Schedules are not editable, revisions are only possible by deleting a schedule and re-adding it
                             <div class="alert alert-danger section action" role="alert" ng-show="error">
                                 {{error}}
                             </div>
                             <div class="modal-body">
                                 <div class="section action">
-                                    * Select Parent Playlist *
+                                    * Select Playlist *
                                     <select class="form-control" required ng-model="playlist.clone">
                                         <option ng-repeat="p in config.playlists" ng-if="isNotClone(p)" value="{{$index}}">{{name($index, true)}}</option>
                                     </select>
@@ -305,26 +261,28 @@
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-info" ng-click="clear()">Clear</button>
                                 <button type="button" class="btn btn-danger" id="close-clone" data-dismiss="modal" ng-click="clear()">Cancel</button>
-                                <button type="submit" class="btn btn-success">Clone</button>
+                                <button type="submit" class="btn btn-success">Schedule</button>
                             </div>
                         </form>
                         </div>
                       </div>
                 </div>
-
+            </div>
+            <div class="section">
                 <!-- Clear/Delete -->
                 <div class="action">
                     <button type="button" class="btn btn-danger" ng-disabled="config.playlists.length == 0" ng-click="clearConfig()">Clear</button>
-                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete" ng-disabled="config.playlists.length == 0">Delete Playlist(s)</button>
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete" ng-disabled="config.playlists.length == 0">Delete Playlist(s) | Schedule(s)</button>
                     <div class="modal fade action-content" id="delete" role="dialog">
                         <div class="modal-dialog modal-dialog-centered" role="document">
                             <form class="modal-content" ng-submit="delete()">
                             <div class="modal-header">
-                              <h5 class="modal-title">Delete Exisiting Playlist(s) And their respective Copies</h5>
+                              <h5 class="modal-title">Delete Exisiting Playlist(s) | Schedule(s)</h5>
                             </div>
+                            Deleting the playlist will delete respective Schedules below it whereas deleting schedule doesn't delete the respective playlist
                             <div class="modal-body">
                                 <div class="section action">
-                                    Select Playlists(s)
+                                    Select Playlists(s) | Schedule(s)
                                     <select id="playlists-delete" class="form-control multiselect-ui" multiple ng-model="deletable">
                                         <option ng-repeat="p in config.playlists" value="{{$index}}">{{name($index, true)}}</option>
                                     </select>
@@ -369,10 +327,10 @@
                         <div class="modal-dialog modal-dialog-centered" role="document">
                             <div class="modal-content preview-print">
                                 <div class="modal-header" id="print-title">
-                                    <h5 class="modal-title">Telefyna's broadcasting schedule for:</h5>
-                                    <h4>{{config.name}}</h4>
+                                    <img src="telefyna.png" alt="Telefyna Icon" width="50" height="50"><br>
+                                    <h4>{{config.name}}'s schedule</h4>
                                 </div>
-                                <div class="modal-body">
+                                <div class="modal-body table-responsive">
                                     <h5>Weekly</h5>
                                     <table class="table table-striped">
                                         <thead>

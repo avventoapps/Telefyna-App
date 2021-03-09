@@ -54,6 +54,7 @@ For any questions or queries, please email the support team at apps@avventohome.
 
 
 ## TODO
+- [ ] redo demo
 - [ ] support logo, lowerthirds etc: https://github.com/google/ExoPlayer/issues/8648 | https://exoplayer.dev/ui-components.html#customization
 - [ ] SRT support: https://github.com/google/ExoPlayer/issues/8647
 - [ ] support auto installing of config under resources if non exists at first run

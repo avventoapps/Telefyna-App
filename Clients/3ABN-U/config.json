@@ -19,8 +19,7 @@
       "type": "LOCAL_RANDOMIZED",
       "urlOrFolder": "Fillers",
       "active": true,
-      "playingGeneralBumpers": true,
-      "color": "#00cc99"
+      "playingGeneralBumpers": true
     },
     {
       "name": "Network",

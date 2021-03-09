@@ -264,13 +264,9 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function ($cookie
             }
         });
         // sort previewWeeklyPlaylists
-        weekly.sort(function(a, b) {
-            return a["start"] < b["start"];
-        });
+        weekly.sort((a, b) => a.start > b.start ? 1 : -1);
         // sort previewDatedPlaylists
-        dated.sort(function(a, b) {
-            return a["start"] < b["start"];
-        });
+        dated.sort((a, b) => a.start > b.start ? 1 : -1);
 
         // generate time * days for tabling
         // start: [{slotPreview}], array is dailySlots, index is day order
@@ -305,9 +301,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function ($cookie
                 previewDated.push(slotPreview);
             });
         }
-        previewDated.sort(function(a, b) {
-            return a["at"] < b["at"];
-        });
+        previewDated.sort((a, b) => a.at > b.at ? 1 : -1);
         
         $scope.previewData = { "weekly": previewWeekly, "dated": previewDated };
     }

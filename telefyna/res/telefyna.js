@@ -5,7 +5,7 @@ jQuery(function() {
         todayHighlight: true,
         startDate: new Date()
     });
-    jQuery(".timepicker").timepicker();
+    jQuery('.timepicker').timepicker({ 'timeFormat': 'H:i' });
     jQuery('.color-selector').colorselector();
 });
 

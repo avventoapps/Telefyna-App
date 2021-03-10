@@ -176,7 +176,7 @@
       "color": "#00cc99"
     },
     {
-      "clone": 3,
+      "schedule": 3,
       "start": "00:00",
       "days": [
         1,
@@ -190,7 +190,7 @@
       "color": "#808080"
     },
     {
-      "clone": 4,
+      "schedule": 4,
       "start": "00:00",
       "days": [
         7
@@ -199,13 +199,13 @@
       "color": "#990099"
     },
     {
-      "clone": 6,
+      "schedule": 6,
       "start": "01:00",
       "name": "PraiseHimMusic",
       "color": "#ff6600"
     },
     {
-      "clone": 2,
+      "schedule": 2,
       "start": "02:00",
       "days": [
         1
@@ -214,7 +214,7 @@
       "color": "#6666ff"
     },
     {
-      "clone": 0,
+      "schedule": 0,
       "start": "02:00",
       "days": [
         2,
@@ -227,7 +227,7 @@
       "color": "#00ccff"
     },
     {
-      "clone": 3,
+      "schedule": 3,
       "start": "02:00",
       "days": [
         4
@@ -236,7 +236,7 @@
       "color": "#808080"
     },
     {
-      "clone": 6,
+      "schedule": 6,
       "start": "03:00",
       "days": [
         1,
@@ -246,7 +246,7 @@
       "color": "#ff6600"
     },
     {
-      "clone": 3,
+      "schedule": 3,
       "start": "03:00",
       "days": [
         3,
@@ -257,7 +257,7 @@
       "color": "#808080"
     },
     {
-      "clone": 2,
+      "schedule": 2,
       "start": "03:00",
       "days": [
         4,
@@ -267,7 +267,7 @@
       "color": "#6666ff"
     },
     {
-      "clone": 0,
+      "schedule": 0,
       "start": "03:30",
       "days": [
         1,
@@ -277,7 +277,7 @@
       "color": "#00ccff"
     },
     {
-      "clone": 3,
+      "schedule": 3,
       "start": "04:00",
       "days": [
         1,
@@ -287,7 +287,7 @@
       "color": "#808080"
     },
     {
-      "clone": 0,
+      "schedule": 0,
       "start": "04:00",
       "days": [
         3,
@@ -298,7 +298,7 @@
       "color": "#00ccff"
     },
     {
-      "clone": 4,
+      "schedule": 4,
       "start": "04:00",
       "days": [
         5
@@ -307,7 +307,7 @@
       "color": "#990099"
     },
     {
-      "clone": 0,
+      "schedule": 0,
       "start": "05:00",
       "days": [
         1,
@@ -318,7 +318,7 @@
       "color": "#00ccff"
     },
     {
-      "clone": 6,
+      "schedule": 6,
       "start": "05:00",
       "days": [
         6
@@ -327,7 +327,7 @@
       "color": "#ff6600"
     },
     {
-      "clone": 2,
+      "schedule": 2,
       "start": "05:00",
       "days": [
         7
@@ -336,7 +336,7 @@
       "color": "#6666ff"
     },
     {
-      "clone": 14,
+      "schedule": 14,
       "start": "06:00",
       "days": [
         1
@@ -345,7 +345,7 @@
       "color": "#00cc99"
     },
     {
-      "clone": 15,
+      "schedule": 15,
       "start": "06:00",
       "days": [
         2
@@ -354,7 +354,7 @@
       "color": "#00cc99"
     },
     {
-      "clone": 16,
+      "schedule": 16,
       "start": "06:00",
       "days": [
         3
@@ -363,7 +363,7 @@
       "color": "#00cc99"
     },
     {
-      "clone": 17,
+      "schedule": 17,
       "start": "06:00",
       "days": [
         4
@@ -372,7 +372,7 @@
       "color": "#00cc99"
     },
     {
-      "clone": 18,
+      "schedule": 18,
       "start": "06:00",
       "days": [
         5
@@ -381,7 +381,7 @@
       "color": "#00cc99"
     },
     {
-      "clone": 19,
+      "schedule": 19,
       "start": "06:00",
       "days": [
         6
@@ -390,7 +390,7 @@
       "color": "#00cc99"
     },
     {
-      "clone": 20,
+      "schedule": 20,
       "start": "06:00",
       "days": [
         7
@@ -399,7 +399,7 @@
       "color": "#00cc99"
     },
     {
-      "clone": 0,
+      "schedule": 0,
       "start": "07:00",
       "days": [
         1,
@@ -413,7 +413,7 @@
       "color": "#00ccff"
     },
     {
-      "clone": 4,
+      "schedule": 4,
       "start": "07:00",
       "days": [
         7
@@ -422,7 +422,7 @@
       "color": "#990099"
     },
     {
-      "clone": 4,
+      "schedule": 4,
       "start": "07:30",
       "days": [
         2,
@@ -433,7 +433,7 @@
       "color": "#990099"
     },
     {
-      "clone": 4,
+      "schedule": 4,
       "start": "08:00",
       "days": [
         1
@@ -442,7 +442,7 @@
       "color": "#990099"
     },
     {
-      "clone": 3,
+      "schedule": 3,
       "start": "08:00",
       "days": [
         2,
@@ -454,7 +454,7 @@
       "color": "#808080"
     },
     {
-      "clone": 0,
+      "schedule": 0,
       "start": "08:30",
       "days": [
         1,
@@ -464,7 +464,7 @@
       "color": "#00ccff"
     },
     {
-      "clone": 5,
+      "schedule": 5,
       "start": "08:30",
       "days": [
         7
@@ -473,7 +473,7 @@
       "color": "#ffff66"
     },
     {
-      "clone": 5,
+      "schedule": 5,
       "start": "09:00",
       "days": [
         1,
@@ -487,7 +487,7 @@
       "color": "#ffff66"
     },
     {
-      "clone": 0,
+      "schedule": 0,
       "start": "09:00",
       "days": [
         7
@@ -496,7 +496,7 @@
       "color": "#00ccff"
     },
     {
-      "clone": 3,
+      "schedule": 3,
       "start": "10:00",
       "days": [
         7
@@ -505,7 +505,7 @@
       "color": "#808080"
     },
     {
-      "clone": 2,
+      "schedule": 2,
       "start": "11:00",
       "days": [
         1
@@ -514,7 +514,7 @@
       "color": "#6666ff"
     },
     {
-      "clone": 0,
+      "schedule": 0,
       "start": "11:00",
       "days": [
         2,
@@ -524,7 +524,7 @@
       "color": "#00ccff"
     },
     {
-      "clone": 3,
+      "schedule": 3,
       "start": "11:00",
       "days": [
         3,
@@ -535,7 +535,7 @@
       "color": "#808080"
     },
     {
-      "clone": 4,
+      "schedule": 4,
       "start": "11:00",
       "days": [
         7
@@ -544,7 +544,7 @@
       "color": "#990099"
     },
     {
-      "clone": 6,
+      "schedule": 6,
       "start": "11:30",
       "days": [
         7
@@ -553,7 +553,7 @@
       "color": "#ff6600"
     },
     {
-      "clone": 0,
+      "schedule": 0,
       "start": "12:00",
       "days": [
         1,
@@ -563,7 +563,7 @@
       "color": "#00ccff"
     },
     {
-      "clone": 4,
+      "schedule": 4,
       "start": "12:00",
       "days": [
         4
@@ -572,7 +572,7 @@
       "color": "#990099"
     },
     {
-      "clone": 2,
+      "schedule": 2,
       "start": "12:00",
       "days": [
         6
@@ -581,7 +581,7 @@
       "color": "#6666ff"
     },
     {
-      "clone": 7,
+      "schedule": 7,
       "start": "12:00",
       "days": [
         7
@@ -590,7 +590,7 @@
       "color": "#66ff33"
     },
     {
-      "clone": 6,
+      "schedule": 6,
       "start": "13:00",
       "days": [
         1,
@@ -601,7 +601,7 @@
       "color": "#ff6600"
     },
     {
-      "clone": 4,
+      "schedule": 4,
       "start": "13:00",
       "days": [
         2,
@@ -611,7 +611,7 @@
       "color": "#990099"
     },
     {
-      "clone": 0,
+      "schedule": 0,
       "start": "13:00",
       "days": [
         7
@@ -620,7 +620,7 @@
       "color": "#00ccff"
     },
     {
-      "clone": 0,
+      "schedule": 0,
       "start": "14:00",
       "days": [
         1,
@@ -630,7 +630,7 @@
       "color": "#00ccff"
     },
     {
-      "clone": 3,
+      "schedule": 3,
       "start": "14:00",
       "days": [
         4,
@@ -640,7 +640,7 @@
       "color": "#808080"
     },
     {
-      "clone": 2,
+      "schedule": 2,
       "start": "14:00",
       "days": [
         3,
@@ -651,7 +651,7 @@
       "color": "#6666ff"
     },
     {
-      "clone": 6,
+      "schedule": 6,
       "start": "15:00",
       "days": [
         3,
@@ -661,7 +661,7 @@
       "color": "#ff6600"
     },
     {
-      "clone": 4,
+      "schedule": 4,
       "start": "15:00",
       "days": [
         4,
@@ -671,7 +671,7 @@
       "color": "#990099"
     },
     {
-      "clone": 2,
+      "schedule": 2,
       "start": "15:30",
       "days": [
         3,
@@ -681,7 +681,7 @@
       "color": "#6666ff"
     },
     {
-      "clone": 3,
+      "schedule": 3,
       "start": "16:00",
       "days": [
         1,
@@ -694,7 +694,7 @@
       "color": "#808080"
     },
     {
-      "clone": 0,
+      "schedule": 0,
       "start": "16:00",
       "days": [
         6
@@ -703,7 +703,7 @@
       "color": "#00ccff"
     },
     {
-      "clone": 0,
+      "schedule": 0,
       "start": "17:00",
       "days": [
         1,
@@ -714,7 +714,7 @@
       "color": "#00ccff"
     },
     {
-      "clone": 2,
+      "schedule": 2,
       "start": "17:00",
       "days": [
         4,
@@ -724,7 +724,7 @@
       "color": "#6666ff"
     },
     {
-      "clone": 5,
+      "schedule": 5,
       "start": "17:30",
       "days": [
         3
@@ -733,7 +733,7 @@
       "color": "#ffff66"
     },
     {
-      "clone": 5,
+      "schedule": 5,
       "start": "18:00",
       "days": [
         1
@@ -742,7 +742,7 @@
       "color": "#ffff66"
     },
     {
-      "clone": 2,
+      "schedule": 2,
       "start": "18:00",
       "days": [
         2
@@ -751,7 +751,7 @@
       "color": "#6666ff"
     },
     {
-      "clone": 3,
+      "schedule": 3,
       "start": "18:00",
       "days": [
         3,
@@ -761,7 +761,7 @@
       "color": "#808080"
     },
     {
-      "clone": 6,
+      "schedule": 6,
       "start": "18:00",
       "days": [
         4,
@@ -771,7 +771,7 @@
       "color": "#ff6600"
     },
     {
-      "clone": 0,
+      "schedule": 0,
       "start": "18:30",
       "days": [
         4
@@ -780,7 +780,7 @@
       "color": "#00ccff"
     },
     {
-      "clone": 8,
+      "schedule": 8,
       "start": "19:00",
       "days": [
         1,
@@ -791,7 +791,7 @@
       "color": "#99ff99"
     },
     {
-      "clone": 9,
+      "schedule": 9,
       "start": "19:00",
       "days": [
         2,
@@ -802,7 +802,7 @@
       "color": "#ccffcc"
     },
     {
-      "clone": 7,
+      "schedule": 7,
       "start": "19:00",
       "days": [
         6
@@ -811,7 +811,7 @@
       "color": "#66ff33"
     },
     {
-      "clone": 7,
+      "schedule": 7,
       "start": "20:00",
       "days": [
         1,
@@ -825,7 +825,7 @@
       "color": "#66ff33"
     },
     {
-      "clone": 12,
+      "schedule": 12,
       "start": "20:00",
       "days": [
         6
@@ -834,7 +834,7 @@
       "color": "#ccffff"
     },
     {
-      "clone": 13,
+      "schedule": 13,
       "start": "20:30",
       "days": [
         6
@@ -843,7 +843,7 @@
       "color": "#ccffff"
     },
     {
-      "clone": 10,
+      "schedule": 10,
       "start": "21:00",
       "days": [
         1,
@@ -854,7 +854,7 @@
       "color": "#336600"
     },
     {
-      "clone": 11,
+      "schedule": 11,
       "start": "21:00",
       "days": [
         2,
@@ -865,7 +865,7 @@
       "color": "#66ffcc"
     },
     {
-      "clone": 8,
+      "schedule": 8,
       "start": "21:00",
       "days": [
         6
@@ -874,7 +874,7 @@
       "color": "#99ff99"
     },
     {
-      "clone": 3,
+      "schedule": 3,
       "start": "22:00",
       "days": [
         1,
@@ -887,7 +887,7 @@
       "color": "#808080"
     },
     {
-      "clone": 4,
+      "schedule": 4,
       "start": "22:00",
       "days": [
         6
@@ -896,7 +896,7 @@
       "color": "#990099"
     },
     {
-      "clone": 0,
+      "schedule": 0,
       "start": "22:00",
       "days": [
         7
@@ -905,7 +905,7 @@
       "color": "#00ccff"
     },
     {
-      "clone": 6,
+      "schedule": 6,
       "start": "23:00",
       "days": [
         1,
@@ -915,7 +915,7 @@
       "color": "#ff6600"
     },
     {
-      "clone": 2,
+      "schedule": 2,
       "start": "23:00",
       "days": [
         2,
@@ -927,7 +927,7 @@
       "color": "#6666ff"
     },
     {
-      "clone": 3,
+      "schedule": 3,
       "start": "23:00",
       "days": [
         7
@@ -936,7 +936,7 @@
       "color": "#808080"
     },
     {
-      "clone": 2,
+      "schedule": 2,
       "start": "23:30",
       "days": [
         7

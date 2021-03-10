@@ -79,8 +79,8 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
         var color;
         var playlist = $scope.config.playlists[index];
         if(!$scope.isEmpty(playlist)) {
-            if(!$scope.isNotClone(playlist)) {
-                playlist.color = $scope.config.playlists[playlist.clone].color;
+            if(!$scope.isNotScheduled(playlist)) {
+                playlist.color = $scope.config.playlists[playlist.schedule].color;
             }
             color = playlist.color;
         }
@@ -91,8 +91,8 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
         var name;
         var playlist = $scope.config.playlists[index];
         if(!$scope.isEmpty(playlist)) {
-            if(!$scope.isNotClone(playlist)) {
-                playlist.name = $scope.config.playlists[playlist.clone].name;
+            if(!$scope.isNotScheduled(playlist)) {
+                playlist.name = $scope.config.playlists[playlist.schedule].name;
             }
             name = playlist.name;
             if(fullySpecified == true) {
@@ -105,14 +105,14 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
         return name;
     }
 
-    $scope.isNotClone = function(playlist) {
-        return $scope.isEmpty(playlist.clone);
+    $scope.isNotScheduled = function(playlist) {
+        return $scope.isEmpty(playlist.schedule);
     }
 
     $scope.verifyPlaylist = function() {
         angular.forEach($scope.config.playlists, function(playlist, key) { 
             if($scope.playlist.name == playlist.name && $scope.playlist.urlOrFolder == playlist.urlOrFolder) {
-                $scope.error = "Playlist Exisits";
+                $scope.error = "Playlist Exists";
             }
         });
     }
@@ -168,15 +168,15 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
         }
     }
 
-    $scope.clone = function() {
-        if(!$scope.isNotClone(playlist)) {// clone is set
+    $scope.schedule = function() {
+        if(!$scope.isNotScheduled($scope.playlist)) {// schedule is set
             $scope.modifying();
             $scope.config.playlists.push($scope.playlist);
-            jQuery("#close-clone").click();
+            jQuery("#close-schedule").click();
             $scope.clear();
         } else {
             $scope.error = "Select a playlist to copy";
-            jQuery("#clone").scrollTop(0);
+            jQuery("#schedule").scrollTop(0);
         }
     }
 
@@ -186,9 +186,9 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
                 $scope.modifying();
                 angular.forEach($scope.deletable, function(i, key1) {
                     var playlist = $scope.config.playlists[i];
-                    // remove clones
+                    // remove schedules
                     angular.forEach($scope.config.playlists, function(p, key2) {
-                        if(!$scope.isNotClone(p) && i == p.clone) {
+                        if(!$scope.isNotScheduled(p) && i == p.schedule) {
                             delete $scope.config.playlists[key2];
                         }
                     });

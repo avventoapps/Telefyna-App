@@ -30,7 +30,7 @@ ______
 * The second playlist is a second default, it's a second filler choice and is played when `ONLINE` ones fail because of of internet issues
 * If an internet connection is lost during a broadcast, the second playlist is defaulted to and if it's restored, the previous program will be restored too
 * Both the above two default playlists must be maintained active, if any of them is local, better set resuming
-* If you intend to use one playlist as default for both the first and second, make the second a clone of the first
+* If you intend to use one playlist as default for both the first and second, make the second a schedule of the first
 * `name` your playlist meaningfully
 * `description` contains your explanation of about the playlist
 * `days` of the week (`1-7`=Sun-Sat): if null or not defined, runs daily
@@ -45,7 +45,7 @@ ______
 * You can add folder named after `specialBumperFolder` value to tag any playlist to play bumpers located in `specialBumperFolder` folder 
 * You can add `General` folder in `bumper` folder for general ads to play before all bumpers & programs
 * All playlist are enabled by default, to disable one, set `active=false`
-* `clone` allows you to copy a playlist defined up by its order/number/count (starts from 0) and manage separate/override `start` or `days` or `dates`
+* `schedule` allows you to schedule a playlist defined up by its order/number/count (starts from 0) and manage separate/override `start` or `days` or `dates`
 * A field left out in config is by default set to `null`
 * Ensure to have a playlist completing/ending each local one else the default one will automatically be played
 
@@ -54,7 +54,6 @@ For any questions or queries, please email the support team at apps@avventohome.
 
 
 ## TODO
-- [ ] rename clone with schedule
 - [ ] redo demo
 - [ ] support logo, lowerthirds etc: https://github.com/google/ExoPlayer/issues/8648 | https://exoplayer.dev/ui-components.html#customization
 - [ ] SRT support: https://github.com/google/ExoPlayer/issues/8647
@@ -91,6 +90,7 @@ links
 - [ ] ensure all wrong media files are skipped (blocked)
 - [ ] work on presentation approach (blocked)
 - [ ] support more formats such as SRT
+- [x] rename clone with schedule
 - [x] add promos/sweepers/something folder that starts the playout whether in continuing. usable for upnexts: intros folder containing another named by foldername: test symbolic 
 - [x] Schedule once per start (last), ignore the rest of the slots
 - [x] Network listener, switches to second default when internet is off, and back if slot still active

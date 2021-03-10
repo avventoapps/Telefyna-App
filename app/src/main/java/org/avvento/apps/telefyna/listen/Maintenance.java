@@ -71,9 +71,9 @@ public class Maintenance {
             List<String> starts = new ArrayList<>();
             for (int index = 0; index < playlists.length; index++) {
                 Playlist playlist = playlists[index];
-                Integer clone = playlist.getClone();
+                Integer schedule = playlist.getSchedule();
                 List<Program> programs = new ArrayList<>();
-                if (clone == null) {
+                if (schedule == null) {
                     if (playlist.getType().equals(Playlist.Type.ONLINE)) {
                         programs.add(new Program(playlist.getName(), MediaItem.fromUri(playlist.getUrlOrFolder())));
                     } else {
@@ -84,8 +84,8 @@ public class Maintenance {
                         }
                     }
                 } else {
-                    programs = Monitor.instance.getProgramsByIndex().get(clone);
-                    playlist = playlist.copy(playlists[clone]);
+                    programs = Monitor.instance.getProgramsByIndex().get(schedule);
+                    playlist = playlist.schedule(playlists[schedule]);
                 }
 
                 if (playlist.scheduledToday()) {

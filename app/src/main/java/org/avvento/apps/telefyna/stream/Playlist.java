@@ -49,8 +49,8 @@ public class Playlist {
     private String[] dates;
     // time to start stream in (HH:mm)
     private String start;
-    // index to a playlist count from top this is cloning, must be above it. use only with day, repeats and start fields
-    private Integer clone;
+    // index to a playlist count from top this is scheduling, must be above it. use only with day, repeats and start fields
+    private Integer schedule;
 
     public boolean scheduledToday() {
         if (!isActive() || StringUtils.isBlank(start)) {
@@ -68,14 +68,15 @@ public class Playlist {
     }
 
     // only overrides days, dates and start but maintains the rest
-    public Playlist copy(Playlist clone) {
-        this.type = clone.type;
-        this.name = clone.name;
-        this.description = clone.description;
-        this.active = clone.active;
-        this.urlOrFolder = clone.urlOrFolder;
-        this.playingGeneralBumpers = clone.playingGeneralBumpers;
-        this.specialBumperFolder = clone.specialBumperFolder;
+    public Playlist schedule(Playlist schedule) {
+        this.type = schedule.type;
+        this.name = schedule.name;
+        this.description = schedule.description;
+        this.active = schedule.active;
+        this.urlOrFolder = schedule.urlOrFolder;
+        this.playingGeneralBumpers = schedule.playingGeneralBumpers;
+        this.specialBumperFolder = schedule.specialBumperFolder;
+        this.color = schedule.color;
         return this;
     }
 

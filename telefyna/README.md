@@ -1,4 +1,4 @@
-# Telefyna Configuration
+c# Telefyna Configuration
 
 This project contains a client side application for managing Telefyna's configurations which includes programming/scheduling
 
@@ -11,7 +11,7 @@ This project contains a client side application for managing Telefyna's configur
 - [x] Import & export config.json
 - [x] Automation, Notification Disabling triggering etc
 - [x] Adding playlists
-- [x] Cloning & Editing playlists
+- [x] Scheduling & Editing playlists
 - [x] Listing ordered playlists and rendering clones right
 - [x] Delete playlist(s)
 - [x] Realtime change config.json updating and validation

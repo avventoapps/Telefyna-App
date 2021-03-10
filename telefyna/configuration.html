@@ -148,7 +148,7 @@
                             </div>
                             <div class="modal-body">
                                 <div ng-if="edit == 0">
-                                    This is your first and Default playlist, It's played when nothing is scheduled or programs are unexisting in the folder and when automation is disabled.
+                                    This is your first and Default playlist, It's played when nothing is scheduled or programs are not existing in the folder and when automation is disabled.
                                 </div>
                                 <div ng-if="edit == 1">
                                     This is your second and Fillers playlist, It's played when programs finish before the schedule/slot is ended and when internet is unavailable when starting a playlist
@@ -159,7 +159,7 @@
                                 <div class="section action">
                                     * Select Playlist to edit *
                                     <select class="form-control" required ng-model="edit" ng-change="renderEdit()">
-                                        <option ng-repeat="p in config.playlists" ng-if="isNotClone(p)" value="{{$index}}">{{name($index, true)}}</option>
+                                        <option ng-repeat="p in config.playlists" ng-if="isNotScheduled(p)" value="{{$index}}">{{name($index, true)}}</option>
                                     </select>
                                 </div>
                                 <div class="section action">
@@ -229,10 +229,10 @@
                       </div>
 
                     <!-- Schedule/Copy -->
-                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#clone" ng-disabled="isEmpty(config.playlists)">Schedule Playlist</button>
-                    <div class="modal fade action-content" id="clone" role="dialog">
+                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#schedule" ng-disabled="isEmpty(config.playlists)">Schedule Playlist</button>
+                    <div class="modal fade action-content" id="schedule" role="dialog">
                         <div class="modal-dialog modal-dialog-centered" role="document">
-                          <form class="modal-content" ng-submit="clone()">
+                          <form class="modal-content" ng-submit="schedule()">
                             <div class="modal-header">
                               <h5 class="modal-title">Schedule an existing Playlist</h5>
                             </div>
@@ -244,8 +244,8 @@
                             <div class="modal-body">
                                 <div class="section action">
                                     * Select Playlist *
-                                    <select class="form-control" required ng-model="playlist.clone">
-                                        <option ng-repeat="p in config.playlists" ng-if="isNotClone(p)" value="{{$index}}">{{name($index, true)}}</option>
+                                    <select class="form-control" required ng-model="playlist.schedule">
+                                        <option ng-repeat="p in config.playlists" ng-if="isNotScheduled(p)" value="{{$index}}">{{name($index, true)}}</option>
                                     </select>
                                 </div>
                                 <div class="section action">
@@ -272,7 +272,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-info" ng-click="clear()">Clear</button>
-                                <button type="button" class="btn btn-danger" id="close-clone" data-dismiss="modal" ng-click="clear()">Cancel</button>
+                                <button type="button" class="btn btn-danger" id="close-schedule" data-dismiss="modal" ng-click="clear()">Cancel</button>
                                 <button type="submit" class="btn btn-success">Schedule</button>
                             </div>
                         </form>
@@ -289,7 +289,7 @@
                         <div class="modal-dialog modal-dialog-centered" role="document">
                             <form class="modal-content" ng-submit="delete()">
                             <div class="modal-header">
-                              <h5 class="modal-title">Delete Exisiting Playlist(s) | Schedule(s)</h5>
+                              <h5 class="modal-title">Delete Existing Playlist(s) | Schedule(s)</h5>
                             </div>
                             Deleting the playlist will delete respective Schedules below it whereas deleting schedule doesn't delete the respective playlist
                             <div class="modal-body">

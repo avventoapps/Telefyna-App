@@ -73,6 +73,10 @@ body {
     padding: .2rem;
 }
 
+.btn-colorselector {
+    border: .2px solid black;
+}
+
 /* Preview backgrounds */
 ._00cc99 {
     background-color: #00cc99;

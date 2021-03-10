@@ -54,6 +54,7 @@ For any questions or queries, please email the support team at apps@avventohome.
 
 
 ## TODO
+- [ ] rename clone with schedule
 - [ ] redo demo
 - [ ] support logo, lowerthirds etc: https://github.com/google/ExoPlayer/issues/8648 | https://exoplayer.dev/ui-components.html#customization
 - [ ] SRT support: https://github.com/google/ExoPlayer/issues/8647

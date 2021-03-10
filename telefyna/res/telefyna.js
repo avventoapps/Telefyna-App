@@ -9,19 +9,56 @@ jQuery(function() {
     jQuery('.color-selector').colorselector();
 });
 
-angular.module("Telefyna", ['ngCookies']).controller('Config', function ($cookies, $scope) {
-    if(window.localStorage.config) {
+angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies, $scope) {
+    if(!isEmptyInternal(window.localStorage.config)) {
         $scope.config = JSON.parse(window.localStorage.config);
     } else {
+        clearConfigInternal();
+    }
+    clearInternal();
+
+    function isEmptyInternal(obj) {
+        return obj == undefined || obj == null || obj == "undefined" || obj == "null" || obj["length"] == 0;
+    }
+
+    function clearConfigInternal() {
         $scope.config = {};
         $scope.config.playlists = [];
     }
-    $scope.playlist = {};
-    $scope.playlist.active = false;
-    $scope.error;
-    $scope.datePickerValue;
-    $scope.edit;
-    $scope.deletable = [];
+
+    function clearInternal() {
+        $scope.playlist = {};
+        $scope.playlist.active = false;
+        $scope.error = undefined;
+        $scope.datePickerValue = undefined;
+        $scope.edit = undefined;
+        $scope.deletable = [];
+    }
+
+    $scope.isEmpty = function(obj) {
+        return isEmptyInternal(obj);
+    }
+
+    $scope.clear = function() {
+        clearInternal();
+        jQuery('.select-color').css("background-color", "");
+        jQuery('.select-color').change(); 
+    }
+
+    $scope.modifying = function() {
+        $scope.config.lastModified = new Date().toLocaleString();
+        $scope.error = undefined;  
+        $scope.edit = undefined;
+        window.localStorage.config = JSON.stringify($scope.config);
+    }
+
+    $scope.clearConfig = function() {
+        if(confirm("Do you want to proceed with Clearing Configuration?")) {
+            delete window.localStorage.config;
+            clearConfigInternal();
+            $scope.clear();
+        }
+    }
 
     $scope.importConfig = function(event) {
         var file = event.target.files[0];
@@ -41,7 +78,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function ($cookie
     $scope.color = function(index) {
         var color;
         var playlist = $scope.config.playlists[index];
-        if(playlist) {
+        if(!$scope.isEmpty(playlist)) {
             if(!$scope.isNotClone(playlist)) {
                 playlist.color = $scope.config.playlists[playlist.clone].color;
             }
@@ -53,27 +90,27 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function ($cookie
     $scope.name = function(index, fullySpecified) {
         var name;
         var playlist = $scope.config.playlists[index];
-        if(playlist) {
+        if(!$scope.isEmpty(playlist)) {
             if(!$scope.isNotClone(playlist)) {
                 playlist.name = $scope.config.playlists[playlist.clone].name;
             }
             name = playlist.name;
             if(fullySpecified == true) {
                 name = name + " #" + (index + 1) 
-                    + (playlist.start ? " | @" + playlist.start : "")
-                    + (playlist.days && playlist.days.length > 0 ? " | Days:" + playlist.days.join(",") : "")
-                    + (playlist.dates && playlist.dates.length > 0 ? " | " + playlist.dates.join(",") : "");
+                    + (!$scope.isEmpty(playlist.start) ? " | @" + playlist.start : "")
+                    + (!$scope.isEmpty(playlist.days) ? " | Days:" + playlist.days.join(",") : "")
+                    + (!$scope.isEmpty(playlist.dates) ? " | " + playlist.dates.join(",") : "");
             }
         }
         return name;
     }
 
     $scope.isNotClone = function(playlist) {
-        return playlist.clone == undefined;
+        return $scope.isEmpty(playlist.clone);
     }
 
     $scope.verifyPlaylist = function() {
-        angular.forEach($scope.config.playlists, function (playlist, key) { 
+        angular.forEach($scope.config.playlists, function(playlist, key) { 
             if($scope.playlist.name == playlist.name && $scope.playlist.urlOrFolder == playlist.urlOrFolder) {
                 $scope.error = "Playlist Exisits";
             }
@@ -81,10 +118,10 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function ($cookie
     }
 
     $scope.add = function() {
-        if($scope.playlist.type) {
+        if(!$scope.isEmpty($scope.playlist.type)) {
             $scope.modifying();
             $scope.verifyPlaylist();
-            if(!$scope.error) {
+            if(!$scope.isEmpty(!$scope.error)) {
                 $scope.config.playlists.push($scope.playlist);
                 window.localStorage.config = JSON.stringify($scope.config);
                 jQuery("#close-add").click();
@@ -98,18 +135,24 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function ($cookie
         }
     }
 
+    $scope.changeSelectedColor = function() {
+        var selectedColor = jQuery("color-selector").val();
+        var col = !$scope.isEmpty(selectedColor) ? selectedColor : (!$scope.isEmpty($scope.playlist.color) ? $scope.playlist.color : "");
+        jQuery('.select-color').css("background-color", col);
+        jQuery('.select-color').change();
+    }
+
     $scope.renderEdit = function() {
         $scope.playlist = $scope.config.playlists[$scope.edit];
-        jQuery('#edit-color').css("background-color", $scope.playlist.color != undefined ? $scope.playlist.color : "");
-        jQuery('#edit-color').change();
-        if($scope.playlist.dates) {
+        $scope.changeSelectedColor();
+        if(!$scope.isEmpty($scope.playlist.dates)) {
             $scope.datePickerValue =$scope.playlist.dates.join(",");
         }
     }
 
     $scope.revise = function() {
-        if($scope.playlist.type) {
-            if($scope.edit) {
+        if(!$scope.isEmpty($scope.playlist.type)) {
+            if(!$scope.isEmpty($scope.edit)) {
                 $scope.modifying();
                 $scope.config.playlists[$scope.edit] = $scope.playlist;
                 window.localStorage.config = JSON.stringify($scope.config);
@@ -126,7 +169,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function ($cookie
     }
 
     $scope.clone = function() {
-        if($scope.playlist.clone) {
+        if(!$scope.isNotClone(playlist)) {// clone is set
             $scope.modifying();
             $scope.config.playlists.push($scope.playlist);
             jQuery("#close-clone").click();
@@ -139,7 +182,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function ($cookie
 
     $scope.delete = function() {
         if(confirm("Do you want to proceed with Deleting Selected Playlists?")) {
-            if($scope.deletable.length > 0) {
+            if(!$scope.isEmpty($scope.deletable)) {
                 $scope.modifying();
                 angular.forEach($scope.deletable, function(i, key1) {
                     var playlist = $scope.config.playlists[i];
@@ -151,7 +194,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function ($cookie
                     });
                     delete $scope.config.playlists[i];
                 });
-                $scope.config.playlists = $scope.config.playlists.filter(function (el) {
+                $scope.config.playlists = $scope.config.playlists.filter(function(el) {
                     return el;
                 });
                 window.localStorage.config = JSON.stringify($scope.config);
@@ -169,38 +212,10 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function ($cookie
         // TODO cache, export out to downloads
     }
 
-    $scope.modifying = function() {
-        $scope.config.lastModified = new Date().toLocaleString();
-        $scope.error = undefined;  
-        $scope.edit = undefined;
-        window.localStorage.config = JSON.stringify($scope.config);
-    }
-
-    $scope.clear = function() {
-        $scope.playlist = {};
-        $scope.playlist.active = false;
-        $scope.error = undefined;
-        $scope.datePickerValue = undefined;
-        $scope.edit = undefined;
-        $scope.deletable = [];
-        jQuery('#edit-color').css("background-color", "");
-        jQuery('#edit-color').change();
-        
-    }
-
-    $scope.clearConfig = function() {
-        if(confirm("Do you want to proceed with Clearing Configuration?")) {
-            delete window.localStorage.config;
-            $scope.config = {};
-            $scope.config.playlists = [];
-            $scope.clear();
-        }
-    }
-
     $scope.setPlaylistDate = function() {
-        if($scope.datePickerValue) {
+        if(!$scope.isEmpty($scope.datePickerValue)) {
             $scope.playlist.dates = [];
-            angular.forEach($scope.datePickerValue.split(","), function (d, key) { 
+            angular.forEach($scope.datePickerValue.split(","), function(d, key) { 
                 $scope.playlist.dates.push(d);
             });
         }
@@ -235,27 +250,27 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function ($cookie
         previewWeekly = [];
         previewDated = [];
         
-        angular.forEach($scope.config.playlists, function (playlist, key) {
-            if(playlist.start && playlist.start.indexOf(":") > 0) {// only preview playlists with start time
+        angular.forEach($scope.config.playlists, function(playlist, key) {
+            if(!$scope.isEmpty(playlist.start)) {// only preview playlists with start time
                 var previewSlot = {};
                 previewSlot.id = key;
                 previewSlot.start = playlist.start;
                 previewSlot.color = playlist.color;
                 // add weekly slots
                 var days = [];
-                if(playlist.days && playlist.days.length > 0) {
+                if(!$scope.isEmpty(playlist.days)) {
                     days = playlist.days;
                 } else {
                     days = [1, 2, 3, 4, 5, 6, 7];
                 }
-                if(days.length > 0) {
+                if(!$scope.isEmpty(days)) {
                 previewSlot.days = days;
                     if(!weekly.includes(previewSlot)) {
                         weekly.push(previewSlot);
                     }
                 }
                 // add future dated slots
-                if(playlist.dates && playlist.dates.length > 0) {
+                if(!$scope.isEmpty(playlist.dates)) {
                     previewSlot.dates = playlist.dates;
                     if(!dated.includes(previewSlot)) {
                         dated.push(previewSlot);
@@ -273,7 +288,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function ($cookie
         for (var i = 0; i < weekly.length; ++i) {
             var slot = weekly[i];
             var dailySlots = [];
-            angular.forEach(slot.days, function (day, key) {
+            angular.forEach(slot.days, function(day, key) {
                 var slotPreview = {};
                 slotPreview.name = $scope.name(slot.id);
                 slotPreview.color = $scope.color(slot.id);
@@ -293,7 +308,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function ($cookie
         // Add previewDated
         for(var i = 0; i < dated.length; i++) {
             var slot = dated[i];
-            angular.forEach(slot.dates, function (date, key) {
+            angular.forEach(slot.dates, function(date, key) {
                 var slotPreview = {};
                 slotPreview.color = $scope.color(slot.id);
                 slotPreview.name = $scope.name(slot.id);
@@ -311,7 +326,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function ($cookie
         for(var t = 0; t < existingSlots.length; t++) {
             if(existingSlots[t].start == slotDisplay.start) {
                 for(var s = 0; s < slotDisplay.slots.length; s++) {
-                    if(existingSlots[t].slots[s] == undefined) {
+                    if($scope.isEmpty(existingSlots[t].slots[s])) {
                         existingSlots[t].slots[s] = slotDisplay.slots[s];
                         handled = true;
                     }
@@ -337,16 +352,16 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function ($cookie
 
     // color in #code format
     $scope.classifyColor = function(color, index, day) {
-        if(color && $scope.previewData.weekly[index].slots[day]) {
+        if(!$scope.isEmpty(color) && !$scope.isEmpty($scope.previewData.weekly[index].slots[day])) {
             var claz = color.replace("#", "_");
             $scope.previewData.weekly[index].slots[day].claz = claz;
         
             // color the next vacant slots with upper slot
             for(var i = index + 1; i < $scope.previewData.weekly.length; i++) {
-                if($scope.previewData.weekly[i].slots[day] && $scope.previewData.weekly[i].slots[day].name) {//available slot, breakout
+                if(!$scope.isEmpty($scope.previewData.weekly[i].slots[day]) && !$scope.isEmpty($scope.previewData.weekly[i].slots[day].name)) {//available slot, breakout
                     break;
                 }
-                if($scope.previewData.weekly[i].slots[day] == undefined) {
+                if($scope.isEmpty($scope.previewData.weekly[i].slots[day])) {
                     $scope.previewData.weekly[i].slots[day] = {claz: claz};
                 } else {
                     $scope.previewData.weekly[i].slots[day].claz = claz;
@@ -354,5 +369,4 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function ($cookie
             }
         }
     }
-
 });

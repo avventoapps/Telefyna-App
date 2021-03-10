@@ -62,13 +62,13 @@
                               <h5 class="modal-title">Create a new Playlist</h5>
                             </div>
                             <div class="modal-body">
-                                <div ng-if="config.playlists.length == 0">
+                                <div ng-if="isEmpty(config.playlists)">
                                     This is your first and Default playlist, It's played when nothing is scheduled or programs are unexisting in the folder and when automation is disabled.
                                 </div>
                                 <div ng-if="config.playlists.length == 1">
                                     This is your second and Fillers playlist, It's played when programs finish before the schedule/slot is ended and when internet breaks or is unavailable
                                 </div>
-                                <div class="alert alert-danger section action" role="alert" ng-show="error">
+                                <div class="alert alert-danger section action" role="alert" ng-show="!isEmpty(error)">
                                     {{error}}
                                 </div>
                                 <div class="section action">
@@ -93,9 +93,9 @@
                                         <option value="LOCAL_RESUMING_NEXT">Local next resuming folder</option>
                                     </select>
                                 </div>
-                                <div class="section action">
+                                <div class="section action select-color">
                                     Color
-                                    <select class="color-selector" ng-model="playlist.color">
+                                    <select class="color-selector" ng-model="playlist.color" ng-change="changeSelectedColor()">
                                         <option value="#00cc99" data-color="#00cc99"></option>
                                         <option value="#00ccff" data-color="#00ccff"></option>
                                         <option value="#6666ff" data-color="#6666ff"></option>
@@ -139,7 +139,7 @@
                       </div>
 
                     <!-- Edit -->
-                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#edit" ng-disabled="config.playlists.length == 0">Edit Playlist</button>
+                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#edit" ng-disabled="isEmpty(config.playlists)">Edit Playlist</button>
                     <div class="modal fade action-content" id="edit" role="dialog">
                         <div class="modal-dialog modal-dialog-centered" role="document">
                           <form class="modal-content" ng-submit="revise()">
@@ -151,9 +151,9 @@
                                     This is your first and Default playlist, It's played when nothing is scheduled or programs are unexisting in the folder and when automation is disabled.
                                 </div>
                                 <div ng-if="edit == 1">
-                                    This is your second and Fillers playlist, It's played when programs finish before the schedule/slot is ended and when internet breaks or is unavailable
+                                    This is your second and Fillers playlist, It's played when programs finish before the schedule/slot is ended and when internet is unavailable when starting a playlist
                                 </div>
-                                <div class="alert alert-danger section action" role="alert" ng-show="error">
+                                <div class="alert alert-danger section action" role="alert" ng-show="!isEmpty(error)">
                                     {{error}}
                                 </div>
                                 <div class="section action">
@@ -184,9 +184,9 @@
                                         <option value="LOCAL_RESUMING_NEXT">Local next resuming folder</option>
                                     </select>
                                 </div>
-                                <div class="section action"  id="edit-color">
+                                <div class="section action select-color">
                                     Color
-                                    <select class="color-selector" ng-model="playlist.color">
+                                    <select class="color-selector" ng-model="playlist.color" ng-change="changeSelectedColor()">
                                         <option value="#00cc99" data-color="#00cc99"></option>
                                         <option value="#00ccff" data-color="#00ccff"></option>
                                         <option value="#6666ff" data-color="#6666ff"></option>
@@ -229,7 +229,7 @@
                       </div>
 
                     <!-- Schedule/Copy -->
-                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#clone" ng-disabled="config.playlists.length == 0">Schedule Playlist</button>
+                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#clone" ng-disabled="isEmpty(config.playlists)">Schedule Playlist</button>
                     <div class="modal fade action-content" id="clone" role="dialog">
                         <div class="modal-dialog modal-dialog-centered" role="document">
                           <form class="modal-content" ng-submit="clone()">
@@ -238,7 +238,7 @@
                             </div>
                             Schedules are not editable, revisions are only possible by deleting a schedule and re-adding it.<br>
                             The last added schedule overrides the previous one if they share a slot
-                            <div class="alert alert-danger section action" role="alert" ng-show="error">
+                            <div class="alert alert-danger section action" role="alert" ng-show="!isEmpty(error)">
                                 {{error}}
                             </div>
                             <div class="modal-body">
@@ -283,8 +283,8 @@
             <div class="section">
                 <!-- Clear/Delete -->
                 <div class="action">
-                    <button type="button" class="btn btn-danger" ng-disabled="config.playlists.length == 0" ng-click="clearConfig()">Clear</button>
-                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete" ng-disabled="config.playlists.length == 0">Delete Playlist(s) | Schedule(s)</button>
+                    <button type="button" class="btn btn-danger" ng-disabled="isEmpty(config.playlists)" ng-click="clearConfig()">Clear</button>
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete" ng-disabled="isEmpty(config.playlists)">Delete Playlist(s) | Schedule(s)</button>
                     <div class="modal fade action-content" id="delete" role="dialog">
                         <div class="modal-dialog modal-dialog-centered" role="document">
                             <form class="modal-content" ng-submit="delete()">
@@ -303,7 +303,7 @@
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-info" ng-click="deletable = []">Clear</button>
                                 <button type="button" class="btn btn-danger" id="close-delete" data-dismiss="modal" ng-click="clear()">Cancel</button>
-                                <button type="submit" class="btn btn-danger" ng-disabled="deletable.length == 0">Delete Selected</button>
+                                <button type="submit" class="btn btn-danger" ng-disabled="isEmpty(deletable)">Delete Selected</button>
                             </div>
                           </form>
                         </div>
@@ -334,7 +334,7 @@
                     <button type="file" class="btn btn-info" onclick="jQuery('#import-config').click()">Import</button>
                     <input type="file" hidden id="import-config" ng-model="configFile" onchange="angular.element(this).scope().importConfig(event)">
                     <!-- Preview -->
-                    <button type="button" class="btn btn-success" ng-disabled="config.playlists.length == 0" data-toggle="modal" data-target="#preview" ng-click="initPreviewData()">Preview Schedule</button>
+                    <button type="button" class="btn btn-success" ng-disabled="isEmpty(config.playlists)" data-toggle="modal" data-target="#preview" ng-click="initPreviewData()">Preview Schedule</button>
                     <div class="modal fade action-content" id="preview" role="dialog">
                         <div class="modal-dialog modal-dialog-centered" role="document">
                             <div class="modal-content preview-print">
@@ -344,7 +344,7 @@
                                 </div>
                                 <!--.table-responsive breaks print-->
                                 <div class="modal-body">
-                                    <div ng-if="previewData.weekly.length > 0">
+                                    <div ng-if="!isEmpty(previewData.weekly)">
                                         <h5>Weekly</h5>
                                         <table class="table table-striped">
                                             <thead>
@@ -373,7 +373,7 @@
                                             </tbody>
                                         </table>
                                       </div>
-                                      <div ng-if="previewData.dated.length > 0">
+                                      <div ng-if="!isEmpty(previewData.dated)">
                                       <h5>Dates</h5>
                                         <table class="table table-striped">
                                             <thead>
@@ -398,11 +398,11 @@
                             </div>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-success" ng-disabled="config.playlists.length == 0" ng-click="exportConfig()">Export</button>
+                    <button type="button" class="btn btn-success" ng-disabled="isEmpty(config.playlists)" ng-click="exportConfig()">Export</button>
                 </div>
             </div>
 
-            <!-- Results -->
+            <!-- Display Results -->
             <!--div class="section config-result">
                 <pre>{{config | json: 2}}</pre>
             </div-->

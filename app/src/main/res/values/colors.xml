@@ -5,4 +5,5 @@
     <color name="colorAccent">#D81B60</color>
     <color name="warning_backgroud">#FFC107</color>
     <color name="info_backgroud">#00FF00</color>
+    <color name="trans">#9C000000</color>
 </resources>

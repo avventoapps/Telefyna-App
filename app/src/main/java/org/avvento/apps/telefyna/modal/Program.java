@@ -1,4 +1,4 @@
-package org.avvento.apps.telefyna.stream;
+package org.avvento.apps.telefyna.modal;
 
 import com.google.android.exoplayer2.MediaItem;
 

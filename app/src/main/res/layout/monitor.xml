@@ -14,7 +14,11 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:focusable="false"
-        app:resize_mode="fill"
-        app:use_controller="false" />
+        app:controller_layout_id="@layout/graphics"
+        app:use_controller="true"
+        app:show_timeout="0"
+        app:hide_on_touch="false"
+        android:animateLayoutChanges="true"
+        app:resize_mode="fill" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

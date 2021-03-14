@@ -1,7 +1,7 @@
 {
   "name": "3ABN-TV Uganda",
   "version": "1.0",
-  "lastModified": "09/03/2021, 21:01:56",
+  "lastModified": "12/03/2021, 22:49:54",
   "automationDisabled": false,
   "notificationsDisabled": true,
   "playlists": [
@@ -102,7 +102,7 @@
       "urlOrFolder": "ObutondeBwogera",
       "active": true,
       "playingGeneralBumpers": true,
-      "color": "#ccffff"
+      "color": "#28a745"
     },
     {
       "name": "Ennyimba",
@@ -110,7 +110,7 @@
       "urlOrFolder": "Ennyimba",
       "active": true,
       "playingGeneralBumpers": true,
-      "color": "#ccffff"
+      "color": "#28a745"
     },
     {
       "name": "Ensulo ey'enkya-Sun",
@@ -831,7 +831,7 @@
         6
       ],
       "name": "Obutonde bwogera",
-      "color": "#ccffff"
+      "color": "#28a745"
     },
     {
       "schedule": 13,
@@ -840,7 +840,7 @@
         6
       ],
       "name": "Ennyimba",
-      "color": "#ccffff"
+      "color": "#28a745"
     },
     {
       "schedule": 10,

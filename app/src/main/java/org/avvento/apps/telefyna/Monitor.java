@@ -7,6 +7,8 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
@@ -15,7 +17,13 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.StrictMode;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.VideoView;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
@@ -26,16 +34,19 @@ import com.google.android.exoplayer2.ui.PlayerNotificationManager;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.vinay.ticker.lib.TickerView;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.avvento.apps.telefyna.audit.AuditLog;
 import org.avvento.apps.telefyna.audit.Logger;
 import org.avvento.apps.telefyna.listen.Maintenance;
-import org.avvento.apps.telefyna.stream.Config;
-import org.avvento.apps.telefyna.stream.Playlist;
-import org.avvento.apps.telefyna.stream.Program;
-import org.avvento.apps.telefyna.stream.Seek;
+import org.avvento.apps.telefyna.modal.Config;
+import org.avvento.apps.telefyna.modal.Graphics;
+import org.avvento.apps.telefyna.modal.News;
+import org.avvento.apps.telefyna.modal.Playlist;
+import org.avvento.apps.telefyna.modal.Program;
+import org.avvento.apps.telefyna.modal.Seek;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -43,18 +54,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.net.UnknownHostException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -86,8 +92,8 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     private List<Playlist> playlistByIndex;
     private List<Program> currentBumpers;
     private File programsFolder;
-    private boolean secondDefaultRepeatable = false;
     private List<MediaItem> programItems;
+    private TickerView tickerView;
 
     public String getProgramsFolderPath() {
         return programsFolder.getAbsolutePath();
@@ -211,6 +217,10 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         return new File(Environment.getExternalStorageDirectory().getAbsolutePath() + postfix);
     }
 
+    public File getReInitializerFile() {
+        return new File(getAuditFilePath("init.txt"));
+    }
+
     public String getBumperDirectory() {
         return programsFolder.getAbsolutePath() + File.separator + "bumper";
     }
@@ -219,8 +229,12 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         return programsFolder.getAbsolutePath() + File.separator + "playlist";
     }
 
+    private String getAuditFilePath(String name) {
+        return String.format("%s/telefynaAudit/%s", Environment.getExternalStorageDirectory().getAbsolutePath(), name);
+    }
+
     public String getAuditLogsFilePath(String name) {
-        return String.format("%s/telefynaAudit/%s.log", Environment.getExternalStorageDirectory().getAbsolutePath(), name);
+        return getAuditFilePath(String.format("%s.log", name));
     }
 
     public void initialiseConfiguration() {
@@ -244,7 +258,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
 
     private void cacheNowPlaying() {
         if (nowPlayingIndex != null) {
-            PlayerView playerView = findViewById(R.id.player);
+            PlayerView playerView = getPlayerView();
             trackingNowPlaying(nowPlayingIndex, playerView.getPlayer() == null ? 0 : playerView.getPlayer().getCurrentPeriodIndex(), playerView.getPlayer() == null ? 0 : playerView.getPlayer().getCurrentPosition());
         }
     }
@@ -265,6 +279,12 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void switchNow(int index, boolean isCurrentSlot) {
+        // re-maintain if init file exists drop it and reload schedule
+        if(getReInitializerFile().exists()) {
+            getReInitializerFile().delete();
+            maintenance.run();
+            return;
+        }
         currentBumpers = new ArrayList<>();
         player = buildPlayer();
         int firstDefaultIndex = getFirstDefaultIndex();
@@ -274,7 +294,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         List<Program> programs = programsByIndex.get(index);
         Playlist playlist = playlistByIndex.get(index);
 
-        if (nowPlayingIndex == null || nowPlayingIndex != index || secondDefaultRepeatable) {// leave current program to proceed if it's the same being loaded
+        if (nowPlayingIndex == null || nowPlayingIndex != index || (!player.isPlaying() && index == secondDefaultIndex && nowPlayingIndex == index)) {// leave current program to proceed if it's the same being loaded
             if (!Utils.internetConnected() && secondDefaultIndex != index && Playlist.Type.ONLINE.equals(playlist.getType())) {
                 switchNow(secondDefaultIndex, false);
                 return;
@@ -354,7 +374,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                     // playing current local slot, TODO support more than one program
                     if (isCurrentSlot) {
                         Seek seek = seekCurrentSlot(playlist, programItems, program, position);
-                        if(seek != null) {
+                        if (seek != null) {
                             program = seek.getProgram();
                             position = seek.getPosition();
                         } else { // slot is ended, switch to first default
@@ -366,7 +386,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                     player.setMediaItems(programItems);
                     player.seekTo(program, position);
                     player.prepare();
-                    Player current = ((PlayerView) findViewById(R.id.player)).getPlayer();
+                    Player current = getPlayerView().getPlayer();
                     if (current != null) {
                         current.removeListener(instance);
                     }
@@ -375,7 +395,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                     player.setPlayWhenReady(true);
                     Logger.log(AuditLog.Event.PLAYLIST_PLAY, getPlayingAtIndexLabel(index), formatDuration(position), getMediaItemName(programItems.get(program)));
                     nowPlayingIndex = index;
-                    secondDefaultRepeatable = false;
+                    triggerGraphics(position);
                 }
             }
         }
@@ -420,7 +440,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
 
     private Seek getImmediateNonCompletedSlot(Long position, Integer program, Playlist playlist, List<MediaItem> mediaItems) {
         long startTime = getStart(playlist).getTimeInMillis();
-        if(isResuming(playlist) || playlist.getType().equals(Playlist.Type.LOCAL_RANDOMIZED) || playlist.getType().equals(Playlist.Type.ONLINE)) {
+        if (isResuming(playlist) || playlist.getType().equals(Playlist.Type.LOCAL_RANDOMIZED) || playlist.getType().equals(Playlist.Type.ONLINE)) {
             return new Seek(program, position);
         } else {
             for (int i = 0; i < mediaItems.size(); i++) {// mediaItems are well ordered
@@ -428,7 +448,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                 long duration = getDuration(mediaItems.get(i).mediaId);
                 if (duration + startTime > now) {
                     // use the first item
-                    return new Seek(i,  now - startTime);
+                    return new Seek(i, now - startTime);
                 }
             }
             // unseekable, slot is ended
@@ -446,9 +466,17 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         return start;
     }
 
+    private PlayerView getPlayerView() {
+        PlayerView playerView = findViewById(R.id.player);
+        playerView.setControllerShowTimeoutMs(0);
+        playerView.setControllerHideOnTouch(false);
+        playerView.showController();
+        return playerView;
+    }
+
     @Override
     public void onIsPlayingChanged(boolean isPlaying) {
-        PlayerView playerView = findViewById(R.id.player);
+        PlayerView playerView = getPlayerView();
         Player current = playerView.getPlayer();
         if (current == null || !player.equals(current)) {
             if (current != null) {
@@ -466,7 +494,6 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         if (nowPlayingIndex != null) {
             if (state == Player.STATE_ENDED) {
                 Logger.log(AuditLog.Event.PLAYLIST_COMPLETED, getNowPlayingPlaylistLabel());
-                secondDefaultRepeatable = true;
                 switchNow(getSecondDefaultIndex(), false);
             } else if (state == Player.STATE_BUFFERING && Playlist.Type.ONLINE.equals(playlistByIndex.get(nowPlayingIndex).getType())) {
                 player.seekTo(player.getContentDuration());// hack
@@ -476,8 +503,8 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
 
     private String getMediaItemName(MediaItem mediaItem) {
         String name = "";
-        try{
-            name = URLDecoder.decode(mediaItem.mediaId.replace("file://", "").replace(programsFolder.getAbsolutePath(), ""), "UTF_8");
+        try {
+            name = URLDecoder.decode(mediaItem.mediaId.replace("file://", "").replace(programsFolder.getAbsolutePath(), ""), "utf-8");
         } catch (UnsupportedEncodingException e) {
             Logger.log(AuditLog.Event.ERROR, e.getMessage());
         }
@@ -487,7 +514,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     @Override
     public void onMediaItemTransition(@Nullable MediaItem mediaItem, int reason) {
         if (nowPlayingIndex != null) {
-            int item = ((PlayerView) findViewById(R.id.player)).getPlayer().getCurrentPeriodIndex() - 1;// last item index
+            int item = getPlayerView().getPlayer().getCurrentPeriodIndex() - 1;// last item index
             trackingNowPlaying(nowPlayingIndex, item, 0);
             Logger.log(AuditLog.Event.PLAYLIST_ITEM_CHANGE, getNowPlayingPlaylistLabel(), getMediaItemName(mediaItem));
         }
@@ -601,6 +628,107 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         Logger.log(AuditLog.Event.KEY_DOWN, keyCode);
         return super.onKeyDown(keyCode, event);
+    }
+
+    private void triggerGraphics(long position) {
+        hideLogo();
+        hideTicker();
+        Playlist currentPlayList = playlistByIndex.get(nowPlayingIndex);
+
+        Graphics graphics = currentPlayList.getGraphics();
+        if(graphics != null) {
+            // handle logo
+            if(graphics.isDisplayLogo()) {
+                showLogo(graphics.getLogoPosition());
+            }
+            // handle ticker
+            News news = graphics.getNews();
+            if(news != null) {
+                String[] messages = news.getMessagesArray();
+
+                if(messages.length > 0) {
+                    initTickers(news);
+                    Arrays.stream(news.getStartsArray()).forEach(s -> {
+                        long start = s * 60 * 1000;//s is in minutes, send in mills
+                        if(start >= position) {
+                            Monitor.instance.getHandler().postDelayed(() -> {
+                                showTicker();
+                            }, start - position);
+                        }
+                    });
+                }
+            }
+        }
+    }
+
+    private void hideAllOtherGraphics() {
+
+    }
+
+    private void showAllOtherGraphics() {
+        File logo =  new File(programsFolder.getAbsolutePath() + File.separator + "graphics/Basic_Shine_blue.mp4");
+        VideoView allOtherGraphics = (VideoView) findViewById(R.id.lowerThird); // initiate a video view
+        allOtherGraphics.setVideoURI(Uri.fromFile(logo));
+        allOtherGraphics.start();
+        allOtherGraphics.setVisibility(View.VISIBLE);
+    }
+
+    private void hideTicker() {
+        if(tickerView != null) {
+            tickerView.setVisibility(View.GONE);
+            tickerView.removeChildViews();
+            tickerView.destroyAllScheduledTasks();
+            Logger.log(AuditLog.Event.DISPLAY_NEWS_OFF);
+        }
+    }
+
+    private void hideLogo() {
+        findViewById(R.id.topLogo).setVisibility(View.GONE);
+        findViewById(R.id.bottomLogo).setVisibility(View.GONE);
+        Logger.log(AuditLog.Event.DISPLAY_LOGO_OFF);
+    }
+
+    private void initTickers(News news) {
+        tickerView = findViewById(R.id.tickerView);
+        tickerView.setReplays(news.getReplays());
+        tickerView.setBackgroundColor(getColor(android.R.color.transparent));
+        Logger.log(AuditLog.Event.DISPLAY_NEWS_ON, news.getMessages());
+        for (String message : news.getMessagesArray()) {
+            tickerView.addChildView(tickerView(message));
+        }
+    }
+
+    private void showTicker() {
+        tickerView.showTickers();//TODO add time run in context
+        tickerView.setVisibility(View.VISIBLE);
+    }
+
+    private void showLogo(Graphics.LogoPosition logoPosition) {
+        File logo =  new File(programsFolder.getAbsolutePath() + File.separator + "logo.png");
+        if(logo.exists() && logoPosition != null) {
+            Bitmap myBitmap = BitmapFactory.decodeFile(logo.getAbsolutePath());
+            ImageView myImage;
+            if(Graphics.LogoPosition.TOP.equals(logoPosition)) {
+                myImage = findViewById(R.id.topLogo);
+                Logger.log(AuditLog.Event.DISPLAY_LOGO_ON, Graphics.LogoPosition.TOP.name());
+            } else {
+                myImage = findViewById(R.id.bottomLogo);
+                Logger.log(AuditLog.Event.DISPLAY_LOGO_ON, Graphics.LogoPosition.BOTTOM.name());
+            }
+            myImage.setImageBitmap(myBitmap);
+            myImage.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private TextView tickerView(String message) {
+        TextView tickerView = new TextView(instance);
+        tickerView.setLayoutParams(new LinearLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT));
+        tickerView.setText(message);
+        tickerView.setTextSize(getResources().getDimension(R.dimen.tickerFontSize));
+        tickerView.setBackgroundColor(getColor(R.color.trans));
+        tickerView.setTextColor(ContextCompat.getColor(instance, android.R.color.white));
+        tickerView.setPadding(10, 2, 10, 2);
+        return tickerView;
     }
 
 }

@@ -11,12 +11,17 @@ ______
 * Download the [APK from here](https://github.com/avventoapps/avvento/releases/latest/download/telefyna.apk) and install it, grant the app Storage permission and reload it if necessary
 
 ## Configurations
-* Use `config.json` to create your own configurations, [here is a sample](https://github.com/avventoapps/Telefyna/blob/master/config.json), add it to either `sdcard` if existing /device drive in a folder called `telefyna`
-* Add a local playlist folder containing your local programs folder for each local playlist
+* User the [online configuration application](https://avventomedia.org/telefyna/configuration.html) to build and export your `config.json`
+* Visit SDcard/drive or device storage without SDcard/drive and add a local `telefyna` folder playlist folder containing your local programs folder (`playlist`) and `config.json` file
 * Ensure the telefyna app is granted storage permission in your permissions
+* Telefyna logs audits onto `telefynaAudit` on the device storage
+* Maintenance automatically runs at midnight each day and schedules programs for the starting day
+* To tell Telefyna to reload any time you need to add `init.txt` file in `telefynaAudit` folder and it will reload on next program
+* A started slot can't be updated even if you change programs, or schedule. changes can only affect the next schedule and following
 
 ### Device
-* set `disableNotifications` to false to disable notifications
+* set `notificationsDisabled` to false to disable notifications
+* set `automationDisabled` to true to disable and only use the first playlist
 
 ### Remote access
 * If you want to access the filesystem remove, run an [FTP app like swiftp](https://github.com/avventoapps/avvento/releases/latest/download/swiftp.apk)
@@ -55,6 +60,10 @@ For any questions or queries, please email the support team at apps@avventohome.
 
 ## TODO
 - [ ] redo demo
+- [ ] create user-guide
+- [ ] ticker close after a loop?
+- [ ] replay fillers if gone
+- [ ] support triggering reinitialization on next program.
 - [ ] support logo, lowerthirds etc: https://github.com/google/ExoPlayer/issues/8648 | https://exoplayer.dev/ui-components.html#customization
 - [ ] SRT support: https://github.com/google/ExoPlayer/issues/8647
 - [ ] support auto installing of config under resources if non exists at first run

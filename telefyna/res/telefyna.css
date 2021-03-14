@@ -14,19 +14,19 @@ body {
 }
 
 .section {
-    margin: 5px 5px 5px 5px;
-    padding: 4px 4px 4px 4px;
+    margin: 2px;
+    padding: 5px;
     border: 1px solid #9b9c9c;
     border-radius: 5px;
 }
 
 .section.action {
-    margin: 0px 0px 0px 0px;
+    margin: 0px;
 }
 
 .section .action, .modal-body input {
-    margin-top: 5px;
-    margin-bottom: 5px;
+    margin-top: 2px;
+    margin-bottom: 2px;
 }
 
 .section .action .action-content {
@@ -36,7 +36,7 @@ body {
 .modal {
     background-color: white;
     color: black;
-    width:75%;
+    width:95%;
     height: 90%;
 }
 
@@ -50,15 +50,6 @@ body {
     background-color: rgb(231, 234, 236);
     color: black;
     text-align: left;
-}
-
-#footer, .slogan {
-    color: gray;
-    font-size: 20px;
-}
-
-#footer label, .slogan {
-    font-size: 12px;
 }
 
 .preview-print {
@@ -77,6 +68,31 @@ body {
     border: .2px solid black;
 }
 
+.alert-warning {
+    color: gray;
+    font-size: 25px;
+}
+
+.info {
+    font-size: 14px;
+}
+
+#footer {
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}
+
+#footer, .slogan {
+    color: #17a3b885;
+    font-size: 14px;
+
+}
+
+#footer label, .slogan {
+    font-size: 10px;
+}
+
 /* Preview backgrounds */
 ._00cc99 {
     background-color: #00cc99;
@@ -90,8 +106,8 @@ body {
     background-color: #6666ff;
 }
                                      
-._ccffff {
-    background-color: #ccffff;
+._28a745 {
+    background-color: #28a745;
 }
 
 ._ffff66 {

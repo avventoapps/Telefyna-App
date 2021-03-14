@@ -7,7 +7,7 @@ import com.google.android.exoplayer2.MediaItem;
 
 import org.avvento.apps.telefyna.audit.AuditLog;
 import org.avvento.apps.telefyna.audit.Logger;
-import org.avvento.apps.telefyna.stream.Program;
+import org.avvento.apps.telefyna.modal.Program;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,7 +24,8 @@ public class Utils {
     public static boolean internetConnected() {
         try {
             // credit to google for creating exoplayer here
-            URLConnection conn = (new URL("http://www.google.com")).openConnection();
+            // TODO unfortunately google (http://www.google.com) is on in uganda for free without data. changed to http://example.com
+            URLConnection conn = (new URL("http://example.com")).openConnection();
             conn.setConnectTimeout(250);
             conn.connect();
             conn.getInputStream().close();

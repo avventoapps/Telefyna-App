@@ -17,6 +17,10 @@ public class AuditLog {
         PLAYLIST_COMPLETED(SPLITTER + "] Completed playing playlist: %s"),
         CACHE_NOW_PLAYING_RESUME("Playlist: %s will next be resuming program: %s at: %d"),
         RETRIEVE_NOW_PLAYING_RESUME("Resuming Playlist: %s program: %s at: %d"),
+        DISPLAY_LOGO_OFF("Turning OFF Logo at screen if available"),
+        DISPLAY_LOGO_ON("Turning ON Logo on the screen %s"),
+        DISPLAY_NEWS_ON("Displaying news/info ticker on the screen with messages: %s"),
+        DISPLAY_NEWS_OFF("Turning OFF news/info ticker if available"),
         ERROR("%s");
 
         private String message;

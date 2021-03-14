@@ -13,9 +13,9 @@ import org.avvento.apps.telefyna.Monitor;
 import org.avvento.apps.telefyna.Utils;
 import org.avvento.apps.telefyna.audit.AuditLog;
 import org.avvento.apps.telefyna.audit.Logger;
-import org.avvento.apps.telefyna.stream.Config;
-import org.avvento.apps.telefyna.stream.Playlist;
-import org.avvento.apps.telefyna.stream.Program;
+import org.avvento.apps.telefyna.modal.Config;
+import org.avvento.apps.telefyna.modal.Playlist;
+import org.avvento.apps.telefyna.modal.Program;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -41,7 +41,7 @@ public class Maintenance {
     private void triggerMaintenance() {
         Monitor.instance.initialiseConfiguration();
         // switch to firstDefault when automation is turned off
-        if(Monitor.instance.getConfiguration().isAutomationDisabled()) {
+        if (Monitor.instance.getConfiguration().isAutomationDisabled()) {
             Monitor.instance.switchNow(Monitor.instance.getFirstDefaultIndex(), false);
         } else {
             startedSlotsToday = new HashMap<>();

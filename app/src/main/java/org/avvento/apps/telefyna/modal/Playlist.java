@@ -1,4 +1,4 @@
-package org.avvento.apps.telefyna.stream;
+package org.avvento.apps.telefyna.modal;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -26,7 +26,10 @@ public class Playlist {
     private String description;
     // preview web color
     private String color;
-    
+
+    // graphics
+    private Graphics graphics;
+
     /*
      * Each playlist can access 3 bumper folders and bumpers are only for local non resuming playlists;
      *  general (can be disabled by setting playingGeneralBumpers = false),
@@ -68,15 +71,16 @@ public class Playlist {
     }
 
     // only overrides days, dates and start but maintains the rest
-    public Playlist schedule(Playlist schedule) {
-        this.type = schedule.type;
-        this.name = schedule.name;
-        this.description = schedule.description;
-        this.active = schedule.active;
-        this.urlOrFolder = schedule.urlOrFolder;
-        this.playingGeneralBumpers = schedule.playingGeneralBumpers;
-        this.specialBumperFolder = schedule.specialBumperFolder;
-        this.color = schedule.color;
+    public Playlist schedule(Playlist parent) {
+        this.type = parent.type;
+        this.name = parent.name;
+        this.description = parent.description;
+        this.active = parent.active;
+        this.urlOrFolder = parent.urlOrFolder;
+        this.playingGeneralBumpers = parent.playingGeneralBumpers;
+        this.specialBumperFolder = parent.specialBumperFolder;
+        this.color = parent.color;
+        this.graphics = parent.graphics;//TODO move to schedule rather
         return this;
     }
 

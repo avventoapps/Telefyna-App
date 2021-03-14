@@ -1,417 +1,451 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <link rel="icon" type="image/png" href="favicon.ico">
 
-        <link rel="stylesheet" href="res/bootstrap.min.css">
-        <script src="res/jquery.min.js"></script>
-        <script src="res/popper.min.js"></script>
-        <script src="res/bootstrap.min.js"></script>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        
-        <script src="res/angular.min.js"></script>
-        <script src="res/angular-cookies.js"></script>
+<head>
+	<link href="favicon.ico" rel="icon" type="image/png">
+	<link href="res/bootstrap.min.css" rel="stylesheet">
+	<script src="res/jquery.min.js"></script>
+	<script src="res/popper.min.js"></script>
+	<script src="res/bootstrap.min.js"></script>
+	<meta charset="utf-8">
+	<meta content="width=device-width, initial-scale=1" name="viewport">
+	<script src="res/angular.min.js"></script>
+	<script src="res/angular-cookies.js"></script>
+	<script src="res/bootstrap-datepicker.js"></script>
+	<link href="res/datepicker.css" rel="stylesheet">
+	<link href="res/jquery.timepicker.min.css" rel="stylesheet">
+	<script src="res/jquery.timepicker.min.js"></script>
+	<script src="res/jQuery.print.js"></script>
+	<link href="res/bootstrap-colorselector.min.css" rel="stylesheet">
+	<script src="res/bootstrap-colorselector.min.js"></script>
+	<link href="res/telefyna.css" rel="stylesheet">
+	<script src="res/telefyna.js"></script>
+	<title>Configuring Telefyna</title>
+</head>
 
-        <script src="res/bootstrap-datepicker.js"></script>
-        <link rel="stylesheet" href="res/datepicker.css">
-        <link rel="stylesheet" href="res/jquery.timepicker.min.css">
-        <script src="res/jquery.timepicker.min.js"></script>
-
-        <script src="res/jQuery.print.js"></script>
-        
-        <link rel="stylesheet" href="res/bootstrap-colorselector.min.css">
-        <script src="res/bootstrap-colorselector.min.js"></script>
-
-        <link rel="stylesheet" href="res/telefyna.css">
-        <script src="res/telefyna.js"></script>
-
-        <title>Configuring Telefyna</title>
-    </head>
-    <body ng-app="Telefyna" ng-controller="Config" center-block>
-        <div>
-            <div>
-                <h3>|Configuring|</h3>
-                <img class="logo" src="telefyna.png" alt="Telefyna Icon" width="155" height="140"><br>
-                <label class="slogan">The best, simplest performing online stream & local file scheduling auto player for TV broadcasting</label>
-            </div>
-            <!-- Other configurations before playlists-->
-            <div class="section">
-                <label class="checkbox-inline">Last Modified: <b>{{config.lastModified}}</b></label>
-                <div class="section action">
-                    Name
-                    <input type="text" class="form-control flex-wrap" ng-model="config.name" ng-change="modifying()">
-                </div>
-                <div class="section action">
-                    Version
-                    <input type="text" class="form-control flex-wrap" ng-model="config.version" ng-change="modifying()">
-                </div>
-                <div class="form-check form-switch">
-                    <label class="checkbox-inline"><input type="checkbox" ng-model="config.automationDisabled" ng-change="modifying()"> Disable Automation</label>
-                </div>
-                <div class="form-check form-switch">
-                    <label class="checkbox-inline"><input type="checkbox" ng-model="config.notificationsDisabled" ng-change="modifying()"> Disable Notifications</label>
-                </div>
-                <div class="action">
-                    <!-- Create -->
-                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#add">Create Playlist</button>
-                    <div class="modal fade action-content" id="add" role="dialog">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                          <form class="modal-content" ng-submit="add()">
-                            <div class="modal-header">
-                              <h5 class="modal-title">Create a new Playlist</h5>
-                            </div>
-                            <div class="modal-body">
-                                <div ng-if="isEmpty(config.playlists)">
-                                    This is your first and Default playlist, It's played when nothing is scheduled or programs are unexisting in the folder and when automation is disabled.
-                                </div>
-                                <div ng-if="config.playlists.length == 1">
-                                    This is your second and Fillers playlist, It's played when programs finish before the schedule/slot is ended and when internet breaks or is unavailable
-                                </div>
-                                <div class="alert alert-danger section action" role="alert" ng-show="!isEmpty(error)">
-                                    {{error}}
-                                </div>
+<body center-block ng-app="Telefyna" ng-controller="Config">
+	<div>
+		<div>
+			<h5>|Configuring|</h5>
+			<img alt="Telefyna Icon" class="logo" height="80" src="telefyna.png" width="95">
+			<br>
+			<label class="slogan">The best, simplest performing online stream & local file scheduling auto player for TV broadcasting</label>
+		</div>
+		<!-- Other configurations before playlists-->
+		<div class="section">
+			<label>Last Modified: <b>{{config.lastModified}}</b>
+			</label>
+			<div class="section action">Name
+				<input class="form-control flex-wrap" ng-model="config.name" ng-change="modifying()" type="text">
+			</div>
+			<div class="section action">Version
+				<input class="form-control flex-wrap" ng-model="config.version" ng-change="modifying()" type="text">
+			</div>
+			<div class="form-check form-switch">
+				<label class="checkbox-inline"><input ng-model="config.automationDisabled" ng-change="modifying()" type="checkbox"> Disable Automation</label>
+			</div>
+			<div class="form-check form-switch">
+				<label class="checkbox-inline"><input ng-model="config.notificationsDisabled" ng-change="modifying()" type="checkbox"> Disable Notifications</label>
+			</div>
+			<div class="action">
+				<!-- Create -->
+				<button class="btn btn-info" data-target="#add" data-toggle="modal" type="button">Create Playlist</button>
+				<div class="modal fade action-content" id="add" role="dialog">
+					<div class="modal-dialog modal-dialog-centered" role="document">
+						<form class="modal-content" ng-submit="add()">
+							<div class="modal-header">
+								<h5 class="modal-title">Create a new Playlist</h5>
+							</div>
+							<div class="modal-body">
+								<div ng-if="isEmpty(config.playlists)">This is your first and Default playlist, It's played when nothing is scheduled or programs are unexisting in the folder and when automation is disabled.</div>
+								<div ng-if="config.playlists.length == 1">This is your second and Fillers playlist, It's played when programs finish before the schedule/slot is ended and when internet breaks or is unavailable</div>
+								<div class="alert alert-danger section action" ng-show="!isEmpty(error)" role="alert">{{error}}</div>
+								<div class="section action">
+									<label class="checkbox-inline"><input ng-model="playlist.active" type="checkbox"> Active</label>
+								</div>
+								<div class="section action">* Name *
+									<input class="form-control" ng-model="playlist.name" required type="text">
+								</div>
+								<div class="section action">Description
+									<input class="form-control" ng-model="playlist.description" type="text">
+								</div>
+								<div class="section action">* Type *
+									<select class="form-control multiselect-ui" ng-model="playlist.type" required>
+										<option value="ONLINE">Online Stream</option>
+										<option value="LOCAL_SEQUENCED">Local sequenced folder</option>
+										<option value="LOCAL_RANDOMIZED">Local random folder</option>
+										<option value="LOCAL_RESUMING">Local resuming folder</option>
+										<option value="LOCAL_RESUMING_SAME">Local same resuming folder</option>
+										<option value="LOCAL_RESUMING_NEXT">Local next resuming folder</option>
+									</select>
+								</div>
+								<div class="section action">* Stream URL Or Local folder name *
+									<input class="form-control" ng-model="playlist.urlOrFolder" required type="text">
+								</div>
+								<div class="section action select-color">Preview Color
+									<select class="color-selector" ng-change="changeSelectedColor()" ng-model="playlist.color">
+										<option data-color="#00cc99" value="#00cc99"></option>
+										<option data-color="#00ccff" value="#00ccff"></option>
+										<option data-color="#6666ff" value="#6666ff"></option>
+										<option data-color="#28a745" value="#28a745"></option>
+										<option data-color="#ffff66" value="#ffff66"></option>
+										<option data-color="#66ff33" value="#66ff33"></option>
+										<option data-color="#ff6600" value="#ff6600"></option>
+										<option data-color="#ff33cc" value="#ff33cc"></option>
+										<option data-color="#666699" value="#666699"></option>
+										<option data-color="#e0ebeb" value="#e0ebeb"></option>
+										<option data-color="#990099" value="#990099"></option>
+										<option data-color="#993333" value="#993333"></option>
+										<option data-color="#808080" value="#808080"></option>
+										<option data-color="#ccccff" value="#ccccff"></option>
+										<option data-color="#336600" value="#336600"></option>
+										<option data-color="#99ff99" value="#99ff99"></option>
+										<option data-color="#66ffcc" value="#66ffcc"></option>
+										<option data-color="#ccffcc" value="#ccffcc"></option>
+										<option data-color="#ffccff" value="#ffccff"></option>
+									</select>
+								</div>
                                 <div class="section action">
-                                    <label class="checkbox-inline"><input type="checkbox" ng-model="playlist.active"> Active</label>
+									Graphics
+									<div class="section action">
+										<label class="checkbox-inline"><input ng-model="playlist.graphics.displayLogo" type="checkbox"> Display Logo(telefyna/logo.png)</label>
+										<div>
+											Logo Position
+											<select ng-model="playlist.graphics.logoPosition">
+												<option value="TOP">Top Right</option>
+												<option value="BOTTOM">Bottom Right</option>
+											</select>
+										</div>
+										<br>
+										<div>
+											News/Notifications Separated by #<br>
+											<textarea class="form-control" ng-model="playlist.graphics.news.messages" placeholder="Messages separed by #"></textarea>
+											Starting minutes Separated by #
+											<input class="form-control" ng-model="playlist.graphics.news.starts" type="text" placeholder="When (nth minute after start) separated by #">
+											<div>
+												Replays
+												<input ng-model="playlist.graphics.news.replays" type="number">
+											</div>
+										</div>
+									</div>
                                 </div>
-                                <div class="section action">
-                                    * Name *
-                                    <input type="text" class="form-control" required ng-model="playlist.name">
+								<div class="section action">
+									<label class="checkbox-inline"><input ng-model="playlist.playingGeneralBumpers" type="checkbox"> Playing General Bumpers</label>
+								</div>
+								<div class="section action">Special Bumper folder name
+									<input class="form-control" ng-model="playlist.specialBumperFolder" type="text">
+								</div>
+							</div>
+							<div class="modal-footer">
+								<button class="btn btn-info" ng-click="clear()" type="button">Clear</button>
+								<button class="btn btn-danger" data-dismiss="modal" id="close-add" ng-click="clear()" type="button">Cancel</button>
+								<button class="btn btn-success" type="submit">Add</button>
+							</div>
+						</form>
+					</div>
+				</div>
+				<!-- Edit -->
+				<button class="btn btn-info" data-target="#edit" data-toggle="modal" ng-disabled="isEmpty(config.playlists)" type="button">Edit Playlist</button>
+				<div class="modal fade action-content" id="edit" role="dialog">
+					<div class="modal-dialog modal-dialog-centered" role="document">
+						<form class="modal-content" ng-submit="revise()">
+							<div class="modal-header">
+								<h5 class="modal-title">Edit an existing Playlist</h5>
+							</div>
+							<div class="modal-body">
+								<div ng-if="edit == 0">This is your first and Default playlist, It's played when nothing is scheduled or programs are not existing in the folder and when automation is disabled.</div>
+								<div ng-if="edit == 1">This is your second and Fillers playlist, It's played when programs finish before the schedule/slot is ended and when internet breaks or is unavailable.</div>
+								<div class="alert alert-danger section action" ng-show="!isEmpty(error)" role="alert">{{error}}</div>
+								<div class="section action">* Select Playlist to edit *
+									<select class="form-control" ng-change="renderEdit()" ng-model="edit" required>
+										<option ng-if="isNotScheduled(p)" ng-repeat="p in config.playlists" value="{{$index}}">{{name($index, true)}}</option>
+									</select>
+								</div>
+								<div class="section action">
+									<label class="checkbox-inline"><input ng-model="playlist.active" type="checkbox"> Active</label>
+								</div>
+								<div class="section action">* Name *
+									<input class="form-control" ng-model="playlist.name" required type="text">
+								</div>
+								<div class="section action">Description
+									<input class="form-control" ng-model="playlist.description" type="text">
+								</div>
+								<div class="section action">* Type *
+									<select class="form-control multiselect-ui" ng-model="playlist.type" required>
+										<option value="ONLINE">Online Stream</option>
+										<option value="LOCAL_SEQUENCED">Local sequenced folder</option>
+										<option value="LOCAL_RANDOMIZED">Local random folder</option>
+										<option value="LOCAL_RESUMING">Local resuming folder</option>
+										<option value="LOCAL_RESUMING_SAME">Local same resuming folder</option>
+										<option value="LOCAL_RESUMING_NEXT">Local next resuming folder</option>
+									</select>
+								</div>
+                                <div class="section action">* Stream URL Or Local folder name *
+									<input class="form-control" ng-model="playlist.urlOrFolder" required type="text">
+								</div>
+								<div class="section action select-color">Preview Color
+									<select class="color-selector" ng-change="changeSelectedColor()" ng-model="playlist.color">
+										<option data-color="#00cc99" value="#00cc99"></option>
+										<option data-color="#00ccff" value="#00ccff"></option>
+										<option data-color="#6666ff" value="#6666ff"></option>
+										<option data-color="#28a745" value="#28a745"></option>
+										<option data-color="#ffff66" value="#ffff66"></option>
+										<option data-color="#66ff33" value="#66ff33"></option>
+										<option data-color="#ff6600" value="#ff6600"></option>
+										<option data-color="#ff33cc" value="#ff33cc"></option>
+										<option data-color="#666699" value="#666699"></option>
+										<option data-color="#e0ebeb" value="#e0ebeb"></option>
+										<option data-color="#990099" value="#990099"></option>
+										<option data-color="#993333" value="#993333"></option>
+										<option data-color="#808080" value="#808080"></option>
+										<option data-color="#ccccff" value="#ccccff"></option>
+										<option data-color="#336600" value="#336600"></option>
+										<option data-color="#99ff99" value="#99ff99"></option>
+										<option data-color="#66ffcc" value="#66ffcc"></option>
+										<option data-color="#ccffcc" value="#ccffcc"></option>
+										<option data-color="#ffccff" value="#ffccff"></option>
+									</select>
+								</div>
+								<div class="section action">
+									Graphics
+									<div class="section action">
+										<label class="checkbox-inline"><input ng-model="playlist.graphics.displayLogo" type="checkbox"> Display Logo(telefyna/logo.png)</label>
+										<div>
+											Logo Position
+											<select ng-model="playlist.graphics.logoPosition">
+												<option value="TOP">Top Right</option>
+												<option value="BOTTOM">Bottom Right</option>
+											</select>
+										</div>
+										<br>
+										<div>
+											News/Notifications Separated by #<br>
+											<textarea class="form-control" ng-model="playlist.graphics.news.messages" placeholder="Messages separed by #"></textarea>
+											Starting minutes Separated by #
+											<input class="form-control" ng-model="playlist.graphics.news.starts" type="text" placeholder="When (nth minute after start) separated by #">
+											<div>
+												Replays
+												<input ng-model="playlist.graphics.news.replays" type="number">
+											</div>
+										</div>
+									</div>
                                 </div>
-                                <div class="section action">
-                                    Description
-                                    <input type="text" class="form-control" ng-model="playlist.description">
+								<div class="section action">
+									<label class="checkbox-inline"><input ng-model="playlist.playingGeneralBumpers" type="checkbox"> Playing General Bumpers</label>
+								</div>
+								<div class="section action">Special Bumper folder name
+									<input class="form-control" ng-model="playlist.specialBumperFolder" type="text">
+								</div>
+							</div>
+							<div class="modal-footer">
+								<button class="btn btn-danger" data-dismiss="modal" id="close-edit" ng-click="clear()" type="button">Cancel</button>
+								<button class="btn btn-success" type="submit">Save</button>
+							</div>
+						</form>
+					</div>
+				</div>
+				<!-- Schedule/Copy -->
+				<button class="btn btn-info" data-target="#schedule" data-toggle="modal" ng-disabled="isEmpty(config.playlists)" type="button">Scheduling</button>
+				<div class="modal fade action-content" id="schedule" role="dialog">
+					<div class="modal-dialog modal-dialog-centered" role="document">
+						<form class="modal-content" ng-submit="scheduling()">
+							<div class="modal-header">
+								<h5 class="modal-title">Schedule an existing Playlist/schedule</h5>
+							</div>
+							<div class="alert alert-danger section action" ng-show="!isEmpty(error)" role="alert">{{error}}</div>
+							<div class="modal-body">
+								<div class="section action">* Select Playlist/Schedule *
+									<select class="form-control" ng-model="schedule" required ng-change="renderScheduling()">
+										<option ng-repeat="p in config.playlists" value="{{$index}}">{{name($index, true)}}</option>
+									</select>
+								</div>
+								<div class="section action">Weekly Day(s)
+									<select class="form-control multiselect-ui" multiple ng-model="playlist.days">
+										<option value="1">{{getDayName(1)}}</option>
+										<option value="2">{{getDayName(2)}}</option>
+										<option value="3">{{getDayName(3)}}</option>
+										<option value="4">{{getDayName(4)}}</option>
+										<option value="5">{{getDayName(5)}}</option>
+										<option value="6">{{getDayName(6)}}</option>
+										<option value="7">{{getDayName(7)}}</option>
+									</select>
+								</div>
+								<div class="section action">Date(s)
+									<input class="form-control date" ng-model="datePickerValue" ng-change="setPlaylistDate()" type="text" id="dates">
+								</div>If no Days or Dates are selected but start Time is defined, the playlist schedules daily
+								<div class="section action">* Start Time *
+									<input class="form-control timepicker" ng-model="playlist.start" required type="text" placeholder="xx:xx">
+								</div>
+								<div class="section action">
+									Override Graphics
+									<div class="section action">
+										<label class="checkbox-inline"><input ng-model="playlist.graphics.displayLogo" type="checkbox"> Display Logo(telefyna/logo.png)</label>
+										<div>
+											Logo Position
+											<select ng-model="playlist.graphics.logoPosition">
+												<option value="TOP">Top Right</option>
+												<option value="BOTTOM">Bottom Right</option>
+											</select>
+										</div>
+										<br>
+										<div>
+											News/Notifications Separated by #<br>
+											<textarea class="form-control" ng-model="playlist.graphics.news.messages" placeholder="Messages separed by #"></textarea>
+											Starting minutes Separated by #
+											<input class="form-control" ng-model="playlist.graphics.news.starts" type="text" placeholder="When (nth minute after start) separated by #">
+											<div>
+												Replays
+												<input ng-model="playlist.graphics.news.replays" type="number">
+											</div>
+										</div>
+									</div>
                                 </div>
-                                <div class="section action">
-                                    * Type *
-                                    <select class="form-control multiselect-ui" required ng-model="playlist.type">
-                                        <option value="ONLINE">Online Stream</option>
-                                        <option value="LOCAL_SEQUENCED">Local sequenced folder</option>
-                                        <option value="LOCAL_RANDOMIZED">Local random folder</option>
-                                        <option value="LOCAL_RESUMING">Local resuming folder</option>
-                                        <option value="LOCAL_RESUMING_SAME">Local same resuming folder</option>
-                                        <option value="LOCAL_RESUMING_NEXT">Local next resuming folder</option>
-                                    </select>
-                                </div>
-                                <div class="section action select-color">
-                                    Color
-                                    <select class="color-selector" ng-model="playlist.color" ng-change="changeSelectedColor()">
-                                        <option value="#00cc99" data-color="#00cc99"></option>
-                                        <option value="#00ccff" data-color="#00ccff"></option>
-                                        <option value="#6666ff" data-color="#6666ff"></option>
-                                        <option value="#ccffff" data-color="#ccffff"></option>
-                                        <option value="#ffff66" data-color="#ffff66"></option>
-                                        <option value="#66ff33" data-color="#66ff33"></option>
-                                        <option value="#ff6600" data-color="#ff6600"></option>
-                                        <option value="#ff33cc" data-color="#ff33cc"></option>
-                                        <option value="#666699" data-color="#666699"></option>
-                                        <option value="#e0ebeb" data-color="#e0ebeb"></option>
-                                        <option value="#990099" data-color="#990099"></option>
-                                        <option value="#993333" data-color="#993333"></option>
-                                        <option value="#808080" data-color="#808080"></option>
-                                        <option value="#ccccff" data-color="#ccccff"></option>
-                                        <option value="#336600" data-color="#336600"></option>
-                                        <option value="#99ff99" data-color="#99ff99"></option>
-                                        <option value="#66ffcc" data-color="#66ffcc"></option>
-                                        <option value="#ccffcc" data-color="#ccffcc"></option>
-                                        <option value="#ffccff" data-color="#ffccff"></option>
-                                    </select>
-                                </div>
-                                <div class="section action">
-                                    * Stream URL Or Local folder name *
-                                    <input type="text" class="form-control" required ng-model="playlist.urlOrFolder">
-                                </div>
-                                <div class="section action">
-                                    <label class="checkbox-inline"><input type="checkbox" ng-model="playlist.playingGeneralBumpers"> Playing General Bumpers</label>
-                                </div>
-                                <div class="section action">
-                                    Special Bumper folder name
-                                    <input type="text" class="form-control" ng-model="playlist.specialBumperFolder">
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-info" ng-click="clear()">Clear</button>
-                                <button type="button" class="btn btn-danger" id="close-add" data-dismiss="modal" ng-click="clear()">Cancel</button>
-                                <button type="submit" class="btn btn-success">Add</button>
-                            </div>
-                        </form>
-                        </div>
-                      </div>
-
-                    <!-- Edit -->
-                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#edit" ng-disabled="isEmpty(config.playlists)">Edit Playlist</button>
-                    <div class="modal fade action-content" id="edit" role="dialog">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                          <form class="modal-content" ng-submit="revise()">
-                            <div class="modal-header">
-                              <h5 class="modal-title">Edit an existing Playlist</h5>
-                            </div>
-                            <div class="modal-body">
-                                <div ng-if="edit == 0">
-                                    This is your first and Default playlist, It's played when nothing is scheduled or programs are not existing in the folder and when automation is disabled.
-                                </div>
-                                <div ng-if="edit == 1">
-                                    This is your second and Fillers playlist, It's played when programs finish before the schedule/slot is ended and when internet is unavailable when starting a playlist
-                                </div>
-                                <div class="alert alert-danger section action" role="alert" ng-show="!isEmpty(error)">
-                                    {{error}}
-                                </div>
-                                <div class="section action">
-                                    * Select Playlist to edit *
-                                    <select class="form-control" required ng-model="edit" ng-change="renderEdit()">
-                                        <option ng-repeat="p in config.playlists" ng-if="isNotScheduled(p)" value="{{$index}}">{{name($index, true)}}</option>
-                                    </select>
-                                </div>
-                                <div class="section action">
-                                    <label class="checkbox-inline"><input type="checkbox" ng-model="playlist.active"> Active</label>
-                                </div>
-                                <div class="section action">
-                                    * Name *
-                                    <input type="text" class="form-control" required ng-model="playlist.name">
-                                </div>
-                                <div class="section action">
-                                    Description
-                                    <input type="text" class="form-control" ng-model="playlist.description">
-                                </div>
-                                <div class="section action">
-                                    * Type *
-                                    <select class="form-control multiselect-ui" required ng-model="playlist.type">
-                                        <option value="ONLINE">Online Stream</option>
-                                        <option value="LOCAL_SEQUENCED">Local sequenced folder</option>
-                                        <option value="LOCAL_RANDOMIZED">Local random folder</option>
-                                        <option value="LOCAL_RESUMING">Local resuming folder</option>
-                                        <option value="LOCAL_RESUMING_SAME">Local same resuming folder</option>
-                                        <option value="LOCAL_RESUMING_NEXT">Local next resuming folder</option>
-                                    </select>
-                                </div>
-                                <div class="section action select-color">
-                                    Color
-                                    <select class="color-selector" ng-model="playlist.color" ng-change="changeSelectedColor()">
-                                        <option value="#00cc99" data-color="#00cc99"></option>
-                                        <option value="#00ccff" data-color="#00ccff"></option>
-                                        <option value="#6666ff" data-color="#6666ff"></option>
-                                        <option value="#ccffff" data-color="#ccffff"></option>
-                                        <option value="#ffff66" data-color="#ffff66"></option>
-                                        <option value="#66ff33" data-color="#66ff33"></option>
-                                        <option value="#ff6600" data-color="#ff6600"></option>
-                                        <option value="#ff33cc" data-color="#ff33cc"></option>
-                                        <option value="#666699" data-color="#666699"></option>
-                                        <option value="#e0ebeb" data-color="#e0ebeb"></option>
-                                        <option value="#990099" data-color="#990099"></option>
-                                        <option value="#993333" data-color="#993333"></option>
-                                        <option value="#808080" data-color="#808080"></option>
-                                        <option value="#ccccff" data-color="#ccccff"></option>
-                                        <option value="#336600" data-color="#336600"></option>
-                                        <option value="#99ff99" data-color="#99ff99"></option>
-                                        <option value="#66ffcc" data-color="#66ffcc"></option>
-                                        <option value="#ccffcc" data-color="#ccffcc"></option>
-                                        <option value="#ffccff" data-color="#ffccff"></option>
-                                    </select>
-                                </div>
-                                <div class="section action">
-                                    * Stream URL Or Local folder name *
-                                    <input type="text" class="form-control" required ng-model="playlist.urlOrFolder">
-                                </div>
-                                <div class="section action">
-                                    <label class="checkbox-inline"><input type="checkbox" ng-model="playlist.playingGeneralBumpers"> Playing General Bumpers</label>
-                                </div>
-                                <div class="section action">
-                                    Special Bumper folder name
-                                    <input type="text" class="form-control" ng-model="playlist.specialBumperFolder">
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-danger" id="close-edit" data-dismiss="modal" ng-click="clear()">Cancel</button>
-                                <button type="submit" class="btn btn-success">Save</button>
-                            </div>
-                        </form>
-                        </div>
-                      </div>
-
-                    <!-- Schedule/Copy -->
-                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#schedule" ng-disabled="isEmpty(config.playlists)">Schedule Playlist</button>
-                    <div class="modal fade action-content" id="schedule" role="dialog">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                          <form class="modal-content" ng-submit="schedule()">
-                            <div class="modal-header">
-                              <h5 class="modal-title">Schedule an existing Playlist</h5>
-                            </div>
-                            Schedules are not editable, revisions are only possible by deleting a schedule and re-adding it.<br>
-                            The last added schedule overrides the previous one if they share a slot
-                            <div class="alert alert-danger section action" role="alert" ng-show="!isEmpty(error)">
-                                {{error}}
-                            </div>
-                            <div class="modal-body">
-                                <div class="section action">
-                                    * Select Playlist *
-                                    <select class="form-control" required ng-model="playlist.schedule">
-                                        <option ng-repeat="p in config.playlists" ng-if="isNotScheduled(p)" value="{{$index}}">{{name($index, true)}}</option>
-                                    </select>
-                                </div>
-                                <div class="section action">
-                                    Weekly Day(s)
-                                    <select class="form-control multiselect-ui" multiple ng-model="playlist.days">
-                                        <option value="1">{{getDayName(1)}}</option>
-                                        <option value="2">{{getDayName(2)}}</option>
-                                        <option value="3">{{getDayName(3)}}</option>
-                                        <option value="4">{{getDayName(4)}}</option>
-                                        <option value="5">{{getDayName(5)}}</option>
-                                        <option value="6">{{getDayName(6)}}</option>
-                                        <option value="7">{{getDayName(7)}}</option>
-                                    </select>
-                                </div>
-                                <div class="section action">
-                                    Date(s)
-                                    <input type="text" class="form-control date" ng-model="datePickerValue" ng-change="setPlaylistDate()">
-                                </div>
-                                If no Days or Dates are selected but start Time is defined, the playlist schedules daily
-                                <div class="section action">
-                                    * Start Time *
-                                    <input type="text" class="form-control timepicker" required ng-model="playlist.start">
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-info" ng-click="clear()">Clear</button>
-                                <button type="button" class="btn btn-danger" id="close-schedule" data-dismiss="modal" ng-click="clear()">Cancel</button>
-                                <button type="submit" class="btn btn-success">Schedule</button>
-                            </div>
-                        </form>
-                        </div>
-                      </div>
-                </div>
-            </div>
-            <div class="section">
-                <!-- Clear/Delete -->
-                <div class="action">
-                    <button type="button" class="btn btn-danger" ng-disabled="isEmpty(config.playlists)" ng-click="clearConfig()">Clear</button>
-                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete" ng-disabled="isEmpty(config.playlists)">Delete Playlist(s) | Schedule(s)</button>
-                    <div class="modal fade action-content" id="delete" role="dialog">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                            <form class="modal-content" ng-submit="delete()">
-                            <div class="modal-header">
-                              <h5 class="modal-title">Delete Existing Playlist(s) | Schedule(s)</h5>
-                            </div>
-                            Deleting the playlist will delete respective Schedules below it whereas deleting schedule doesn't delete the respective playlist
-                            <div class="modal-body">
-                                <div class="section action">
-                                    Select Playlists(s) | Schedule(s)
-                                    <select id="playlists-delete" class="form-control multiselect-ui" multiple ng-model="deletable">
-                                        <option ng-repeat="p in config.playlists" value="{{$index}}">{{name($index, true)}}</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-info" ng-click="deletable = []">Clear</button>
-                                <button type="button" class="btn btn-danger" id="close-delete" data-dismiss="modal" ng-click="clear()">Cancel</button>
-                                <button type="submit" class="btn btn-danger" ng-disabled="isEmpty(deletable)">Delete Selected</button>
-                            </div>
-                          </form>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Demo/Import/Export -->
-                <div class="action">
-                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#demo">Demo</button>
-                    <div class="modal fade action-content" id="demo" role="dialog">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Telefyna Configuration Demonstration</h5>
-                                  </div>
-                                <div class="modal-body">
-                                    <iframe width="560" height="315" src="https://www.youtube.com/embed/jTlgO9NGFdE" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                                    <br><br><hr>
-                                    <h5>Telefyna Infrastructure</h5>
-                                    <img src="telefynaDesign.png" alt="Telefyna Insfrastructure"><br>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-danger" id="close-delete" data-dismiss="modal">Close</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <button type="file" class="btn btn-info" onclick="jQuery('#import-config').click()">Import</button>
-                    <input type="file" hidden id="import-config" ng-model="configFile" onchange="angular.element(this).scope().importConfig(event)">
-                    <!-- Preview -->
-                    <button type="button" class="btn btn-success" ng-disabled="isEmpty(config.playlists)" data-toggle="modal" data-target="#preview" ng-click="initPreviewData()">Preview Schedule</button>
-                    <div class="modal fade action-content" id="preview" role="dialog">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content preview-print">
-                                <div class="modal-header" id="print-title">
-                                    <img src="telefyna.png" alt="Telefyna Icon" width="55" height="50"><br>
-                                    <h4>{{config.name}}'s schedule</h4>
-                                </div>
-                                <!--.table-responsive breaks print-->
-                                <div class="modal-body">
-                                    <div ng-if="!isEmpty(previewData.weekly)">
-                                        <h5>Weekly</h5>
-                                        <table class="table table-striped">
-                                            <thead>
-                                            <tr>
-                                                <th scope="col">StartTime</th>
-                                                <th scope="col">1-Sunday</th>
-                                                <th scope="col">2-Monday</th>
-                                                <th scope="col">3-Tuesday</th>
-                                                <th scope="col">4-Wednesday</th>
-                                                <th scope="col">5-Thursday</th>
-                                                <th scope="col">6-Friday</th>
-                                                <th scope="col">7-Saturday</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr ng-repeat="(key, program) in previewData.weekly">
-                                                <td>{{program.start}}</td>
-                                                <td ng-init="classifyColor(program.slots[1].color, key, 1)" class="{{program.slots[1].claz}}">{{program.slots[1].name}}</td>
-                                                <td ng-init="classifyColor(program.slots[2].color, key, 2)" class="{{program.slots[2].claz}}">{{program.slots[2].name}}</td>
-                                                <td ng-init="classifyColor(program.slots[3].color, key, 3)" class="{{program.slots[3].claz}}">{{program.slots[3].name}}</td>
-                                                <td ng-init="classifyColor(program.slots[4].color, key, 4)" class="{{program.slots[4].claz}}">{{program.slots[4].name}}</td>
-                                                <td ng-init="classifyColor(program.slots[5].color, key, 5)" class="{{program.slots[5].claz}}">{{program.slots[5].name}}</td>
-                                                <td ng-init="classifyColor(program.slots[6].color, key, 6)" class="{{program.slots[6].claz}}">{{program.slots[6].name}}</td>
-                                                <td ng-init="classifyColor(program.slots[7].color, key, 7)" class="{{program.slots[7].claz}}">{{program.slots[7].name}}</td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                      </div>
-                                      <div ng-if="!isEmpty(previewData.dated)">
-                                      <h5>Dates</h5>
-                                        <table class="table table-striped">
-                                            <thead>
-                                                <tr>
-                                                <th scope="col">Time</th>
-                                                <th scope="col">Playlist</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr ng-repeat="program in previewData.dated">
-                                                <td>{{program.at}}</td>
-                                                <td style="background-color:{{program.color}}">{{program.name}}</td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                      </div>
-                                </div>
-                                <div class="modal-footer no-print">
-                                    <button type="button" class="btn btn-success" onclick="jQuery('.preview-print').print({globalStyles: true, stylesheet: 'res/telefyna.css'})">Print</button>
-                                    <button type="button" class="btn btn-danger" id="close-preview" data-dismiss="modal">Close</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <button type="button" class="btn btn-success" ng-disabled="isEmpty(config.playlists)" ng-click="exportConfig()">Export</button>
-                </div>
-            </div>
-
-            <!-- Display Results -->
-            <!--div class="section config-result">
-                <pre>{{config | json: 2}}</pre>
-            </div-->
-            <a id="export" hidden></a>
-            <div id="footer">
-                apps@avventohome.org
-                <br>
-                <label>Copyright © 2021</label>
-            </div>
-          </div>
-    </body>
+							</div>
+							<div class="modal-footer">
+								<button class="btn btn-info" ng-click="clear()" type="button">Clear</button>
+								<button class="btn btn-danger" data-dismiss="modal" id="close-schedule" ng-click="clear()" type="button">Cancel</button>
+								<button class="btn btn-success" type="submit">Schedule</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="section">
+			<!-- Clear/Delete -->
+			<div class="action">
+				<button class="btn btn-danger" ng-click="clearConfig()" ng-disabled="isEmpty(config.playlists)" type="button">Clear</button>
+				<button class="btn btn-danger" data-target="#delete" data-toggle="modal" ng-disabled="isEmpty(config.playlists)" type="button">Delete Playlist(s) | Schedule(s)</button>
+				<div class="modal fade action-content" id="delete" role="dialog">
+					<div class="modal-dialog modal-dialog-centered" role="document">
+						<form class="modal-content" ng-submit="delete()">
+							<div class="modal-header">
+								<h5 class="modal-title">Delete Existing Playlist(s) | Schedule(s)</h5>
+							</div>Deleting the playlist will delete respective Schedules below it whereas deleting schedule doesn't delete the respective playlist
+							<div class="modal-body">
+								<div class="section action">Select Playlists(s) | Schedule(s)
+									<select class="form-control multiselect-ui" id="playlists-delete" multiple ng-model="deletable">
+										<option ng-repeat="p in config.playlists" value="{{$index}}">{{name($index, true)}}</option>
+									</select>
+								</div>
+							</div>
+							<div class="modal-footer">
+								<button class="btn btn-info" ng-click="deletable = []" type="button">Clear</button>
+								<button class="btn btn-danger" data-dismiss="modal" id="close-delete" ng-click="clear()" type="button">Cancel</button>
+								<button class="btn btn-danger" ng-disabled="isEmpty(deletable)" type="submit">Delete Selected</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+			<!-- Demo/Import/Export -->
+			<div class="action">
+				<button class="btn btn-info" data-target="#demo" data-toggle="modal" type="button">Demo</button>
+				<div class="modal fade action-content" id="demo" role="dialog">
+					<div class="modal-dialog modal-dialog-centered" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title">Telefyna Configuration Demonstration</h5>
+							</div>
+							<div class="modal-body">
+								<a allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen frameborder="0" height="315" href="https://www.youtube.com/embed/jTlgO9NGFdE"></a>
+								<br>
+								<h5>Telefyna Infrastructure</h5>
+								<img alt="Telefyna Insfrastructure" src="telefynaDesign.png">
+								<br>
+							</div>
+							<div class="modal-footer">
+								<button class="btn btn-danger" data-dismiss="modal" id="close-delete" type="button">Close</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<button class="btn btn-info" onclick="jQuery('#import-config').click()" type="file">Import</button>
+				<input hidden id="import-config" ng-model="configFile" onchange="angular.element(this).scope().importConfig(event)" type="file">
+				<!-- Preview -->
+				<button class="btn btn-success" data-target="#preview" data-toggle="modal" ng-click="initPreviewData()" ng-disabled="isEmpty(config.playlists)" type="button">Preview Schedule</button>
+				<div class="modal fade action-content" id="preview" role="dialog">
+					<div class="modal-dialog modal-dialog-centered" role="document">
+						<div class="modal-content preview-print">
+							<div class="alert-warning" ng-if="config.automationDisabled == true">Automation is disabled and only: "{{config.playlists[0].name}}" will be playing all through</div>
+							<div class="modal-header" id="print-title">
+								<img alt="Telefyna Icon" height="50" src="telefyna.png" width="55">
+								<br>
+								<h4>{{config.name}}'s schedule</h4>
+							</div>
+							<!--.table-responsive breaks print-->
+							<div class="modal-body">
+								<div ng-if="!isEmpty(previewData.weekly)">
+									<h5>Weekly</h5>
+									<table class="table table-striped">
+										<thead>
+											<tr>
+												<th scope="col">StartTime</th>
+												<th scope="col">1-Sunday</th>
+												<th scope="col">2-Monday</th>
+												<th scope="col">3-Tuesday</th>
+												<th scope="col">4-Wednesday</th>
+												<th scope="col">5-Thursday</th>
+												<th scope="col">6-Friday</th>
+												<th scope="col">7-Saturday</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr ng-repeat="(key, program) in previewData.weekly">
+												<td>{{program.start}}</td>
+												<td class="{{program.slots[1].claz}}" ng-init="classifyColor(program.slots[1].color, key, 1)">{{program.slots[1].name}}</td>
+												<td class="{{program.slots[2].claz}}" ng-init="classifyColor(program.slots[2].color, key, 2)">{{program.slots[2].name}}</td>
+												<td class="{{program.slots[3].claz}}" ng-init="classifyColor(program.slots[3].color, key, 3)">{{program.slots[3].name}}</td>
+												<td class="{{program.slots[4].claz}}" ng-init="classifyColor(program.slots[4].color, key, 4)">{{program.slots[4].name}}</td>
+												<td class="{{program.slots[5].claz}}" ng-init="classifyColor(program.slots[5].color, key, 5)">{{program.slots[5].name}}</td>
+												<td class="{{program.slots[6].claz}}" ng-init="classifyColor(program.slots[6].color, key, 6)">{{program.slots[6].name}}</td>
+												<td class="{{program.slots[7].claz}}" ng-init="classifyColor(program.slots[7].color, key, 7)">{{program.slots[7].name}}</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<div ng-if="!isEmpty(previewData.dated)">
+									<h5>Dates</h5>
+									<table class="table table-striped">
+										<thead>
+											<tr>
+												<th scope="col">Time</th>
+												<th scope="col">Playlist</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr ng-repeat="program in previewData.dated">
+												<td>{{program.at}}</td>
+												<td style="background-color:{{program.color}}">{{program.name}}</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+							<div class="modal-footer no-print">
+								<button class="btn btn-success" onclick="jQuery('.preview-print').print({globalStyles: true, stylesheet: 'res/telefyna.css'})" type="button">Print</button>
+								<button class="btn btn-danger" data-dismiss="modal" id="close-preview" type="button">Close</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<button class="btn btn-success" ng-click="exportConfig()" ng-disabled="isEmpty(config.playlists)" type="button">Export</button>
+			</div>
+		</div>
+		<div class="info alert-info"> <b>telefyna</b> folder should be in USD/SDcard or if not existing Device Internal Storage where <b>telefynaAudit</b> folder containing audit messages are
+			<br><b>Telefyna runs the scheduling at midnight daily;</b>
+			<br>This means if a program isn't in the folder before midnight it won't be scheduled or changes to config thereafter won't be picked up.
+			<br>To order Telefyna to re-run scheduling and use your changes afer the current program, add a file named <b>init.txt</b> in your <b>telefynaAudit</b> folder
+			<br>Put your program folders in <b>telefyna/playlist</b>, Put your special and <b>General</b> folders for special & general bumpers in <b>telefyna/bumper</b>, And your logo at <b>telefyna/logo.png</b>
+		</div>
+		<!-- Display Results -->
+		<!--div class="section config-result">
+            <pre>{{config | json: 2}}</pre>
+        </div-->
+		<a hidden id="export"></a>
+		<div id="footer">
+            apps[@]avventohome[.]org | <label>Copyright © 2021</label>
+		</div>
+	</div>
+</body>
 </html>

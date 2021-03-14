@@ -1,6 +1,6 @@
 package org.avvento.apps.telefyna.listen;
 
-import org.avvento.apps.telefyna.stream.Playlist;
+import org.avvento.apps.telefyna.modal.Playlist;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

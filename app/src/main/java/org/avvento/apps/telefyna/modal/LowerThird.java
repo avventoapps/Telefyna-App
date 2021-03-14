@@ -14,12 +14,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class News {
-    private String messages;
-    // minutes to start ticker at during program play,  2#6#8 means start and 2nd, 6th and 8th second, This time includes bumpers
+public class LowerThird {
+    // file name/path within lowerThird directory
+    private String file;
+    // minutes to start separated by #
     private String starts;
-
-    // number of times to loop/play messages
+    // number of times to play
     private int replays = 1;
 
     public Long[] getStartsArray() {
@@ -33,17 +33,5 @@ public class News {
             Collections.sort(startTimes);
         }
         return startTimes.toArray(new Long[startTimes.size()]);
-    }
-
-    public String[] getMessagesArray() {
-        List<String> mess = new ArrayList<>();
-        if(StringUtils.isNotBlank(messages)) {
-            Arrays.stream(messages.split(Graphics.MESSAGE_SPLITTER)).forEach(m -> {
-                if(StringUtils.isNotBlank(m)) {
-                    mess.add( m.trim());
-                }
-            });
-        }
-        return mess.toArray(new String[mess.size()]);
     }
 }

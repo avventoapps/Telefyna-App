@@ -117,7 +117,7 @@
 											</select>
 										</div>
 										<br>
-										<div>
+										<div class="section action">
 											News/Notifications Separated by #<br>
 											<textarea class="form-control" ng-model="playlist.graphics.news.messages" placeholder="Messages separed by #"></textarea>
 											Starting minutes Separated by #
@@ -139,7 +139,7 @@
 							<div class="modal-footer">
 								<button class="btn btn-info" ng-click="clear()" type="button">Clear</button>
 								<button class="btn btn-danger" data-dismiss="modal" id="close-add" ng-click="clear()" type="button">Cancel</button>
-								<button class="btn btn-success" type="submit">Add</button>
+								<button class="btn btn-success" type="submit" ng-disabled="isEmpty(playlist.name) || isEmpty(playlist.type) || isEmpty(playlist.urlOrFolder)">Add</button>
 							</div>
 						</form>
 					</div>
@@ -218,7 +218,7 @@
 											</select>
 										</div>
 										<br>
-										<div>
+										<div class="section action">
 											News/Notifications Separated by #<br>
 											<textarea class="form-control" ng-model="playlist.graphics.news.messages" placeholder="Messages separed by #"></textarea>
 											Starting minutes Separated by #
@@ -239,7 +239,7 @@
 							</div>
 							<div class="modal-footer">
 								<button class="btn btn-danger" data-dismiss="modal" id="close-edit" ng-click="clear()" type="button">Cancel</button>
-								<button class="btn btn-success" type="submit">Save</button>
+								<button class="btn btn-success" type="submit" mg-disabled="isEmpty(edit)" ng-disabled="isEmpty(playlist.name) || isEmpty(playlist.type) || isEmpty(playlist.urlOrFolder)">Save</button>
 							</div>
 						</form>
 					</div>
@@ -288,8 +288,8 @@
 											</select>
 										</div>
 										<br>
-										<div>
-											News/Notifications Separated by #<br>
+										<div class="section action">
+											Ticker News/Notifications Separated by #<br>
 											<textarea class="form-control" ng-model="playlist.graphics.news.messages" placeholder="Messages separed by #"></textarea>
 											Starting minutes Separated by #
 											<input class="form-control" ng-model="playlist.graphics.news.starts" type="text" placeholder="When (nth minute after start) separated by #">
@@ -298,13 +298,42 @@
 												<input ng-model="playlist.graphics.news.replays" type="number">
 											</div>
 										</div>
+										<div class="section action">
+											Lower thirds
+											<table class="table table-striped">
+												<thead>
+													<tr>
+														<th scope="col">Delete</th>
+														<th scope="col">Replays</th>
+														<th scope="col">File</th>
+														<th scope="col">Starts separated by #</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<td></td>
+														<td><input ng-model="lowerThird.replays" type="number"></td>
+														<td><input ng-model="lowerThird.file" type="text"></td>
+														<td><input ng-model="lowerThird.starts" type="text"></td>
+													</tr>
+													<tr ng-repeat="(k, l) in playlist.graphics.lowerThirds">
+														<td><input class="lower-third-action" value="{{k}}" type="checkbox"></td>
+														<td>{{l.replays}}</td>
+														<td>{{l.file}}</td>
+														<td>{{l.starts}}</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
 									</div>
                                 </div>
 							</div>
 							<div class="modal-footer">
 								<button class="btn btn-info" ng-click="clear()" type="button">Clear</button>
+								<button class="btn btn-danger" ng-disabled="isEmpty(playlist.graphics.lowerThirds)" ng-click="deleteLowerThirds()">Delete Selected Lower Thirds</button>
+								<button class="btn btn-success" ng-disabled="isEmpty(lowerThird.replays) || isEmpty(lowerThird.file) || isEmpty(lowerThird.starts)" ng-click="addLowerThird()">Add Lower Third</button>
 								<button class="btn btn-danger" data-dismiss="modal" id="close-schedule" ng-click="clear()" type="button">Cancel</button>
-								<button class="btn btn-success" type="submit">Schedule</button>
+								<button class="btn btn-success" type="submit" ng-disabled="isEmpty(schedule) || isEmpty(playlist.start)">Schedule</button>
 							</div>
 						</form>
 					</div>

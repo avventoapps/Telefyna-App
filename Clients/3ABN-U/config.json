@@ -19,7 +19,21 @@
       "type": "LOCAL_RANDOMIZED",
       "urlOrFolder": "Fillers",
       "active": true,
-      "playingGeneralBumpers": true
+      "playingGeneralBumpers": true,
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 1
+        },
+        "lowerThirds": [
+          {
+            "file": "3abn_Clideo.mp4",
+            "starts": "0#5",
+            "replays": 1
+          }
+        ]
+      }
     },
     {
       "name": "Network",

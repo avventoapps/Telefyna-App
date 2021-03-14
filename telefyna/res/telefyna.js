@@ -36,6 +36,9 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
         $scope.playlist.graphics.logoPosition = "TOP";
         $scope.playlist.graphics.news = {};
         $scope.playlist.graphics.news.replays = 1;
+        $scope.playlist.graphics.lowerThirds = [];
+        $scope.lowerThird = {};
+        $scope.lowerThird.replays = 1;
     }
 
     function clearInternal() {
@@ -250,6 +253,31 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
         }
     }
 
+    $scope.deleteLowerThirds = function() {
+        var selectedThirds = jQuery('.lower-third-action:checked');
+        if(selectedThirds.length == 0) {
+            alert("Select lowerThirds to delete")
+        } else {
+            if(confirm("Do you want to proceed with Deleting Selected lowerThirds?")) {
+                $scope.modifying();
+                for(var i = 0; i < selectedThirds.length; i++) {
+                    delete $scope.playlist.graphics.lowerThirds[selectedThirds[i].value];
+                }
+                // remove empty
+                $scope.playlist.graphics.lowerThirds = $scope.playlist.graphics.lowerThirds.filter(function(el) {
+                    return el;
+                });
+            }
+        }
+    }
+
+    $scope.addLowerThird = function() {
+        $scope.modifying();
+        $scope.playlist.graphics.lowerThirds.push($scope.lowerThird);
+        $scope.lowerThird = {};
+        $scope.lowerThird.replays = 1;
+    }
+
     $scope.delete = function() {
         if(confirm("Do you want to proceed with Deleting Selected Playlists?")) {
             if(!$scope.isEmpty($scope.deletable)) {
@@ -264,6 +292,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
                     });
                     delete $scope.config.playlists[i];
                 });
+                // remove empty
                 $scope.config.playlists = $scope.config.playlists.filter(function(el) {
                     return el;
                 });
@@ -436,4 +465,5 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
             }
         }
     }
+
 });

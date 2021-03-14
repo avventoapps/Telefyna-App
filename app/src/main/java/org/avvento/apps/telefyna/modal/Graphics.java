@@ -11,6 +11,8 @@ public class Graphics {
     private boolean displayLogo = false;
     private LogoPosition logoPosition = LogoPosition.TOP;
     private News news;
+    private LowerThird[] lowerThirds;
+    public static String MESSAGE_SPLITTER = "#";
 
     public enum LogoPosition {
         TOP,

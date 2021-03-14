@@ -21,6 +21,13 @@
         android:layout_marginBottom="@dimen/tvGraphicsMargin"
         android:visibility="gone"/>
 
+    <VideoView
+        android:id="@+id/lowerThird"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/tvLogoHeight"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"/>
+
     <ImageView
         android:id="@+id/bottomLogo"
         android:layout_width="@dimen/tvLogoWidth"
@@ -28,11 +35,5 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:visibility="gone" />
-    <VideoView
-        android:id="@+id/lowerThird"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/tvLogoHeight"
-        android:layout_alignParentBottom="true"
-        android:visibility="gone"/>
 
 </RelativeLayout>

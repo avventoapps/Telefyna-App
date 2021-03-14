@@ -17,12 +17,14 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.StrictMode;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -43,6 +45,7 @@ import org.avvento.apps.telefyna.audit.Logger;
 import org.avvento.apps.telefyna.listen.Maintenance;
 import org.avvento.apps.telefyna.modal.Config;
 import org.avvento.apps.telefyna.modal.Graphics;
+import org.avvento.apps.telefyna.modal.LowerThird;
 import org.avvento.apps.telefyna.modal.News;
 import org.avvento.apps.telefyna.modal.Playlist;
 import org.avvento.apps.telefyna.modal.Program;
@@ -94,6 +97,8 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     private File programsFolder;
     private List<MediaItem> programItems;
     private TickerView tickerView;
+    private VideoView lowerThirdView;
+    private int lowerThirdLoop = 1;
 
     public String getProgramsFolderPath() {
         return programsFolder.getAbsolutePath();
@@ -223,6 +228,10 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
 
     public String getBumperDirectory() {
         return programsFolder.getAbsolutePath() + File.separator + "bumper";
+    }
+
+    public String getLowerThirdDirectory() {
+        return programsFolder.getAbsolutePath() + File.separator + "lowerThird";
     }
 
     public String getPlaylistDirectory() {
@@ -633,14 +642,30 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     private void triggerGraphics(long position) {
         hideLogo();
         hideTicker();
+        hideLowerThird();
         Playlist currentPlayList = playlistByIndex.get(nowPlayingIndex);
-
         Graphics graphics = currentPlayList.getGraphics();
         if(graphics != null) {
             // handle logo
             if(graphics.isDisplayLogo()) {
                 showLogo(graphics.getLogoPosition());
             }
+
+            // handle lowerThird
+            LowerThird[] lowerThirds = graphics.getLowerThirds();
+            if(lowerThirds != null) {
+                Arrays.stream(lowerThirds).forEach(ltd -> {
+                    if(StringUtils.isNotBlank(ltd.getStarts()) && ltd.getFile() != null) {
+                        Arrays.stream(ltd.getStartsArray()).forEach(s -> {
+                            long start = s * 60 * 1000;//s is in minutes, send in mills
+                            Monitor.instance.getHandler().postDelayed(() -> {
+                                showLowerThird(ltd);
+                            }, start - position);
+                        });
+                    }
+                });
+            }
+
             // handle ticker
             News news = graphics.getNews();
             if(news != null) {
@@ -661,16 +686,11 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         }
     }
 
-    private void hideAllOtherGraphics() {
-
-    }
-
-    private void showAllOtherGraphics() {
-        File logo =  new File(programsFolder.getAbsolutePath() + File.separator + "graphics/Basic_Shine_blue.mp4");
-        VideoView allOtherGraphics = (VideoView) findViewById(R.id.lowerThird); // initiate a video view
-        allOtherGraphics.setVideoURI(Uri.fromFile(logo));
-        allOtherGraphics.start();
-        allOtherGraphics.setVisibility(View.VISIBLE);
+    private void hideLowerThird() {
+        if(lowerThirdView != null) {
+            //TODO lowerThirdView.animate().translationX(lowerThirdView.getWidth()); etc should be in the clip
+            lowerThirdView.setVisibility(View.GONE);
+        }
     }
 
     private void hideTicker() {
@@ -686,6 +706,38 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         findViewById(R.id.topLogo).setVisibility(View.GONE);
         findViewById(R.id.bottomLogo).setVisibility(View.GONE);
         Logger.log(AuditLog.Event.DISPLAY_LOGO_OFF);
+    }
+
+    private void playCurrentLowerThird() {
+        if(lowerThirdView != null) {
+            lowerThirdView.setVisibility(View.VISIBLE);
+            lowerThirdView.start();
+        }
+    }
+
+    private void showLowerThird(LowerThird lowerThird) {
+        File lowerThirdClip =  new File(getLowerThirdDirectory() + File.separator + lowerThird.getFile());
+        if(lowerThirdClip.exists()) {
+            lowerThirdView = (VideoView) findViewById(R.id.lowerThird); // initiate a video view
+            lowerThirdView.setVideoURI(Uri.fromFile(lowerThirdClip));
+            lowerThirdView.start();
+            lowerThirdView.setVisibility(View.VISIBLE);
+            lowerThirdView.setOnCompletionListener(mediaPlayer -> {
+                if(lowerThird.getReplays() >= lowerThirdLoop) {
+                    // replay
+                    lowerThirdLoop++;
+                    lowerThirdView.start();
+                } else {
+                    hideLowerThird();
+                    lowerThirdLoop = 1;
+                }
+            });
+
+            lowerThirdView.setOnErrorListener((mp, what, extra) -> {
+                Logger.log(AuditLog.Event.ERROR, "Failed to play " + lowerThird.getFile());
+                return true;
+            });
+        }
     }
 
     private void initTickers(News news) {

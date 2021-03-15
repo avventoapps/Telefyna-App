@@ -19,23 +19,7 @@
       "type": "LOCAL_RANDOMIZED",
       "urlOrFolder": "Fillers",
       "active": true,
-      "playingGeneralBumpers": true,
-      "graphics": {
-        "displayLogo": true,
-        "logoPosition": "TOP",
-        "news": {
-          "messages": "Welcome to Telefyna TV #This TV station is powered by Telefyna",
-          "starts": "2.3#6.5",
-          "replays": 1
-        },
-        "lowerThirds": [
-          {
-            "file": "3abn_Clideo.mp4",
-            "starts": "0#5",
-            "replays": 1
-          }
-        ]
-      }
+      "playingGeneralBumpers": true
     },
     {
       "name": "Network",

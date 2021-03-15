@@ -80,7 +80,6 @@ public class Playlist {
         this.playingGeneralBumpers = parent.playingGeneralBumpers;
         this.specialBumperFolder = parent.specialBumperFolder;
         this.color = parent.color;
-        this.graphics = parent.graphics;//TODO move to schedule rather
         return this;
     }
 

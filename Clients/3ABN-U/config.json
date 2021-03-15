@@ -21,9 +21,11 @@
       "active": true,
       "playingGeneralBumpers": true,
       "graphics": {
-        "displayLogo": false,
+        "displayLogo": true,
         "logoPosition": "TOP",
         "news": {
+          "messages": "Welcome to Telefyna TV #This TV station is powered by Telefyna",
+          "starts": "2.3#6.5",
           "replays": 1
         },
         "lowerThirds": [

@@ -657,7 +657,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                 Arrays.stream(lowerThirds).forEach(ltd -> {
                     if(StringUtils.isNotBlank(ltd.getStarts()) && ltd.getFile() != null) {
                         Arrays.stream(ltd.getStartsArray()).forEach(s -> {
-                            long start = s * 60 * 1000;//s is in minutes, send in mills
+                            long start = Math.round(s * 60 * 1000);//s is in minutes, send in mills
                             Monitor.instance.getHandler().postDelayed(() -> {
                                 showLowerThird(ltd);
                             }, start - position);
@@ -674,7 +674,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                 if(messages.length > 0) {
                     initTickers(news);
                     Arrays.stream(news.getStartsArray()).forEach(s -> {
-                        long start = s * 60 * 1000;//s is in minutes, send in mills
+                        long start = Math.round(s * 60 * 1000);//s is in minutes, send in mills
                         if(start >= position) {
                             Monitor.instance.getHandler().postDelayed(() -> {
                                 showTicker();

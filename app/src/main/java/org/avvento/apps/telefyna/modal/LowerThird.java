@@ -20,18 +20,18 @@ public class LowerThird {
     // minutes to start separated by #
     private String starts;
     // number of times to play
-    private int replays = 1;
+    private int replays = 0;
 
-    public Long[] getStartsArray() {
-        List<Long> startTimes = new ArrayList<>();
+    public Double[] getStartsArray() {
+        List<Double> startTimes = new ArrayList<>();
         if(StringUtils.isNotBlank(starts)) {
             Arrays.stream(starts.split(Graphics.MESSAGE_SPLITTER)).forEach(start -> {
                 if(StringUtils.isNotBlank(start)) {
-                    startTimes.add(Long.parseLong(start.trim()));
+                    startTimes.add(Double.parseDouble(start.trim()));
                 }
             });
             Collections.sort(startTimes);
         }
-        return startTimes.toArray(new Long[startTimes.size()]);
+        return startTimes.toArray(new Double[startTimes.size()]);
     }
 }

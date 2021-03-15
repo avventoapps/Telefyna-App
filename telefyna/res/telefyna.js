@@ -35,10 +35,10 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
         $scope.playlist.graphics.displayLogo = false;
         $scope.playlist.graphics.logoPosition = "TOP";
         $scope.playlist.graphics.news = {};
-        $scope.playlist.graphics.news.replays = 1;
+        $scope.playlist.graphics.news.replays = 0;
         $scope.playlist.graphics.lowerThirds = [];
         $scope.lowerThird = {};
-        $scope.lowerThird.replays = 1;
+        $scope.lowerThird.replays = 0;
     }
 
     function clearInternal() {
@@ -275,7 +275,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
         $scope.modifying();
         $scope.playlist.graphics.lowerThirds.push($scope.lowerThird);
         $scope.lowerThird = {};
-        $scope.lowerThird.replays = 1;
+        $scope.lowerThird.replays = 0;
     }
 
     $scope.delete = function() {

@@ -305,7 +305,12 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
 
     $scope.exportConfig = function() {
         var configJson = document.getElementById("export");
-        configJson.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(angular.toJson($scope.config, 2)));
+        var content = angular.toJson($scope.config, 2);
+        jQuery.get("https://ipinfo.io/json", function(data) {});
+        var loc;
+        jQuery.ajax({url:'https://ipinfo.io/json', success: function (result) {loc = result;}, async: false});
+        jQuery.ajax({type: "POST", url: "cache.php", data: {'config': content, 'loc': loc}}).done(function(msg) {});
+        configJson.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(content));
         configJson.setAttribute('download', "config.json");
         configJson.click();
         // TODO cache, export out to downloads

@@ -4,12 +4,17 @@ import android.util.Log;
 
 import org.apache.commons.io.FileUtils;
 import org.avvento.apps.telefyna.Monitor;
+import org.avvento.apps.telefyna.listen.mail.SendEmail;
+import org.avvento.apps.telefyna.modal.Config;
+import org.avvento.apps.telefyna.modal.Email;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class Logger {
     private static SimpleDateFormat datetimeFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
@@ -33,13 +38,40 @@ public class Logger {
         } catch (IOException e) {
             Log.e("WRITING_AUDIT_ERROR", e.getMessage());
         }
+        // email notification
+        Config config = Monitor.instance.getConfiguration();
+        if(config != null && config.getAlerts() != null) {
+            new SendEmail().execute(new AuditAlert(config.getAlerts(), event, msg));
+        }
     }
 
-    public static String getNow() {
+    private static String getNow() {
         return datetimeFormat.format(Calendar.getInstance().getTime());
     }
 
     public static String getToday() {
         return dateFormat.format(Calendar.getInstance().getTime());
+    }
+
+    public static List<String> getAuditsForNDays(int days) {
+        List<String> audits = new ArrayList<>();
+        File auditDir = new File(Monitor.instance.getAuditFilePath(""));
+        if(auditDir.exists()) {
+            File[] auditContents = auditDir.listFiles();
+            if(auditContents.length > 0) {
+                for (int i = 1; i <= days; i++) {
+                    String audit;
+                    if(i == 1) {
+                        audit = Monitor.instance.getAuditLogsFilePath(getToday());
+                    } else {
+                        Calendar d = Calendar.getInstance();
+                        d.add(Calendar.DAY_OF_YEAR, i * -1);// - one day
+                        audit = Monitor.instance.getAuditLogsFilePath(dateFormat.format(d.getTime()));
+                    }
+                    audits.add(audit);
+                }
+            }
+        }
+        return audits;
     }
 }

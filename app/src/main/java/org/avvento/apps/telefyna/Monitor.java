@@ -24,7 +24,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -238,17 +237,21 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         return programsFolder.getAbsolutePath() + File.separator + "playlist";
     }
 
-    private String getAuditFilePath(String name) {
+    public String getConfigFile() {
+        return programsFolder.getAbsolutePath() + File.separator + "config.json";
+    }
+
+    public String getAuditFilePath(String name) {
         return String.format("%s/telefynaAudit/%s", Environment.getExternalStorageDirectory().getAbsolutePath(), name);
     }
 
     public String getAuditLogsFilePath(String name) {
-        return getAuditFilePath(String.format("%s.log", name));
+        return getAuditFilePath(String.format("%s" + AuditLog.ENDPOINT, name));
     }
 
     public void initialiseConfiguration() {
         try {
-            configuration = new Gson().fromJson(new BufferedReader(new FileReader(programsFolder.getAbsolutePath() + File.separator + "config.json")), Config.class);
+            configuration = new Gson().fromJson(new BufferedReader(new FileReader(getConfigFile())), Config.class);
             Logger.log(AuditLog.Event.CONFIGURATION);
         } catch (IOException e) {
             Logger.log(AuditLog.Event.ERROR, e.getMessage());
@@ -536,6 +539,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         cacheNowPlaying();
         // keep reloading existing program if internet is on and off
         if (error.getCause().getCause() instanceof UnknownHostException || error.getCause().getCause() instanceof IOException) {
+            Logger.log(AuditLog.Event.NO_INTERNET, "Failing to play program because of no internet connection");
             reload();
         }
     }
@@ -690,6 +694,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         if(lowerThirdView != null) {
             //TODO lowerThirdView.animate().translationX(lowerThirdView.getWidth()); etc should be in the clip
             lowerThirdView.setVisibility(View.GONE);
+            Logger.log(AuditLog.Event.LOWER_THIRD_OFF);
         }
     }
 
@@ -716,8 +721,10 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     }
 
     private void showLowerThird(LowerThird lowerThird) {
-        File lowerThirdClip =  new File(getLowerThirdDirectory() + File.separator + lowerThird.getFile());
+        String path = getLowerThirdDirectory() + File.separator + lowerThird.getFile();
+        File lowerThirdClip =  new File(path);
         if(lowerThirdClip.exists()) {
+            Logger.log(AuditLog.Event.LOWER_THIRD_ON, path);
             lowerThirdView = (VideoView) findViewById(R.id.lowerThird); // initiate a video view
             lowerThirdView.setVideoURI(Uri.fromFile(lowerThirdClip));
             lowerThirdView.start();

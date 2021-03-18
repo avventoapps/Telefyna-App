@@ -26,7 +26,7 @@ public class Utils {
             // credit to google for creating exoplayer here
             // TODO unfortunately google (http://www.google.com) is on in uganda for free without data. changed to http://example.com
             URLConnection conn = (new URL("http://example.com")).openConnection();
-            conn.setConnectTimeout(250);
+            conn.setConnectTimeout(500);
             conn.connect();
             conn.getInputStream().close();
             return true;
@@ -60,4 +60,8 @@ public class Utils {
         return new Program(file.getAbsolutePath().split(Monitor.instance.getProgramsFolderPath())[1], MediaItem.fromUri(Uri.fromFile(file)));
     }
 
+    public static boolean isValidEmail(String email) {
+        String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
+        return email.matches(regex);
+    }
 }

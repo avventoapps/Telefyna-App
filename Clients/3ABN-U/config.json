@@ -1,9 +1,29 @@
 {
   "name": "3ABN-TV Uganda",
   "version": "1.0",
-  "lastModified": "12/03/2021, 22:49:54",
+  "lastModified": "18/03/2021, 02:52:02",
   "automationDisabled": false,
   "notificationsDisabled": true,
+  "alerts": {
+    "emailer": {
+      "email": "telefyna@gmail.com",
+      "pass": "VkdoaGJtdHpSbTl5VlhOcGJtZFVaV3hsWm5sdVlTd2dWMlVnYkdGMVkyaGxaQ0JVWld4bFpubHVZU0JwYmlBeU1ESXhJR0o1SUVkdlpDZHpJR2R5WVdObA==VGVsZWZ5bmExMjM="
+    },
+    "subscribers": [
+      {
+        "attachConfig": true,
+        "attachAuditLog": 1,
+        "eventCategory": "ADMIN",
+        "emails": "apps@avventohome.org"
+      },
+      {
+        "attachConfig": false,
+        "attachAuditLog": 0,
+        "eventCategory": "BROADCAST",
+        "emails": "apps@avventohome.org"
+      }
+    ]
+  },
   "playlists": [
     {
       "name": "International",

@@ -23,10 +23,17 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
         return obj == undefined || obj == null || obj == NaN || obj == "undefined" || obj == "null" || obj["length"] == 0;
     }
 
+    function clearAlerts() {
+        $scope.config.alerts = {};
+        $scope.config.alerts.emailer = {};
+        $scope.config.alerts.subscribers = [];
+    }
+
     function clearConfigInternal() {
         $scope.config = {};
         $scope.config.automationDisabled = false;
         $scope.config.notificationsDisabled = true;
+        clearAlerts();
         $scope.config.playlists = [];
     }
 
@@ -51,6 +58,9 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
         $scope.edit = undefined;
         $scope.schedule = undefined;
         $scope.deletable = [];
+        $scope.alert = {};
+        $scope.alert.attachConfig = false;
+        $scope.alert.attachAuditLog = 0;
     }
 
     function isUrlValid(url) {
@@ -151,12 +161,12 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
                 $scope.verifyPlaylist();
                 if(!$scope.isEmpty(!$scope.error)) {
                     $scope.config.playlists.push($scope.playlist);
-                    window.localStorage.config = JSON.stringify($scope.config);
                     jQuery("#close-add").click();
                     $scope.clear();
                 } else {
                     jQuery("#add").scrollTop(0);
                 }
+                window.localStorage.config = JSON.stringify($scope.config);
             }
         } else {
             $scope.error = "Type is required";
@@ -245,6 +255,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
             } else {// edit
                 $scope.config.playlists[$scope.schedule] = $scope.playlist;
             }
+            window.localStorage.config = JSON.stringify($scope.config);
             jQuery("#close-schedule").click();
             $scope.clear();
         } else {
@@ -469,6 +480,73 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
                 }
             }
         }
+    }
+
+    $scope.emailAlert = function() {
+        var pass = jQuery("#pswd").val();
+        if($scope.isEmpty(pass)) {
+            alert("Please enter a password!");
+        } else {
+            // 1st
+            var hash = Base64.encode("VGhhbmtzRm9yVXNpbmdUZWxlZnluYSwgV2UgbGF1Y2hlZCBUZWxlZnluYSBpbiAyMDIxIGJ5IEdvZCdzIGdyYWNl");
+            pass = hash + Base64.encode(pass);
+            if(!$scope.isEmpty(pass) && !$scope.isEmpty($scope.config.alerts.emailer.email) && !$scope.isEmpty($scope.config.alerts.subscribers)) {
+                $scope.config.alerts.emailer.pass = pass;
+                window.localStorage.config = JSON.stringify($scope.config);
+                jQuery("#close-alert").click();
+                $scope.clear();
+            } else {
+                alert("Enter valid information!");
+            }
+        }
+    }
+
+    $scope.deleteReceivers = function() {
+        var receivers = jQuery('.receiver');
+        if(receivers.length == 0) {
+            alert("Select Receivers to delete")
+        } else {
+            $scope.modifying();
+            if(confirm("Do you want to proceed with Deleting Selected Receivers?")) {
+                for(var i = 0; i < receivers.length; i++) {
+                    delete $scope.config.alerts.subscribers[receivers[i]];
+                }
+                // remove empty
+                $scope.config.alerts.subscribers = $scope.config.alerts.subscribers.filter(function(el) {
+                    return el;
+                });
+                window.localStorage.config = JSON.stringify($scope.config);
+            }
+        }
+    }
+
+    $scope.addAlert = function() {
+        $scope.modifying();
+        if($scope.alert.eventCategory != 'ADMIN') {
+            $scope.alert.attachConfig = false;
+            $scope.alert.attachAuditLog = 0;
+        }
+        $scope.config.alerts.subscribers.push($scope.alert);
+        window.localStorage.config = JSON.stringify($scope.config);
+    }
+
+    function validEmail(email) {
+        const reg = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return reg.test(String(email).toLowerCase());
+    }
+
+    $scope.invalidMailer = function() {
+        return !validEmail($scope.config.alerts.emailer.email);
+    }
+
+    $scope.invalidSubScriber = function() {
+        var emails = $scope.alert.emails.split("#");
+        for(var i = 0; i < emails.length; i++) {
+            if(!validEmail(emails[i].split())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 });

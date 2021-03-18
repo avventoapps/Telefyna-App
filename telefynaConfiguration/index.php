@@ -18,6 +18,7 @@
 	<script src="res/jQuery.print.js"></script>
 	<link href="res/bootstrap-colorselector.min.css" rel="stylesheet">
 	<script src="res/bootstrap-colorselector.min.js"></script>
+	<script src="res/base64.min.js"></script>
 	<link href="res/telefyna.css" rel="stylesheet">
 	<script src="res/telefyna.js"></script>
 	<title>Configuring Telefyna</title>
@@ -45,7 +46,7 @@
 				<label class="checkbox-inline"><input ng-model="config.automationDisabled" ng-change="modifying()" type="checkbox"> Disable Automation</label>
 			</div>
 			<div class="form-check form-switch">
-				<label class="checkbox-inline"><input ng-model="config.notificationsDisabled" ng-change="modifying()" type="checkbox"> Disable Notifications</label>
+				<label class="checkbox-inline"><input ng-model="config.notificationsDisabled" ng-change="modifying()" type="checkbox"> Disable OS Notifications</label>
 			</div>
 			<div class="action">
 				<!-- Create -->
@@ -95,7 +96,7 @@
 								<button class="btn btn-danger" data-dismiss="modal" id="close-edit" ng-click="clear()" type="button">Cancel</button>
 								<button class="btn btn-danger"  type="button" ng-disabled="isEmpty(playlist.graphics.lowerThirds)" ng-click="deleteLowerThirds()">Delete Selected Lower Thirds</button>
 								<button class="btn btn-success"  type="button" ng-disabled="isEmpty(lowerThird.replays) || isEmpty(lowerThird.file) || isEmpty(lowerThird.starts)" ng-click="addLowerThird()">Add Lower Third</button>
-								<button class="btn btn-success" type="submit" mg-disabled="isEmpty(edit)" ng-disabled="isEmpty(playlist.name) || isEmpty(playlist.type) || isEmpty(playlist.urlOrFolder)">Save</button>
+								<button class="btn btn-success" type="submit" ng-disabled="isEmpty(edit) || isEmpty(playlist.name) || isEmpty(playlist.type) || isEmpty(playlist.urlOrFolder)">Save</button>
 							</div>
 						</form>
 					</div>
@@ -147,6 +148,8 @@
 						</form>
 					</div>
 				</div>
+				<!-- Alerts -->
+				<?php include 'alert.php';?>
 			</div>
 		</div>
 		<div class="section">

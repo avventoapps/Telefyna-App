@@ -18,5 +18,6 @@ public class Config {
     private String name;
     private boolean automationDisabled = false;
     private boolean notificationsDisabled = true;
+    private Alerts alerts;
     private Playlist[] playlists;
 }

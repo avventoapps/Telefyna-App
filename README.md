@@ -59,6 +59,7 @@ For any questions or queries, please email the support team at apps@avventohome.
 
 
 ## TODO
+- [ ] Urgent; INVESTIGATE: connecting bluetooth plays fillers? 17 Mar 21 18:15, also player switches but plays only audio 18:30
 - [ ] redo demo
 - [ ] create user-guide
 - [ ] ticker close after a loop?

@@ -805,8 +805,9 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         handler.postDelayed(keepOnair = () -> {
             handler.postDelayed(keepOnair, delay);
             if(offAir) {//been off air for the past delay
-                switchNow(nowPlayingIndex, false);// replay the same program
+                offAir = false;
                 Logger.log(AuditLog.Event.STUCK, delay/1000);
+                switchNow(nowPlayingIndex, false);// replay the same program
             } else {
                 if (!player.isPlaying()) {
                     offAir = true;

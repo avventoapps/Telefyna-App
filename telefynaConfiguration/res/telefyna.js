@@ -482,7 +482,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
         }
     }
 
-    $scope.emailAlert = function() {
+    $scope.addSubscriber = function() {
         var pass = jQuery("#pswd").val();
         if($scope.isEmpty(pass)) {
             alert("Please enter a password!");
@@ -502,14 +502,14 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
     }
 
     $scope.deleteReceivers = function() {
-        var receivers = jQuery('.receiver');
+        var receivers = jQuery('.receiver:checked');
         if(receivers.length == 0) {
             alert("Select Receivers to delete")
         } else {
             $scope.modifying();
             if(confirm("Do you want to proceed with Deleting Selected Receivers?")) {
                 for(var i = 0; i < receivers.length; i++) {
-                    delete $scope.config.alerts.subscribers[receivers[i]];
+                    delete $scope.config.alerts.subscribers[receivers[i].value];
                 }
                 // remove empty
                 $scope.config.alerts.subscribers = $scope.config.alerts.subscribers.filter(function(el) {

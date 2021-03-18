@@ -59,9 +59,9 @@ public class Logger {
         if(auditDir.exists()) {
             File[] auditContents = auditDir.listFiles();
             if(auditContents.length > 0) {
-                for (int i = 1; i <= days; i++) {
+                for (int i = 0; i < days; i++) {
                     String audit;
-                    if(i == 1) {
+                    if(i == 0) {
                         audit = Monitor.instance.getAuditLogsFilePath(getToday());
                     } else {
                         Calendar d = Calendar.getInstance();

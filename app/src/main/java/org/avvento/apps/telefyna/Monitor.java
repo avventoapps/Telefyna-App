@@ -17,7 +17,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.StrictMode;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -98,6 +97,8 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     private TickerView tickerView;
     private VideoView lowerThirdView;
     private int lowerThirdLoop = 1;
+    private Runnable keepOnair;
+    private boolean offAir = false;
 
     public String getProgramsFolderPath() {
         return programsFolder.getAbsolutePath();
@@ -298,7 +299,6 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
             return;
         }
         currentBumpers = new ArrayList<>();
-        player = buildPlayer();
         int firstDefaultIndex = getFirstDefaultIndex();
         int secondDefaultIndex = getSecondDefaultIndex();
 
@@ -306,11 +306,13 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         List<Program> programs = programsByIndex.get(index);
         Playlist playlist = playlistByIndex.get(index);
 
-        if (nowPlayingIndex == null || nowPlayingIndex != index || (!player.isPlaying() && index == secondDefaultIndex && nowPlayingIndex == index)) {// leave current program to proceed if it's the same being loaded
+        if (nowPlayingIndex == null || nowPlayingIndex != index || playTheSame(index)) {// leave current program to proceed if it's the same being loaded
             if (!Utils.internetConnected() && secondDefaultIndex != index && Playlist.Type.ONLINE.equals(playlist.getType())) {
                 switchNow(secondDefaultIndex, false);
                 return;
             } else {
+                player = buildPlayer();
+                keepBroadcasting();
                 if (programs.isEmpty()) {
                     Logger.log(AuditLog.Event.PLAYLIST_EMPTY_PLAY, getPlayingAtIndexLabel(index));
                     switchNow(firstDefaultIndex, false);
@@ -413,6 +415,24 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         }
     }
 
+    @Override
+    public void onIsPlayingChanged(boolean isPlaying) {
+        PlayerView playerView = getPlayerView();
+        Player current = playerView.getPlayer();
+        if (current == null || !player.equals(current)) {// change of player is proof of a switch
+            if (current != null) {
+                current.stop();
+                current.release();
+                current = null;
+            }
+            playerView.setPlayer(player);
+        }
+    }
+
+    private boolean playTheSame(int index) {
+        return player != null && (!player.isPlaying() && nowPlayingIndex == index);
+    }
+
     private Seek seekCurrentSlot(Playlist playlist, List<MediaItem> programItems, int program, long position) {
         return getImmediateNonCompletedSlot(position, program, playlist, programItems);
     }
@@ -484,20 +504,6 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         playerView.setControllerHideOnTouch(false);
         playerView.showController();
         return playerView;
-    }
-
-    @Override
-    public void onIsPlayingChanged(boolean isPlaying) {
-        PlayerView playerView = getPlayerView();
-        Player current = playerView.getPlayer();
-        if (current == null || !player.equals(current)) {
-            if (current != null) {
-                current.stop();
-                current.release();
-                current = null;
-            }
-            playerView.setPlayer(player);
-        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -639,7 +645,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        Logger.log(AuditLog.Event.KEY_DOWN, keyCode);
+        Logger.log(AuditLog.Event.KEY_PRESS, KeyEvent.keyCodeToString(keyCode) + "#" + keyCode);
         return super.onKeyDown(keyCode, event);
     }
 
@@ -788,6 +794,27 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         tickerView.setTextColor(ContextCompat.getColor(instance, android.R.color.white));
         tickerView.setPadding(10, 2, 10, 2);
         return tickerView;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void keepBroadcasting() {
+        if(keepOnair != null) {
+            handler.removeCallbacks(keepOnair);
+        }
+        long delay = 60000;// one minute of being off air will trigger the same program
+        handler.postDelayed(keepOnair = () -> {
+            handler.postDelayed(keepOnair, delay);
+            if(offAir) {//been off air for the past delay
+                switchNow(nowPlayingIndex, false);// replay the same program
+                Logger.log(AuditLog.Event.STUCK, delay/1000);
+            } else {
+                if (!player.isPlaying()) {
+                    offAir = true;
+                } else {
+                    offAir = false;
+                }
+            }
+        }, delay);
     }
 
 }

@@ -126,7 +126,7 @@ public class GMail {
             Draft draft = new Draft();
             draft.setFrom(auditAlert.getAlerts().getEmailer().getEmail());
             draft.setPass(decodePass(auditAlert.getAlerts().getEmailer().getPass()));
-            draft.setSubject(Logger.getToday() + " Telefyna Alert: " + auditAlert.getEvent().name());
+            draft.setSubject(String.format("%s Telefyna %s Alert: %s", Logger.getToday(), auditAlert.getEvent().getCategory(), auditAlert.getEvent().name()));
 
             for(Email email : auditAlert.getAlerts().getSubscribers()) {
                 if (AuditLog.Event.Category.ADMIN.equals((auditAlert.getEvent().getCategory()))) {

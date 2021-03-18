@@ -1,0 +1,12 @@
+crontab -e
+
+type in runs daily at 23:00 oclock
+
+0 23    * * *   root /var/www/html/telefynaConfiguration/./sendMail.sh
+
+restart
+/etc/init.d/cron restart
+
+list
+crontab -l
+crontab -u username -l

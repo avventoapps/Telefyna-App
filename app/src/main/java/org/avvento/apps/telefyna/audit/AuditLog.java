@@ -10,12 +10,13 @@ public class AuditLog {
     public enum Event {
         //admin
         HEARTBEAT("TELEFYNA has been turned: %s"),
-        KEY_DOWN("Key: %d has been pressed down"),
+        KEY_PRESS("%s has been pressed"),
         CONFIGURATION("Initialized configurations"),
         MAINTENANCE("Ran maintenance"),
         ERROR("%s"),
         CACHE_NOW_PLAYING_RESUME("Playlist: %s will next be resuming program: %s at: %d"),
         RETRIEVE_NOW_PLAYING_RESUME("Resuming Playlist: %s program: %s at: %d"),
+        STUCK("Relaunching having been stuck for %d seconds"),
 
         //scheduler
         PLAYLIST(SPLITTER + "[ Preparing to play playlist: %s: %s"),
@@ -46,7 +47,7 @@ public class AuditLog {
         }
 
         public Category getCategory() {
-            Event[] admins = new Event[]{HEARTBEAT, KEY_DOWN, CONFIGURATION, MAINTENANCE, ERROR, CACHE_NOW_PLAYING_RESUME, RETRIEVE_NOW_PLAYING_RESUME};
+            Event[] admins = new Event[]{HEARTBEAT, KEY_PRESS, CONFIGURATION, MAINTENANCE, ERROR, CACHE_NOW_PLAYING_RESUME, RETRIEVE_NOW_PLAYING_RESUME, STUCK};
             Event[] schedulers = new Event[]{PLAYLIST, PLAYLIST_PLAY, PLAYLIST_EMPTY_PLAY, PLAYLIST_MODIFIED, PLAYLIST_ITEM_CHANGE, PLAYLIST_COMPLETED, DISPLAY_LOGO_OFF, DISPLAY_LOGO_ON, DISPLAY_NEWS_ON, DISPLAY_NEWS_OFF, LOWER_THIRD_ON, LOWER_THIRD_OFF};
 
             if(Arrays.asList(admins).contains(this)) {

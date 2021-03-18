@@ -1,7 +1,7 @@
 {
   "name": "3ABN-TV Uganda",
   "version": "1.0",
-  "lastModified": "18/03/2021, 02:52:02",
+  "lastModified": "18/03/2021, 17:51:15",
   "automationDisabled": false,
   "notificationsDisabled": true,
   "alerts": {
@@ -11,15 +11,15 @@
     },
     "subscribers": [
       {
-        "attachConfig": true,
-        "attachAuditLog": 1,
-        "eventCategory": "ADMIN",
-        "emails": "apps@avventohome.org"
-      },
-      {
         "attachConfig": false,
         "attachAuditLog": 0,
         "eventCategory": "BROADCAST",
+        "emails": "apps@avventohome.org"
+      },
+      {
+        "attachConfig": true,
+        "attachAuditLog": 2,
+        "eventCategory": "ADMIN",
         "emails": "apps@avventohome.org"
       }
     ]

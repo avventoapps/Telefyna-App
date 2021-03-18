@@ -26,7 +26,7 @@ public class Utils {
             // credit to google for creating exoplayer here
             // TODO unfortunately google (http://www.google.com) is on in uganda for free without data. changed to http://example.com
             URLConnection conn = (new URL("http://example.com")).openConnection();
-            conn.setConnectTimeout(500);
+            conn.setConnectTimeout(10000);
             conn.connect();
             conn.getInputStream().close();
             return true;

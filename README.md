@@ -59,13 +59,14 @@ For any questions or queries, please email the support team at apps@avventohome.
 
 
 ## TODO
+- [ ] add background checker if player is active and if it'sn'r for 1 minute play/switch again
 - [ ] Urgent; INVESTIGATE: connecting bluetooth plays fillers? 17 Mar 21 18:15, also player switches but plays only audio 18:30
-- [ ] redo demo
+- [x] redo demo
 - [ ] create user-guide
-- [ ] ticker close after a loop?
-- [ ] replay fillers if gone
+- [x] ticker close after a loop?
+- [x] replay fillers if gone
 - [ ] support triggering reinitialization on next program.
-- [ ] support logo, lowerthirds etc: https://github.com/google/ExoPlayer/issues/8648 | https://exoplayer.dev/ui-components.html#customization
+- [x] support logo, lowerthirds etc: https://github.com/google/ExoPlayer/issues/8648 | https://exoplayer.dev/ui-components.html#customization
 - [ ] SRT support: https://github.com/google/ExoPlayer/issues/8647
 - [ ] support auto installing of config under resources if non exists at first run
 - [ ] make Telefyna device specific, mantain a file with device ids supported and at running if the device isn't granted show video demo to help them get in touch at mail@avventohome.org

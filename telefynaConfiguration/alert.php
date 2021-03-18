@@ -7,7 +7,7 @@
 			</div>
 			<div class="modal-body">
                 <div class="section action">
-                    Sender Email
+                    Sender Gmail
                     <input class="form-control flex-wrap" required ng-model="config.alerts.emailer.email" type="text" ng-change="modifying()">
                     Sender Password
                     <input class="form-control flex-wrap" id="pswd" required type="password">

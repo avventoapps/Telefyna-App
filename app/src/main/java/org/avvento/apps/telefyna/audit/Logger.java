@@ -40,7 +40,7 @@ public class Logger {
         }
         // email notification
         Config config = Monitor.instance.getConfiguration();
-        if(config != null && config.getAlerts() != null) {
+        if(config != null && config.getAlerts() != null && (AuditLog.Event.Category.ADMIN.equals(event.getCategory()) || AuditLog.Event.Category.BROADCAST.equals(event.getCategory()))) {
             new SendEmail().execute(new AuditAlert(config.getAlerts(), event, msg));
         }
     }

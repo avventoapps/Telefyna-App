@@ -3,10 +3,11 @@ c# Telefyna Configuration
 This project contains a client side application for managing Telefyna's configurations which includes programming/scheduling
 
 ## TODO
-- [ ] test out videoView/lowerThirds again with the view last on graphics.xml
-- [ ] write a way to share system errors with admin and attach auditLog and periodical logs
+- [ ] support php email on exporting config
 - [ ] create a qa testing framework to ensure the ui generator works well
 - [ ] add current/previous/next program tracking on the schedule preview | Not necessary
+- [x] write a way to share system errors with admin and attach auditLog and periodical logs
+- [x] test out videoView/lowerThirds again with the view last on graphics.xml
 - [x] graphics audit
 - [x] schedule to contain graphics, if replays isn't set. the ticker will show all through
 - [x] handle defaults to match with android

@@ -91,7 +91,7 @@ public class GMail {
     public void setEmailBody(Email email, Draft draft) throws MessagingException {
         if(!email.isAttachConfig() && email.getAttachAuditLog() == 0) {
             emailMessage.setContent(draft.getBody(), "text/html");// for a html email
-        } else {
+        } else if(AuditLog.Event.MAINTENANCE.equals(auditAlert.getEvent())) {
             Multipart multipart = new MimeMultipart();
             String config = Monitor.instance.getConfigFile();
             if (email.isAttachConfig() && new File(config).exists()) {

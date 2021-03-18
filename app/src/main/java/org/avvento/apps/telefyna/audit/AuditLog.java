@@ -24,9 +24,9 @@ public class AuditLog {
         PLAYLIST_MODIFIED("Playlist: %s is resetting resuming since it was modified %s seconds ago"),
         PLAYLIST_ITEM_CHANGE("Playing playlist: %s now playing program: %s"),
         PLAYLIST_COMPLETED(SPLITTER + "] Completed playing playlist: %s"),
-        DISPLAY_LOGO_OFF("Turning OFF Logo at screen if available"),
-        DISPLAY_LOGO_ON("Turning ON Logo on the screen %s"),
-        DISPLAY_NEWS_ON("Displaying news/info ticker on the screen with messages: %s"),
+        DISPLAY_LOGO_OFF("Turning OFF Logo if available"),
+        DISPLAY_LOGO_ON("Turning ON Logo at the %s"),
+        DISPLAY_NEWS_ON("Displaying news/info ticker with messages: %s"),
         DISPLAY_NEWS_OFF("Turning OFF news/info ticker if available"),
         LOWER_THIRD_ON("Displaying %s lower third"),
         LOWER_THIRD_OFF("Turning OFF lower third if available"),
@@ -46,7 +46,7 @@ public class AuditLog {
         }
 
         public Category getCategory() {
-            Event[] admins = new Event[]{HEARTBEAT, KEY_DOWN, CONFIGURATION, MAINTENANCE, CACHE_NOW_PLAYING_RESUME, RETRIEVE_NOW_PLAYING_RESUME};
+            Event[] admins = new Event[]{HEARTBEAT, KEY_DOWN, CONFIGURATION, MAINTENANCE, ERROR, CACHE_NOW_PLAYING_RESUME, RETRIEVE_NOW_PLAYING_RESUME};
             Event[] schedulers = new Event[]{PLAYLIST, PLAYLIST_PLAY, PLAYLIST_EMPTY_PLAY, PLAYLIST_MODIFIED, PLAYLIST_ITEM_CHANGE, PLAYLIST_COMPLETED, DISPLAY_LOGO_OFF, DISPLAY_LOGO_ON, DISPLAY_NEWS_ON, DISPLAY_NEWS_OFF, LOWER_THIRD_ON, LOWER_THIRD_OFF};
 
             if(Arrays.asList(admins).contains(this)) {

@@ -119,15 +119,15 @@ public class Mail {
             Draft draft = new Draft();
             draft.setFrom(auditAlert.getAlerts().getEmailer().getEmail());
             draft.setPass(decodePass(auditAlert.getAlerts().getEmailer().getPass()));
-            draft.setSubject(String.format("%s Telefyna %s Alert: %s", Logger.getToday(), auditAlert.getEvent().getCategory(), auditAlert.getEvent().name()));
+            draft.setSubject(String.format("%s %s %s Alert: %s", Logger.getToday(), Monitor.instance.getConfiguration().getName(), auditAlert.getEvent().getCategory(), auditAlert.getEvent().name()));
 
             for(Receivers receivers : auditAlert.getAlerts().getSubscribers()) {
                 if (AuditLog.Event.Category.ADMIN.equals((auditAlert.getEvent().getCategory()))) {
-                    draft.setBody("Dear admin,<br><br> " + auditAlert.getMessage() + " <br><br><br>This is a Telefyna system notification, please don't respond to it.<br><br>TelefynaBot");
+                    draft.setBody(String.format("Dear admin,<br><br> %s <br><br><br>This is a %s system notification, please don't respond to it.<br><br>TelefynaBot", auditAlert.getMessage(), Monitor.instance.getConfiguration().getName()));
                     draft.setAllowsAttachments(true);
                     mailNow(receivers, draft);
                 } else if (AuditLog.Event.Category.BROADCAST.equals(receivers.getEventCategory()) && AuditLog.Event.Category.BROADCAST.equals((auditAlert.getEvent().getCategory()))) {
-                    draft.setBody("Dear broadcaster,<br><br> " + auditAlert.getMessage() + " <br><br><br>This is a Telefyna system notification, please don't respond to it.<br><br>TelefynaBot");
+                    draft.setBody(String.format("Dear broadcaster,<br><br> %s <br><br><br>This is a %s system notification, please don't respond to it.<br><br>TelefynaBot", auditAlert.getMessage(), Monitor.instance.getConfiguration().getName()));
                     mailNow(receivers, draft);
                 }
             }

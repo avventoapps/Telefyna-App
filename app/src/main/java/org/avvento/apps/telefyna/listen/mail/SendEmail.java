@@ -15,11 +15,7 @@ public class SendEmail extends AsyncTask<AuditAlert, Integer, String> {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected String doInBackground(AuditAlert... auditAlerts) {
-        if(Utils.internetConnected()) {
-            new Mail(auditAlerts[0]).sendEmail();
-        } else {
-            Logger.log(AuditLog.Event.NO_INTERNET, "Sending emails failed, no internet connection");
-        }
+        new Mail(auditAlerts[0]).sendEmail();
         return null;
     }
 }

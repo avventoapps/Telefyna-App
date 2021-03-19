@@ -19,7 +19,7 @@ public class Config {
     private boolean automationDisabled = false;
     private boolean notificationsDisabled = true;
     // seconds to wait for internet
-    private int internetWait = 60;
+    private int internetWait = 30;
     private Alerts alerts;
     private Playlist[] playlists;
 }

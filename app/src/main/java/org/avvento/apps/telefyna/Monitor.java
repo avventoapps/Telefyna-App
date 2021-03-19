@@ -307,15 +307,15 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         Playlist playlist = playlistByIndex.get(index);
 
         if (nowPlayingIndex == null || nowPlayingIndex != index || playTheSame(index)) {// leave current program to proceed if it's the same being loaded
-            if (Playlist.Type.ONLINE.equals(playlist.getType()) && !Utils.internetConnected() && secondDefaultIndex != index) {
-                switchNow(secondDefaultIndex, false);
+            if (Playlist.Type.ONLINE.equals(playlist.getType()) && !Utils.internetConnected(Monitor.instance.getConfiguration().getInternetWait()) && secondDefaultIndex != index) {
+                switchNow(secondDefaultIndex, isCurrentSlot);
                 return;
             } else {
                 player = buildPlayer();
                 keepBroadcasting();
                 if (programs.isEmpty()) {
                     Logger.log(AuditLog.Event.PLAYLIST_EMPTY_PLAY, getPlayingAtIndexLabel(index));
-                    switchNow(firstDefaultIndex, false);
+                    switchNow(firstDefaultIndex, isCurrentSlot);
                     return;
                 } else {
                     // log now playing
@@ -387,15 +387,15 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                     }
                     // playing current local slot, TODO support more than one program
                     if (isCurrentSlot) {
-                        Seek seek = seekCurrentSlot(playlist, programItems, program, position);
+                        Seek seek = seekImmediateNonCompletedSlot(playlist, programItems);
                         if (seek != null) {
                             program = seek.getProgram();
                             position = seek.getPosition();
                         } else { // slot is ended, switch to first default
+                            Logger.log(AuditLog.Event.PLAYLIST_COMPLETED, getPlayingAtIndexLabel(index));
                             switchNow(firstDefaultIndex, false);
                             return;
                         }
-
                     }
                     player.setMediaItems(programItems);
                     player.seekTo(program, position);
@@ -433,10 +433,6 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         return player != null && (!player.isPlaying() && nowPlayingIndex == index);
     }
 
-    private Seek seekCurrentSlot(Playlist playlist, List<MediaItem> programItems, int program, long position) {
-        return getImmediateNonCompletedSlot(position, program, playlist, programItems);
-    }
-
     // if playlist is resuming, no bumpers play; next plays next program, same plays the former un completed else exact time is resumed
     private boolean isResuming(Playlist playlist) {
         return playlist.getType().name().startsWith(Playlist.Type.LOCAL_RESUMING.name());
@@ -470,32 +466,34 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         return String.format("%02d:%02d:%02d", hours, mins, secs);
     }
 
-    private Seek getImmediateNonCompletedSlot(Long position, Integer program, Playlist playlist, List<MediaItem> mediaItems) {
-        long startTime = getStart(playlist).getTimeInMillis();
-        if (isResuming(playlist) || playlist.getType().equals(Playlist.Type.LOCAL_RANDOMIZED) || playlist.getType().equals(Playlist.Type.ONLINE)) {
-            return new Seek(program, position);
-        } else {
+    private Seek seekImmediateNonCompletedSlot(Playlist playlist, List<MediaItem> mediaItems) {
+        Calendar start = getStartTime(playlist);
+        if(start != null) {
+            Long startTime = start.getTimeInMillis();
+            long now = Calendar.getInstance().getTimeInMillis();
             for (int i = 0; i < mediaItems.size(); i++) {// mediaItems are well ordered
-                long now = Calendar.getInstance().getTimeInMillis();
                 long duration = getDuration(mediaItems.get(i).mediaId);
                 if (duration + startTime > now) {
                     // use the first item
                     return new Seek(i, now - startTime);
                 }
             }
-            // unseekable, slot is ended
-            return null;
         }
+        // unseekable, slot is ended
+        return null;
     }
 
-    private Calendar getStart(Playlist playlist) {
-        Integer hour = Integer.parseInt(playlist.getStart().split(":")[0]);
-        Integer min = Integer.parseInt(playlist.getStart().split(":")[1]);
-        Calendar start = Calendar.getInstance();
-        start.set(Calendar.HOUR_OF_DAY, hour);
-        start.set(Calendar.MINUTE, min);
-        start.set(Calendar.SECOND, 0);
-        return start;
+    private Calendar getStartTime(Playlist playlist) {
+        String start = playlist.getStart();
+        if(StringUtils.isNotBlank(start)) {
+            Calendar startTime = Calendar.getInstance();
+            Integer hour = Integer.parseInt(start.split(":")[0]);
+            Integer min = Integer.parseInt(start.split(":")[1]);
+            startTime.set(Calendar.HOUR_OF_DAY, hour);
+            startTime.set(Calendar.MINUTE, min);
+            startTime.set(Calendar.SECOND, 0);
+        }
+        return null;
     }
 
     private PlayerView getPlayerView() {

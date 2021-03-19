@@ -53,8 +53,8 @@ public class Maintenance {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void run() {
-        Logger.log(AuditLog.Event.HEARTBEAT, "ON");
         triggerMaintenance();
+        Logger.log(AuditLog.Event.HEARTBEAT, "ON");
         Monitor.instance.getHandler().postDelayed(new Runnable() {// maintainer
             public void run() {
                 triggerMaintenance();

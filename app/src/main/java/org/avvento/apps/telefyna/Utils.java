@@ -21,17 +21,20 @@ import androidx.annotation.RequiresApi;
 public class Utils {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public static boolean internetConnected() {
+    /**
+     * seconds
+     */
+    public static boolean internetConnected(int delay) {
         try {
             // credit to google for creating exoplayer here
             // TODO unfortunately google (http://www.google.com) is on in uganda for free without data. changed to http://example.com
             URLConnection conn = (new URL("http://example.com")).openConnection();
-            conn.setConnectTimeout(Monitor.instance.getConfiguration().getInternetWait() * 1000);
+            conn.setConnectTimeout(delay * 1000);
             conn.connect();
             conn.getInputStream().close();
             return true;
         } catch (IOException e) {
-            Logger.log(AuditLog.Event.ERROR, e.getMessage());
+            Logger.log(AuditLog.Event.NO_INTERNET, e.getMessage());
             return false;
         }
     }

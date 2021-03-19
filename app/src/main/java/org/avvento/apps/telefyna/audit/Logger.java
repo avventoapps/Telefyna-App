@@ -1,9 +1,12 @@
 package org.avvento.apps.telefyna.audit;
 
+import android.os.Build;
 import android.util.Log;
 
 import org.apache.commons.io.FileUtils;
 import org.avvento.apps.telefyna.Monitor;
+import org.avvento.apps.telefyna.Utils;
+import org.avvento.apps.telefyna.listen.mail.Mail;
 import org.avvento.apps.telefyna.listen.mail.SendEmail;
 import org.avvento.apps.telefyna.modal.Config;
 
@@ -14,6 +17,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import androidx.annotation.RequiresApi;
 
 public class Logger {
     private static SimpleDateFormat datetimeFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
@@ -37,10 +42,21 @@ public class Logger {
         } catch (IOException e) {
             Log.e("WRITING_AUDIT_ERROR", e.getMessage());
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            emailAudit(event, msg);
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private static void emailAudit(AuditLog.Event event, String msg) {
         // email notification
         Config config = Monitor.instance.getConfiguration();
         if(config != null && config.getAlerts() != null && (AuditLog.Event.Category.ADMIN.equals(event.getCategory()) || AuditLog.Event.Category.BROADCAST.equals(event.getCategory()))) {
-            new SendEmail().execute(new AuditAlert(config.getAlerts(), event, msg));
+            if(Utils.internetConnected(10)) {
+                new SendEmail().execute(new AuditAlert(config.getAlerts(), event, msg));
+            } else {
+                Logger.log(AuditLog.Event.NO_INTERNET, "Sending emails failed, no internet connection");
+            }
         }
     }
 

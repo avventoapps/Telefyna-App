@@ -278,8 +278,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
 
     private SimpleExoPlayer buildPlayer() {
         DefaultLoadControl.Builder builder = new DefaultLoadControl.Builder();
-        // TODO parhaps make this buffer the same as internetWait
-        builder.setBufferDurationsMs(DefaultLoadControl.DEFAULT_MIN_BUFFER_MS, 60000, DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_MS, DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS);
+        builder.setBufferDurationsMs(DefaultLoadControl.DEFAULT_MIN_BUFFER_MS, getConfiguration().getInternetWait() * 1000, DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_MS, DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS);
         SimpleExoPlayer player = new SimpleExoPlayer.Builder(instance).setLoadControl(builder.build()).build();
         return player;
     }

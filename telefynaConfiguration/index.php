@@ -27,8 +27,8 @@
 <body center-block ng-app="Telefyna" ng-controller="Config">
 	<div>
 		<div>
-			<h5>|Configuring|</h5>
-			<img alt="Telefyna Icon" class="logo" height="80" src="telefyna.png" width="95">
+			<h6>|Configuring|</h6>
+			<img alt="Telefyna Icon" class="logo" height="50" src="telefyna.png" width="55">
 			<br>
 			<label class="slogan">The best, simplest performing online stream & local file scheduling auto player for TV broadcasting</label>
 		</div>
@@ -41,6 +41,9 @@
 			</div>
 			<div class="section action">Version
 				<input class="form-control flex-wrap" ng-model="config.version" ng-change="modifying()" type="text">
+			</div>
+			<div class="section action">Internet Waiting time (seconds)
+				<input class="form-control flex-wrap" ng-model="config.internetWait" ng-change="modifying()" type="number">
 			</div>
 			<div class="form-check form-switch">
 				<label class="checkbox-inline"><input ng-model="config.automationDisabled" ng-change="modifying()" type="checkbox"> Disable Automation</label>

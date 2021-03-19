@@ -16,7 +16,7 @@ public class SendEmail extends AsyncTask<AuditAlert, Integer, String> {
     @Override
     protected String doInBackground(AuditAlert... auditAlerts) {
         if(Utils.internetConnected()) {
-            new GMail(auditAlerts[0]).sendEmail();
+            new Mail(auditAlerts[0]).sendEmail();
         } else {
             Logger.log(AuditLog.Event.NO_INTERNET, "Sending emails failed, no internet connection");
         }

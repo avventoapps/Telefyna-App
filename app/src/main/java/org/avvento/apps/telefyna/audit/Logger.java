@@ -6,7 +6,6 @@ import org.apache.commons.io.FileUtils;
 import org.avvento.apps.telefyna.Monitor;
 import org.avvento.apps.telefyna.listen.mail.SendEmail;
 import org.avvento.apps.telefyna.modal.Config;
-import org.avvento.apps.telefyna.modal.Email;
 
 import java.io.File;
 import java.io.IOException;

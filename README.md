@@ -55,7 +55,7 @@ ______
 * Ensure to have a playlist completing/ending each local one else the default one will automatically be played
 
 ## Support
-For any questions or queries, please email the support team at apps@avventohome.org
+For any questions or queries, please receivers the support team at apps@avventohome.org
 
 
 ## TODO

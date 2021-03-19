@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class Email {
+public class Receivers {
     // emails separated by #
     private String emails;
     private boolean attachConfig = false;

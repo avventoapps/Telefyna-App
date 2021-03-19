@@ -26,6 +26,8 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
     function clearAlerts() {
         $scope.config.alerts = {};
         $scope.config.alerts.emailer = {};
+        $scope.config.alerts.emailer.host = "smtp.gmail.com";
+        $scope.config.alerts.emailer.port = "587";
         $scope.config.alerts.subscribers = [];
     }
 
@@ -33,6 +35,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
         $scope.config = {};
         $scope.config.automationDisabled = false;
         $scope.config.notificationsDisabled = true;
+        $scope.config.internetWait = 60;
         clearAlerts();
         $scope.config.playlists = [];
     }
@@ -482,15 +485,16 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
         }
     }
 
-    $scope.addSubscriber = function() {
+    $scope.addMailerPassword = function() {
         var pass = jQuery("#pswd").val();
-        if($scope.isEmpty(pass)) {
-            alert("Please enter a password!");
+        if($scope.invalidMailer()) {
+            alert("Please enter all Sender's details including password!");
         } else {
+            $scope.modifying();
             // 1st
             var hash = Base64.encode("VGhhbmtzRm9yVXNpbmdUZWxlZnluYSwgV2UgbGF1Y2hlZCBUZWxlZnluYSBpbiAyMDIxIGJ5IEdvZCdzIGdyYWNl");
             pass = hash + Base64.encode(pass);
-            if(!$scope.isEmpty(pass) && !$scope.isEmpty($scope.config.alerts.emailer.email) && !$scope.isEmpty($scope.config.alerts.subscribers)) {
+            if(!$scope.isEmpty(pass) && !$scope.isEmpty($scope.config.alerts.emailer.email) && !$scope.isEmpty($scope.config.alerts.emailer.port) && !$scope.isEmpty($scope.config.alerts.emailer.host) && !$scope.isEmpty($scope.config.alerts.subscribers)) {
                 $scope.config.alerts.emailer.pass = pass;
                 window.localStorage.config = JSON.stringify($scope.config);
                 jQuery("#close-alert").click();
@@ -536,7 +540,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
     }
 
     $scope.invalidMailer = function() {
-        return !validEmail($scope.config.alerts.emailer.email);
+        return $scope.isEmpty(jQuery("#pswd").val()) || $scope.isEmpty($scope.config.alerts.emailer.port) || $scope.isEmpty($scope.config.alerts.emailer.host) || !validEmail($scope.config.alerts.emailer.email);
     }
 
     $scope.invalidSubScriber = function() {

@@ -10,4 +10,6 @@ import lombok.Setter;
 public class Emailer {
     private String email;
     private String pass;
+    private String host = "smtp.gmail.com";
+    private int port = 587;
 }

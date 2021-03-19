@@ -3,23 +3,17 @@ package org.avvento.apps.telefyna.listen.mail;
 import android.os.Build;
 
 import org.avvento.apps.telefyna.Monitor;
-import org.avvento.apps.telefyna.Telefyna;
 import org.avvento.apps.telefyna.Utils;
 import org.avvento.apps.telefyna.audit.AuditAlert;
 import org.avvento.apps.telefyna.audit.AuditLog;
 import org.avvento.apps.telefyna.audit.Logger;
-import org.avvento.apps.telefyna.modal.Alerts;
-import org.avvento.apps.telefyna.modal.Email;
+import org.avvento.apps.telefyna.modal.Receivers;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
-import java.util.List;
 import java.util.Properties;
 
 import javax.activation.DataHandler;
@@ -39,16 +33,16 @@ import javax.mail.internet.MimeMultipart;
 
 import androidx.annotation.RequiresApi;
 
-public class GMail {
+public class Mail {
     private final Properties emailProperties;
     private final AuditAlert auditAlert;
     private Session mailSession;
     private MimeMessage emailMessage;
 
-    public GMail(AuditAlert auditAlert) {
+    public Mail(AuditAlert auditAlert) {
         this.auditAlert = auditAlert;
         emailProperties = System.getProperties();
-        emailProperties.put("mail.smtp.port",  "587");
+        emailProperties.put("mail.smtp.port",  auditAlert.getAlerts().getEmailer().getPort());
         emailProperties.put("mail.smtp.auth", "true");
         emailProperties.put("mail.smtp.starttls.enable", "true");
     }
@@ -60,12 +54,12 @@ public class GMail {
         return new String(Base64.getDecoder().decode(pass.replace(hash, "")), StandardCharsets.UTF_8);
     }
 
-    private void createEmailMessage(Email email, Draft draft) throws MessagingException, UnsupportedEncodingException {
+    private void createEmailMessage(Receivers receivers, Draft draft) throws MessagingException, UnsupportedEncodingException {
         if(Utils.isValidEmail(draft.getFrom())) {
             mailSession = Session.getDefaultInstance(emailProperties, null);
             emailMessage = new MimeMessage(mailSession);
             emailMessage.setFrom(new InternetAddress(draft.getFrom(), draft.getFrom()));
-            Arrays.stream(email.getEmails().split("#")).forEach(emailAdd -> {
+            Arrays.stream(receivers.getEmails().split("#")).forEach(emailAdd -> {
                 if (Utils.isValidEmail(emailAdd.trim())) {
                     try {
                         draft.getBcc().add(new InternetAddress(emailAdd.trim()));
@@ -76,7 +70,7 @@ public class GMail {
             });
             emailMessage.addRecipients(Message.RecipientType.BCC, draft.getBcc().toArray(new InternetAddress[]{}));
             emailMessage.setSubject(draft.getSubject());
-            setEmailBody(email, draft);
+            setEmailBody(receivers, draft);
         }
     }
 
@@ -88,16 +82,16 @@ public class GMail {
         return bodyPart;
     }
 
-    public void setEmailBody(Email email, Draft draft) throws MessagingException {
-        if(!email.isAttachConfig() && email.getAttachAuditLog() == 0) {
+    public void setEmailBody(Receivers receivers, Draft draft) throws MessagingException {
+        if(!receivers.isAttachConfig() && receivers.getAttachAuditLog() == 0) {
             emailMessage.setContent(draft.getBody(), "text/html");// for a html email
         } else if(AuditLog.Event.MAINTENANCE.equals(auditAlert.getEvent())) {
             Multipart multipart = new MimeMultipart();
             String config = Monitor.instance.getConfigFile();
-            if (email.isAttachConfig() && new File(config).exists()) {
+            if (receivers.isAttachConfig() && new File(config).exists()) {
                 multipart.addBodyPart(attach(config, draft));
             }
-            for(String audit: Logger.getAuditsForNDays(email.getAttachAuditLog())) {
+            for(String audit: Logger.getAuditsForNDays(receivers.getAttachAuditLog())) {
                 if(new File(audit).exists()) {
                     multipart.addBodyPart(attach(audit, draft));
                 }
@@ -106,17 +100,16 @@ public class GMail {
         }
     }
 
-    private void mailNow(Email email, Draft draft) {
+    private void mailNow(Receivers receivers, Draft draft) {
         try {
-            createEmailMessage(email, draft);
+            createEmailMessage(receivers, draft);
             Transport transport = mailSession.getTransport("smtp");
-            String emailHost = "smtp.gmail.com";
-            transport.connect(emailHost, draft.getFrom(), draft.getPass());
+            transport.connect(auditAlert.getAlerts().getEmailer().getHost(), draft.getFrom(), draft.getPass());
             transport.sendMessage(emailMessage, emailMessage.getAllRecipients());
             transport.close();
-            Logger.log(AuditLog.Event.EMAIL, draft.getSubject(), email.getEmails(), "SUCCEEDED");
+            Logger.log(AuditLog.Event.EMAIL, draft.getSubject(), receivers.getEmails(), "SUCCEEDED");
         } catch (Exception e) {
-            Logger.log(AuditLog.Event.EMAIL, draft.getSubject(), email.getEmails().replaceAll("#", ", "), "FAILED with: " + e.getMessage());
+            Logger.log(AuditLog.Event.EMAIL, draft.getSubject(), receivers.getEmails().replaceAll("#", ", "), "FAILED with: " + e.getMessage());
         }
     }
 
@@ -128,14 +121,14 @@ public class GMail {
             draft.setPass(decodePass(auditAlert.getAlerts().getEmailer().getPass()));
             draft.setSubject(String.format("%s Telefyna %s Alert: %s", Logger.getToday(), auditAlert.getEvent().getCategory(), auditAlert.getEvent().name()));
 
-            for(Email email : auditAlert.getAlerts().getSubscribers()) {
+            for(Receivers receivers : auditAlert.getAlerts().getSubscribers()) {
                 if (AuditLog.Event.Category.ADMIN.equals((auditAlert.getEvent().getCategory()))) {
                     draft.setBody("Dear admin,<br><br> " + auditAlert.getMessage() + " <br><br><br>This is a Telefyna system notification, please don't respond to it.<br><br>TelefynaBot");
                     draft.setAllowsAttachments(true);
-                    mailNow(email, draft);
-                } else if (AuditLog.Event.Category.BROADCAST.equals(email.getEventCategory()) && AuditLog.Event.Category.BROADCAST.equals((auditAlert.getEvent().getCategory()))) {
+                    mailNow(receivers, draft);
+                } else if (AuditLog.Event.Category.BROADCAST.equals(receivers.getEventCategory()) && AuditLog.Event.Category.BROADCAST.equals((auditAlert.getEvent().getCategory()))) {
                     draft.setBody("Dear broadcaster,<br><br> " + auditAlert.getMessage() + " <br><br><br>This is a Telefyna system notification, please don't respond to it.<br><br>TelefynaBot");
-                    mailNow(email, draft);
+                    mailNow(receivers, draft);
                 }
             }
         }

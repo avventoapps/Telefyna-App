@@ -1,18 +1,24 @@
 <button class="btn btn-info" data-target="#alerts" data-toggle="modal" type="button">Email Alerts</button>
 <div class="modal fade action-content" id="alerts" role="dialog">
 	<div class="modal-dialog modal-dialog-centered" role="document">
-		<form class="modal-content" ng-submit="addSubscriber()">
+		<form class="modal-content" ng-submit="addMailerPassword()">
 			<div class="modal-header">
 			    <h5 class="modal-title">Email alerts</h5>
 			</div>
 			<div class="modal-body">
                 <div class="section action">
-                    Sender Gmail
+                    <b>Sender</b><br>
+                    Host
+                    <input class="form-control flex-wrap" required ng-model="config.alerts.emailer.host" type="text" ng-change="modifying()">
+                    Port
+                    <input class="form-control flex-wrap" required ng-model="config.alerts.emailer.port" type="number" ng-change="modifying()">
+                    Email Address
                     <input class="form-control flex-wrap" required ng-model="config.alerts.emailer.email" type="text" ng-change="modifying()">
-                    Sender Password
+                    Email Password
                     <input class="form-control flex-wrap" id="pswd" required type="password">
                 </div>
-                <div class="section action">Receivers
+                <div class="section action">
+                    <b>Receivers</b>
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -58,8 +64,8 @@
 			<div class="modal-footer">
 				<button class="btn btn-danger" id="close-alert" data-dismiss="modal"	ng-click="clear()" type="button">Cancel</button>
 				<button class="btn btn-danger" type="button" ng-disabled="isEmpty(config.alerts.subscribers)" ng-click="deleteReceivers()">Delete Selected Receivers</button>
-                <button class="btn btn-success"  type="button" ng-disabled="isEmpty(alert.emails) || isEmpty(alert.attachConfig) || isEmpty(alert.attachAuditLog) || isEmpty(alert.eventCategory) || invalidSubScriber()" ng-click="addAlert()">Add Alert</button>
-				<button class="btn btn-success" type="submit" ng-disabled="isEmpty(config.alerts.emailer.email) || isEmpty(config.alerts.emailer.pass) || isEmpty(config.alerts.subscribers)  || invalidMailer()" >Save Sender</button>
+                <button class="btn btn-success"  type="button" ng-disabled="isEmpty(alert.emails) || isEmpty(alert.attachConfig) || isEmpty(alert.attachAuditLog) || isEmpty(alert.eventCategory) || invalidSubScriber()" ng-click="addAlert()">Add Receiver</button>
+				<button class="btn btn-success" type="submit" ng-disabled="isEmpty(config.alerts.subscribers)" >Save Sender Password</button>
 			</div>
 		</form>
 	</div>

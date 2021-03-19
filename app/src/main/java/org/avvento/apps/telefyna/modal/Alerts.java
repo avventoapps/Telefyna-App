@@ -9,5 +9,5 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Alerts {
     private Emailer emailer;
-    private Email[] subscribers;
+    private Receivers[] subscribers;
 }

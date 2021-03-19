@@ -278,6 +278,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
 
     private SimpleExoPlayer buildPlayer() {
         DefaultLoadControl.Builder builder = new DefaultLoadControl.Builder();
+        // TODO parhaps make this buffer the same as internetWait
         builder.setBufferDurationsMs(DefaultLoadControl.DEFAULT_MIN_BUFFER_MS, 60000, DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_MS, DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS);
         SimpleExoPlayer player = new SimpleExoPlayer.Builder(instance).setLoadControl(builder.build()).build();
         return player;
@@ -307,7 +308,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         Playlist playlist = playlistByIndex.get(index);
 
         if (nowPlayingIndex == null || nowPlayingIndex != index || playTheSame(index)) {// leave current program to proceed if it's the same being loaded
-            if (!Utils.internetConnected() && secondDefaultIndex != index && Playlist.Type.ONLINE.equals(playlist.getType())) {
+            if (Playlist.Type.ONLINE.equals(playlist.getType()) && !Utils.internetConnected() && secondDefaultIndex != index) {
                 switchNow(secondDefaultIndex, false);
                 return;
             } else {
@@ -801,7 +802,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         if(keepOnair != null) {
             handler.removeCallbacks(keepOnair);
         }
-        long delay = 60000;// one minute of being off air will trigger the same program
+        long delay = getConfiguration().getInternetWait() * 1000;
         handler.postDelayed(keepOnair = () -> {
             handler.postDelayed(keepOnair, delay);
             if(offAir) {//been off air for the past delay

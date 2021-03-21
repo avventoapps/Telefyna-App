@@ -1,5 +1,5 @@
 <div class="alert alert-danger section action" ng-show="!isEmpty(error)" role="alert">{{error}}</div>
-<div class="section action">
+<div class="section action" ng-if="edit != 0 && edit != 1 && !isEmpty(config.playlists) && config.playlists.length != 1">
 	<label class="checkbox-inline">
 		<input ng-model="playlist.active" type="checkbox"> Active</label>
 </div>

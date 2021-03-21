@@ -25,12 +25,12 @@ public class AuditLog {
         PLAYLIST_MODIFIED("Playlist: %s is resetting resuming since it was modified %s seconds ago"),
         PLAYLIST_ITEM_CHANGE("Playing playlist: %s now playing program: %s"),
         PLAYLIST_COMPLETED(SPLITTER + "] Completed playing playlist: %s"),
-        DISPLAY_LOGO_OFF("Turning OFF Logo if available"),
+        DISPLAY_LOGO_OFF("Turning OFF Logo"),
         DISPLAY_LOGO_ON("Turning ON Logo at the %s"),
         DISPLAY_NEWS_ON("Displaying news/info ticker with messages: %s"),
-        DISPLAY_NEWS_OFF("Turning OFF news/info ticker if available"),
+        DISPLAY_NEWS_OFF("Turning OFF news/info ticker"),
         LOWER_THIRD_ON("Displaying %s lower third"),
-        LOWER_THIRD_OFF("Turning OFF lower third if available"),
+        LOWER_THIRD_OFF("Turning OFF lower third"),
 
         // system
         EMAIL("Sending email: %s to: %s %s"),

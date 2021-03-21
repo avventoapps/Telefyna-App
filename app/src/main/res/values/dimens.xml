@@ -3,8 +3,8 @@
     <dimen name="headerFontSize">40dp</dimen>
     <dimen name="largeBtnFontSize">30dp</dimen>
     <dimen name="tvLogPadding">20dp</dimen>
-    <dimen name="tvLogoHeight">60dp</dimen>
-    <dimen name="tvLogoWidth">60dp</dimen>
-    <dimen name="tvGraphicsPadding">8dp</dimen>
+    <dimen name="tvLogoHeight">70dp</dimen>
+    <dimen name="tvLogoWidth">70dp</dimen>
+    <dimen name="tvGraphicsPadding">10dp</dimen>
     <dimen name="tickerFontSize">14dp</dimen>
 </resources>

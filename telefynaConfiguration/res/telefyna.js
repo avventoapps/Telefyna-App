@@ -125,10 +125,11 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
         var name;
         var playlist = $scope.config.playlists[index];
         if(!$scope.isEmpty(playlist)) {
+            var icon = playlistActive(playlist) ? "✅" : "❎";
             if(!$scope.isNotScheduled(playlist)) {
                 playlist.name = $scope.config.playlists[playlist.schedule].name;
             }
-            name = playlist.name;
+            name = icon + " " + playlist.name;
             if(fullySpecified == true) {
                 name = name + " #" + (index + 1)
                     + (!$scope.isEmpty(playlist.start) ? " | @" + playlist.start : "")
@@ -185,11 +186,11 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
     }
 
     $scope.renderEdit = function() {
-        $scope.playlist = JSON.parse(JSON.stringify($scope.config.playlists[$scope.edit]));
+        $scope.playlist = JSON.parse(JSON.stringify($scope.config.playlists[parseInt($scope.edit)]));
         $scope.changeSelectedColor();
         if($scope.isEmpty($scope.playlist.graphics)) {
             clearGraphics();
-        } 
+        }
     }
 
     $scope.revise = function() {
@@ -197,15 +198,15 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
             if($scope.playlist.type == "ONLINE" && !isUrlValid($scope.playlist.urlOrFolder)) {
                 $scope.error = "Stream URL Or Local folder name should be set to right URL";
                 jQuery("#edit").scrollTop(0);
-                $scope.playlist.urlOrFolder = $scope.config.playlists[$scope.edit].urlOrFolder;
+                $scope.playlist.urlOrFolder = $scope.config.playlists[parseInt($scope.edit)].urlOrFolder;
             } else if($scope.playlist.type != "ONLINE" && isUrlValid($scope.playlist.urlOrFolder)) {
                 $scope.error = "Stream URL Or Local folder name should be set to folder name not URL";
                 jQuery("#edit").scrollTop(0);
-                $scope.playlist.urlOrFolder = $scope.config.playlists[$scope.edit].urlOrFolder;
+                $scope.playlist.urlOrFolder = $scope.config.playlists[parseInt($scope.edit)].urlOrFolder;
             } else {
                 if(!$scope.isEmpty($scope.edit)) {
                     $scope.modifying();
-                    $scope.config.playlists[$scope.edit] = $scope.playlist;
+                    overwritePlayList(parseInt($scope.edit), $scope.playlist)
                     window.localStorage.config = JSON.stringify($scope.config);
                     jQuery("#close-edit").click();
                     $scope.clear();
@@ -222,7 +223,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
 
     $scope.renderScheduling = function() {
         if(!$scope.isEmpty($scope.schedule)) {
-            $scope.playlist = JSON.parse(JSON.stringify(prepareSchedule($scope.config.playlists[$scope.schedule])));
+            $scope.playlist = JSON.parse(JSON.stringify(prepareSchedule($scope.config.playlists[parseInt($scope.schedule)])));
             if(!$scope.isEmpty($scope.playlist.days)) {
                 $scope.playlist.days = $scope.playlist.days.map(x=>""+x);
             }
@@ -232,6 +233,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
             if($scope.isEmpty($scope.playlist.graphics)) {
                 clearGraphics();
             }
+            $scope.playlist.active = playlistActive($scope.playlist);
         }
     }
 
@@ -240,6 +242,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
         playlist.schedule = parseInt(playlistWithSchedule.schedule);
         playlist.start = playlistWithSchedule.start;
         playlist.name = playlistWithSchedule.name;
+        playlist.active = playlistWithSchedule.active;
         if(!$scope.isEmpty(playlistWithSchedule.days)) {
             playlist.days = playlistWithSchedule.days.map(x=>+x);
         }
@@ -252,11 +255,11 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
         if(!$scope.isEmpty($scope.schedule)) {// schedule is set
             $scope.modifying();
             // todo add or revise
-            if($scope.isNotScheduled($scope.config.playlists[$scope.schedule])) {// new
+            if($scope.isNotScheduled($scope.config.playlists[parseInt($scope.schedule)])) {// new
                 $scope.playlist.schedule = $scope.schedule;
                 $scope.config.playlists.push($scope.playlist);
             } else {// edit
-                $scope.config.playlists[$scope.schedule] = $scope.playlist;
+                overwritePlayList(parseInt($scope.schedule), $scope.playlist)
             }
             window.localStorage.config = JSON.stringify($scope.config);
             jQuery("#close-schedule").click();
@@ -357,6 +360,19 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
         }
     }
 
+    function overwritePlayList(index, playlist) {
+        if(angular.toJson($scope.config.playlists[index]) != angular.toJson(playlist)) {
+            $scope.config.playlists[index] = playlist;
+        }            
+    }
+
+    function playlistActive(playlist) {
+        if(!$scope.isEmpty(playlist.schedule) && !$scope.config.playlists[playlist.schedule].active) {
+            return false;
+        }
+        return $scope.isEmpty(playlist.active) ? $scope.config.playlists[playlist.schedule].active : playlist.active;
+    }
+
     $scope.initPreviewData = function() {
         /**
          * do a time * days (slotting program/playlists)
@@ -369,7 +385,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
         previewDated = [];
         
         angular.forEach($scope.config.playlists, function(playlist, key) {
-            if(!$scope.isEmpty(playlist.start)) {// only preview playlists with start time
+            if(!$scope.isEmpty(playlist.start) && playlistActive(playlist)) {// only preview playlists with start time
                 var previewSlot = {};
                 previewSlot.id = key;
                 previewSlot.start = playlist.start;
@@ -405,7 +421,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
             var dailySlots = [];
             angular.forEach(slot.days, function(day, key) {
                 var slotPreview = {};
-                slotPreview.name = $scope.name(slot.id);
+                slotPreview.name = $scope.name(slot.id).substring(2);// remove icon
                 slotPreview.color = $scope.color(slot.id);
                 dailySlots[day] = slotPreview;
             });

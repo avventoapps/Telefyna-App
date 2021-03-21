@@ -19,7 +19,7 @@ import lombok.Setter;
 public class Playlist {
     private static String DATE_FORMAT = "dd-MM-yyyy";
 
-    private boolean active = true;
+    private Boolean active = true;
     // lastModified date: Date#toLocaleString
     private String lastModified;
     private String name;
@@ -56,9 +56,9 @@ public class Playlist {
     private Integer schedule;
 
     public boolean scheduledToday() {
-        if (!isActive() || StringUtils.isBlank(start)) {
+        if (active == null || !active || StringUtils.isBlank(start)) {
             return false;
-        } else if (ArrayUtils.isEmpty(days) && ArrayUtils.isEmpty(dates)) {
+        } else if (ArrayUtils.isEmpty(days)) {
             return true;
         }
         Calendar now = Calendar.getInstance();
@@ -75,11 +75,15 @@ public class Playlist {
         this.type = parent.type;
         this.name = parent.name;
         this.description = parent.description;
-        this.active = parent.active;
         this.urlOrFolder = parent.urlOrFolder;
         this.playingGeneralBumpers = parent.playingGeneralBumpers;
         this.specialBumperFolder = parent.specialBumperFolder;
         this.color = parent.color;
+        if(parent.active != null && !parent.active) {
+            this.active = false;
+        } else if(this.active == null) {
+            this.active = parent.active;
+        }
         return this;
     }
 

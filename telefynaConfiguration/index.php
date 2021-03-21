@@ -89,7 +89,7 @@
 								<div ng-if="edit == 1">This is your second and Fillers playlist, It's played when programs finish before the schedule/slot is ended and when internet breaks or is unavailable.</div>
 								<div class="section action">* Select Playlist to edit *
 									<select class="form-control" ng-change="renderEdit()" ng-model="edit" required>
-										<option ng-if="isNotScheduled(p)" ng-repeat="p in config.playlists" value="{{$index}}">{{name($index, true)}}</option>
+										<option ng-repeat="(k, p) in config.playlists track by k" ng-if="isNotScheduled(p)" value="{{k}}">{{name(k, true)}}</option>
 									</select>
 								</div>
 								<?php include 'playlist.php';?>
@@ -116,8 +116,12 @@
 							<div class="modal-body">
 								<div class="section action">* Select Playlist/Schedule *
 									<select class="form-control" ng-model="schedule" required ng-change="renderScheduling()">
-										<option ng-repeat="p in config.playlists" value="{{$index}}">{{name($index, true)}}</option>
+										<option ng-repeat="(k, p) in config.playlists track by k" value="{{k}}">{{name(k, true)}}</option>
 									</select>
+								</div>
+								<div class="section action">
+									<label class="checkbox-inline">
+										<input ng-model="playlist.active" type="checkbox"> Active</label>
 								</div>
 								<div class="section action">Weekly Day(s)
 									<select class="form-control multiselect-ui" multiple ng-model="playlist.days">
@@ -169,7 +173,7 @@
 							<div class="modal-body">
 								<div class="section action">Select Playlists(s) | Schedule(s)
 									<select class="form-control multiselect-ui" id="playlists-delete" multiple ng-model="deletable">
-										<option ng-repeat="p in config.playlists" value="{{$index}}">{{name($index, true)}}</option>
+										<option ng-repeat="(k, p) in config.playlists track by k" value="{{k}}">{{name(k, true)}}</option>
 									</select>
 								</div>
 							</div>
@@ -267,6 +271,7 @@
 								</div>
 							</div>
 							<div class="modal-footer no-print">
+								<label>This preview only includes active schedules</label>
 								<button class="btn btn-success" onclick="jQuery('.preview-print').print({globalStyles: true, stylesheet: 'res/telefyna.css'})" type="button">Print</button>
 								<button class="btn btn-danger" data-dismiss="modal" id="close-preview" type="button">Close</button>
 							</div>

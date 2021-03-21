@@ -3,6 +3,7 @@ c# Telefyna Configuration
 This project contains a client side application for managing Telefyna's configurations which includes programming/scheduling
 
 ## TODO
+- [ ] put active check on scheduling for overriding, ensure inactive is out of preview
 - [ ] support php receivers on exporting config
 - [ ] create a qa testing framework to ensure the ui generator works well
 - [ ] add current/previous/next program tracking on the schedule preview | Not necessary

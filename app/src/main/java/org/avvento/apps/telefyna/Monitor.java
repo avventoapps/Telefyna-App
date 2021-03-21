@@ -386,7 +386,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                         }
                     }
                     // playing current local slot, TODO support more than one program
-                    if (isCurrentSlot) {
+                    if (isCurrentSlot && !Playlist.Type.ONLINE.equals(playlist.getType())) {
                         Seek seek = seekImmediateNonCompletedSlot(playlist, programItems);
                         if (seek != null) {
                             program = seek.getProgram();
@@ -492,6 +492,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
             startTime.set(Calendar.HOUR_OF_DAY, hour);
             startTime.set(Calendar.MINUTE, min);
             startTime.set(Calendar.SECOND, 0);
+            return startTime;
         }
         return null;
     }
@@ -642,16 +643,18 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        Logger.log(AuditLog.Event.KEY_PRESS, KeyEvent.keyCodeToString(keyCode) + "#" + keyCode);
-        return super.onKeyDown(keyCode, event);
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getAction() == 0) {
+            Logger.log(AuditLog.Event.KEY_PRESS, KeyEvent.keyCodeToString(event.getKeyCode()) + "#" + event.getKeyCode());
+        }
+        return super.onKeyDown(event.getKeyCode(), event);
     }
 
     private void triggerGraphics(long position) {
+        Playlist currentPlayList = playlistByIndex.get(nowPlayingIndex);
         hideLogo();
         hideTicker();
         hideLowerThird();
-        Playlist currentPlayList = playlistByIndex.get(nowPlayingIndex);
         Graphics graphics = currentPlayList.getGraphics();
         if(graphics != null) {
             // handle logo
@@ -695,7 +698,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     }
 
     private void hideLowerThird() {
-        if(lowerThirdView != null) {
+        if(lowerThirdView != null && View.GONE != lowerThirdView.getVisibility()) {
             //TODO lowerThirdView.animate().translationX(lowerThirdView.getWidth()); etc should be in the clip
             lowerThirdView.setVisibility(View.GONE);
             Logger.log(AuditLog.Event.LOWER_THIRD_OFF);
@@ -703,7 +706,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     }
 
     private void hideTicker() {
-        if(tickerView != null) {
+        if(tickerView != null && View.GONE != tickerView.getVisibility()) {
             tickerView.setVisibility(View.GONE);
             tickerView.removeChildViews();
             tickerView.destroyAllScheduledTasks();
@@ -712,15 +715,13 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     }
 
     private void hideLogo() {
-        findViewById(R.id.topLogo).setVisibility(View.GONE);
-        findViewById(R.id.bottomLogo).setVisibility(View.GONE);
-        Logger.log(AuditLog.Event.DISPLAY_LOGO_OFF);
-    }
+        View topLogo = findViewById(R.id.topLogo);
+        View bottomLogo = findViewById(R.id.bottomLogo);
 
-    private void playCurrentLowerThird() {
-        if(lowerThirdView != null) {
-            lowerThirdView.setVisibility(View.VISIBLE);
-            lowerThirdView.start();
+        if(View.GONE != topLogo.getVisibility() || View.GONE != bottomLogo.getVisibility()) {
+            topLogo.setVisibility(View.GONE);
+            bottomLogo.setVisibility(View.GONE);
+            Logger.log(AuditLog.Event.DISPLAY_LOGO_OFF);
         }
     }
 

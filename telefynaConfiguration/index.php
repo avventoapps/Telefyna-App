@@ -89,7 +89,7 @@
 								<div ng-if="edit == 1">This is your second and Fillers playlist, It's played when programs finish before the schedule/slot is ended and when internet breaks or is unavailable.</div>
 								<div class="section action">* Select Playlist to edit *
 									<select class="form-control" ng-change="renderEdit()" ng-model="edit" required>
-										<option ng-repeat="(k, p) in config.playlists track by k" ng-if="isNotScheduled(p)" value="{{k}}">{{name(k, true)}}</option>
+										<option ng-repeat="(k, p) in config.playlists track by k" ng-if="isNotScheduled(p)" value="{{k}}">{{getPlaylistName(k, true)}}</option>
 									</select>
 								</div>
 								<?php include 'playlist.php';?>
@@ -116,7 +116,7 @@
 							<div class="modal-body">
 								<div class="section action">* Select Playlist/Schedule *
 									<select class="form-control" ng-model="schedule" required ng-change="renderScheduling()">
-										<option ng-repeat="(k, p) in config.playlists track by k" value="{{k}}">{{name(k, true)}}</option>
+										<option ng-repeat="(k, p) in config.playlists track by k" value="{{k}}">{{getPlaylistName(k, true)}}</option>
 									</select>
 								</div>
 								<div class="section action">
@@ -173,7 +173,7 @@
 							<div class="modal-body">
 								<div class="section action">Select Playlists(s) | Schedule(s)
 									<select class="form-control multiselect-ui" id="playlists-delete" multiple ng-model="deletable">
-										<option ng-repeat="(k, p) in config.playlists track by k" value="{{k}}">{{name(k, true)}}</option>
+										<option ng-repeat="(k, p) in config.playlists track by k" value="{{k}}">{{getPlaylistName(k, true)}}</option>
 									</select>
 								</div>
 							</div>

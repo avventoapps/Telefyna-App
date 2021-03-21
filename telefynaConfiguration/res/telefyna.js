@@ -121,7 +121,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
         return color;    
     }
 
-    $scope.name = function(index, fullySpecified) {
+    $scope.getPlaylistName = function(index, fullySpecified) {
         var name;
         var playlist = $scope.config.playlists[index];
         if(!$scope.isEmpty(playlist)) {
@@ -129,7 +129,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
             if(!$scope.isNotScheduled(playlist)) {
                 playlist.name = $scope.config.playlists[playlist.schedule].name;
             }
-            name = icon + " " + playlist.name;
+            name = (fullySpecified == true ? icon + " " : "") + playlist.name;
             if(fullySpecified == true) {
                 name = name + " #" + (index + 1)
                     + (!$scope.isEmpty(playlist.start) ? " | @" + playlist.start : "")
@@ -421,7 +421,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
             var dailySlots = [];
             angular.forEach(slot.days, function(day, key) {
                 var slotPreview = {};
-                slotPreview.name = $scope.name(slot.id).substring(2);// remove icon
+                slotPreview.name = $scope.getPlaylistName(slot.id);
                 slotPreview.color = $scope.color(slot.id);
                 dailySlots[day] = slotPreview;
             });
@@ -442,7 +442,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
             angular.forEach(slot.dates, function(date, key) {
                 var slotPreview = {};
                 slotPreview.color = $scope.color(slot.id);
-                slotPreview.name = $scope.name(slot.id);
+                slotPreview.name = $scope.getPlaylistName(slot.id);
                 slotPreview.at = date + " " + slot.start;
                 previewDated.push(slotPreview);
             });
@@ -477,7 +477,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
 
     $scope.printSlot = function(slot, day) {
         if(slot.days.includes(day)) {
-            return $scope.name(slot.id);
+            return $scope.getPlaylistName(slot.id);
         }
     }
 

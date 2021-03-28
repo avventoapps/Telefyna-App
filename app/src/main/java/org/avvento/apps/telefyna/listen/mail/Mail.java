@@ -48,10 +48,16 @@ public class Mail {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
+    private String decode(String str) {
+        return new String(Base64.getDecoder().decode(str), StandardCharsets.UTF_8);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private String decodePass(String pass) {
-        // 3rd "ThanksForUsingTelefyna, We lauched Telefyna in 2021 by God's grace"
-        String hash = new String(Base64.getDecoder().decode("Vmtkb2FHSnRkSHBTYlRsNVZsaE9jR0p0WkZWYVYzaHNXbTVzZFZsVGQyZFdNbFZuWWtkR01Wa3lhR3hhUTBKVldsZDRiRnB1YkhWWlUwSndZbWxCZVUxRVNYaEpSMG8xU1VWa2RscERaSHBKUjJSNVdWZE9iQT09"), StandardCharsets.UTF_8);
-        return new String(Base64.getDecoder().decode(pass.replace(hash, "")), StandardCharsets.UTF_8);
+        pass = pass.substring(0, pass.length() - 1);//drop random final number
+        // 4th "ThanksForUsingTelefyna, We lauched Telefyna in 2021 by God's grace"
+        String hash =  Base64.getEncoder().encodeToString("VkdoaGJtdHpSbTl5VlhOcGJtZFVaV3hsWm5sdVlTd2dWMlVnYkdGMVkyaGxaQ0JVWld4bFpubHVZU0JwYmlBeU1ESXhJR0o1SUVkdlpDZHpJR2R5WVdObA==".getBytes());
+        return decode(decode(decode(decode(decode(pass.replace(hash, ""))))));
     }
 
     private void createEmailMessage(Receivers receivers, Draft draft) throws MessagingException, UnsupportedEncodingException {
@@ -104,7 +110,7 @@ public class Mail {
         try {
             createEmailMessage(receivers, draft);
             Transport transport = mailSession.getTransport("smtp");
-            transport.connect(auditAlert.getAlerts().getEmailer().getHost(), draft.getFrom(), draft.getPass());
+            transport.connect(auditAlert.getAlerts().getEmailer().getHost(), draft.getFrom(), decodePass(draft.getPass()));
             transport.sendMessage(emailMessage, emailMessage.getAllRecipients());
             transport.close();
             Logger.log(AuditLog.Event.EMAIL, draft.getSubject(), receivers.getEmails(), "SUCCEEDED");
@@ -118,7 +124,7 @@ public class Mail {
         if(auditAlert != null && auditAlert.getEvent() != null && auditAlert.getAlerts() != null && auditAlert.getAlerts().getEmailer() != null) {
             Draft draft = new Draft();
             draft.setFrom(auditAlert.getAlerts().getEmailer().getEmail());
-            draft.setPass(decodePass(auditAlert.getAlerts().getEmailer().getPass()));
+            draft.setPass(auditAlert.getAlerts().getEmailer().getPass());
             draft.setSubject(String.format("%s %s %s Alert: %s", Logger.getToday(), Monitor.instance.getConfiguration().getName(), auditAlert.getEvent().getCategory(), auditAlert.getEvent().name()));
 
             for(Receivers receivers : auditAlert.getAlerts().getSubscribers()) {

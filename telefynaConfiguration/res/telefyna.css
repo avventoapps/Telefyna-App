@@ -81,6 +81,14 @@ label {
     font-size: 14px;
 }
 
+.modal-footer {
+    display: revert;
+}
+
+.btn {
+    margin-bottom: 2px;
+}
+
 #footer {
     position: fixed;
     width: 100%;

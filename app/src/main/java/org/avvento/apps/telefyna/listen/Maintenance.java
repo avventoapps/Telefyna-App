@@ -7,8 +7,10 @@ import android.os.Build;
 import android.webkit.MimeTypeMap;
 
 import com.google.android.exoplayer2.MediaItem;
+import com.google.android.exoplayer2.util.Log;
 import com.google.android.exoplayer2.util.MimeTypes;
 
+import org.avvento.apps.telefyna.Metrics;
 import org.avvento.apps.telefyna.Monitor;
 import org.avvento.apps.telefyna.Utils;
 import org.avvento.apps.telefyna.audit.AuditLog;
@@ -46,6 +48,7 @@ public class Maintenance {
         } else {
             startedSlotsToday = new HashMap<>();
             pendingIntents = new HashMap<>();
+            Logger.log(AuditLog.Event.METRICS, Metrics.retrieve());
             Logger.log(AuditLog.Event.MAINTENANCE);
             schedule();
         }

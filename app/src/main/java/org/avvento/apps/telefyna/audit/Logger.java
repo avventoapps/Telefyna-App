@@ -38,7 +38,7 @@ public class Logger {
         String path = Monitor.instance.getAuditLogsFilePath(getToday());
         String msg = String.format("%s %s: \n\t%s", getNow(), event.name(), message);
         try {
-            FileUtils.writeStringToFile(new File(path), msg, StandardCharsets.UTF_8, true);
+            FileUtils.writeStringToFile(new File(path), msg.replaceAll("<br>", ","), StandardCharsets.UTF_8, true);
         } catch (IOException e) {
             Log.e("WRITING_AUDIT_ERROR", e.getMessage());
         }

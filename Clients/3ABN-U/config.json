@@ -1,14 +1,14 @@
 {
   "name": "3ABN-TV Uganda",
   "version": "1.0",
-  "lastModified": "19/03/2021, 10:50:00",
+  "lastModified": "28/03/2021, 17:04:58",
   "automationDisabled": false,
   "notificationsDisabled": true,
   "internetWait": 60,
   "alerts": {
     "emailer": {
       "email": "telefyna@gmail.com",
-      "pass": "VkdoaGJtdHpSbTl5VlhOcGJtZFVaV3hsWm5sdVlTd2dWMlVnYkdGMVkyaGxaQ0JVWld4bFpubHVZU0JwYmlBeU1ESXhJR0o1SUVkdlpDZHpJR2R5WVdObA==VGVsZWZ5bmExMjM=",
+      "pass": "Vm0xMGExWXlUWGhqUm1oWVlXeGFjRmxzVmxkT1JsSllZMFUxVVZWVU1Eaz0=Vmtkb2FHSnRkSHBTYlRsNVZsaE9jR0p0WkZWYVYzaHNXbTVzZFZsVGQyZFdNbFZuWWtkR01Wa3lhR3hhUTBKVldsZDRiRnB1YkhWWlUwSndZbWxCZVUxRVNYaEpSMG8xU1VWa2RscERaSHBKUjJSNVdWZE9iQT091",
       "host": "smtp.gmail.com",
       "port": 587
     },
@@ -49,7 +49,15 @@
       "type": "ONLINE",
       "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652042/secure/master.m3u8",
       "active": true,
-      "color": "#6666ff"
+      "color": "#6666ff",
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      }
     },
     {
       "name": "Proclaim",

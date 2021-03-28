@@ -17,7 +17,7 @@
                     Email Password
                     <input class="form-control flex-wrap" id="pswd" required type="password">
                 </div>
-                <div class="section action">
+                <div class="section action table-responsive">
                     <b>Receivers</b>
                     <table class="table table-striped">
                         <thead>

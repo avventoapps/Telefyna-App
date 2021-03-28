@@ -16,7 +16,7 @@
 			<input ng-model="playlist.graphics.news.replays" type="number">
 		</div>
 	</div>
-	<div class="section action">Lower thirds
+	<div class="section action table-responsive">Lower thirds
 		<table class="table table-striped">
 			<thead>
 				<tr>

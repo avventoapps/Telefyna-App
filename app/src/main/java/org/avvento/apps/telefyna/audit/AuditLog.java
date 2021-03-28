@@ -13,6 +13,7 @@ public class AuditLog {
         KEY_PRESS("%s has been pressed"),
         CONFIGURATION("Initialized configurations"),
         MAINTENANCE("Ran maintenance"),
+        METRICS("%s"),
         ERROR("%s"),
         CACHE_NOW_PLAYING_RESUME("Playlist: %s will next be resuming program: %s at: %d"),
         RETRIEVE_NOW_PLAYING_RESUME("Resuming Playlist: %s program: %s at: %d"),
@@ -47,7 +48,7 @@ public class AuditLog {
         }
 
         public Category getCategory() {
-            Event[] admins = new Event[]{HEARTBEAT, KEY_PRESS, CONFIGURATION, MAINTENANCE, ERROR, CACHE_NOW_PLAYING_RESUME, RETRIEVE_NOW_PLAYING_RESUME, STUCK};
+            Event[] admins = new Event[]{HEARTBEAT, KEY_PRESS, CONFIGURATION, MAINTENANCE, METRICS, ERROR, CACHE_NOW_PLAYING_RESUME, RETRIEVE_NOW_PLAYING_RESUME, STUCK};
             Event[] schedulers = new Event[]{PLAYLIST, PLAYLIST_PLAY, PLAYLIST_EMPTY_PLAY, PLAYLIST_MODIFIED, PLAYLIST_ITEM_CHANGE, PLAYLIST_COMPLETED, DISPLAY_LOGO_OFF, DISPLAY_LOGO_ON, DISPLAY_NEWS_ON, DISPLAY_NEWS_OFF, LOWER_THIRD_ON, LOWER_THIRD_OFF};
 
             if(Arrays.asList(admins).contains(this)) {

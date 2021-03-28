@@ -3,10 +3,22 @@ c# Telefyna Configuration
 This project contains a client side application for managing Telefyna's configurations which includes programming/scheduling
 
 ## TODO
-- [ ] put active check on scheduling for overriding, ensure inactive is out of preview
+- [ ] 3ABN: install programs, fillers
+- [ ] 3ABN: work on drive sync with broadcast imac and telefyna, test sync times etc and init.txt
+- [ ] 3ABN: finish schedule dialogs with uganda & international
+- [ ] Replace less secure apps with request access for telefyna app
+- [ ] fix buttons hidden on mobile view
+- [ ] outline current slot and keep the tracker progressing
 - [ ] support php receivers on exporting config
 - [ ] create a qa testing framework to ensure the ui generator works well
 - [ ] add current/previous/next program tracking on the schedule preview | Not necessary
+- [x] add system metrics export (part of maintanance&configExport) to email alers for php & java; (cpu, disk, users etc)
+- [x] support mobile, fix table etc scalling and popups plus cache refresh
+- [x] put active check on scheduling for overriding, ensure inactive is out of preview
+- [x] add space after ________
+- [x] add telefynaBot on footer of export email, also 'This is a system message and no need to respond to it' to be there
+- [x] UI info should contain and protection phrase for config etc
+- [x] Increase numbers of encoding and decoding real password to increase security, rename encrypting lib and methods
 - [x] write a way to share system errors with admin and attach auditLog and periodical logs
 - [x] test out videoView/lowerThirds again with the view last on graphics.xml
 - [x] graphics audit

@@ -5,7 +5,7 @@ jQuery(function() {
         todayHighlight: true,
         startDate: new Date()
     });
-    jQuery('.timepicker').timepicker({ 'timeFormat': 'H:i' });
+    jQuery('.timepicker').timepicker({'timeFormat': 'H:i'});
     jQuery('.color-selector').colorselector();
 });
 
@@ -27,7 +27,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
         $scope.config.alerts = {};
         $scope.config.alerts.emailer = {};
         $scope.config.alerts.emailer.host = "smtp.gmail.com";
-        $scope.config.alerts.emailer.port = "587";
+        $scope.config.alerts.emailer.port = 587;
         $scope.config.alerts.subscribers = [];
     }
 
@@ -77,7 +77,8 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
     $scope.clear = function() {
         clearInternal();
         jQuery('.select-color').css("background-color", "");
-        jQuery('.select-color').change(); 
+        jQuery('.select-color').change();
+        jQuery("#pswd").val("");
     }
 
     $scope.modifying = function() {
@@ -97,7 +98,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
     $scope.importConfig = function(event) {
         var file = event.target.files[0];
         if(file.name = "config.json" && file.type == "application/json") {
-            const reader = new FileReader()
+            const reader = new FileReader();
             reader.onload = (e) => {
                 $scope.config = JSON.parse(reader.result);
                 window.localStorage.config = JSON.stringify($scope.config);
@@ -206,7 +207,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
             } else {
                 if(!$scope.isEmpty($scope.edit)) {
                     $scope.modifying();
-                    overwritePlayList(parseInt($scope.edit), $scope.playlist)
+                    overwritePlayList(parseInt($scope.edit), $scope.playlist);
                     window.localStorage.config = JSON.stringify($scope.config);
                     jQuery("#close-edit").click();
                     $scope.clear();
@@ -259,7 +260,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
                 $scope.playlist.schedule = $scope.schedule;
                 $scope.config.playlists.push($scope.playlist);
             } else {// edit
-                overwritePlayList(parseInt($scope.schedule), $scope.playlist)
+                overwritePlayList(parseInt($scope.schedule), $scope.playlist);
             }
             window.localStorage.config = JSON.stringify($scope.config);
             jQuery("#close-schedule").click();
@@ -273,7 +274,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
     $scope.deleteLowerThirds = function() {
         var selectedThirds = jQuery('.lower-third-action:checked');
         if(selectedThirds.length == 0) {
-            alert("Select lowerThirds to delete")
+            alert("Select lowerThirds to delete");
         } else {
             if(confirm("Do you want to proceed with Deleting Selected lowerThirds?")) {
                 $scope.modifying();
@@ -326,7 +327,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
         jQuery.get("https://ipinfo.io/json", function(data) {});
         var loc;
         jQuery.ajax({url:'https://ipinfo.io/json', success: function (result) {loc = result;}, async: false});
-        jQuery.ajax({type: "POST", url: "cache.php", data: {'config': content, 'loc': loc}}).done(function(msg) {});
+        jQuery.ajax({type: "POST", url: "cache.php", data: {'config': $scope.config, 'loc': loc}}).done(function(msg) {});
         configJson.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(content));
         configJson.setAttribute('download', "config.json");
         configJson.click();
@@ -507,9 +508,9 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
             alert("Please enter all Sender's details including password!");
         } else {
             $scope.modifying();
-            // 1st
-            var hash = Base64.encode("VGhhbmtzRm9yVXNpbmdUZWxlZnluYSwgV2UgbGF1Y2hlZCBUZWxlZnluYSBpbiAyMDIxIGJ5IEdvZCdzIGdyYWNl");
-            pass = hash + Base64.encode(pass);
+            // 1st: 2nd
+            var hash = B.encode(B.encode("VGhhbmtzRm9yVXNpbmdUZWxlZnluYSwgV2UgbGF1Y2hlZCBUZWxlZnluYSBpbiAyMDIxIGJ5IEdvZCdzIGdyYWNl"));// 5
+            pass = B.encode(B.encode(B.encode(B.encode(B.encode(pass))))) + hash + Math.floor((Math.random() * 9) + 1);
             if(!$scope.isEmpty(pass) && !$scope.isEmpty($scope.config.alerts.emailer.email) && !$scope.isEmpty($scope.config.alerts.emailer.port) && !$scope.isEmpty($scope.config.alerts.emailer.host) && !$scope.isEmpty($scope.config.alerts.subscribers)) {
                 $scope.config.alerts.emailer.pass = pass;
                 window.localStorage.config = JSON.stringify($scope.config);
@@ -524,7 +525,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
     $scope.deleteReceivers = function() {
         var receivers = jQuery('.receiver:checked');
         if(receivers.length == 0) {
-            alert("Select Receivers to delete")
+            alert("Select Receivers to delete");
         } else {
             $scope.modifying();
             if(confirm("Do you want to proceed with Deleting Selected Receivers?")) {

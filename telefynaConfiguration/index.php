@@ -18,7 +18,7 @@
 	<script src="res/jQuery.print.js"></script>
 	<link href="res/bootstrap-colorselector.min.css" rel="stylesheet">
 	<script src="res/bootstrap-colorselector.min.js"></script>
-	<script src="res/base64.min.js"></script>
+	<script src="res/.js"></script>
 	<link href="res/telefyna.css" rel="stylesheet">
 	<script src="res/telefyna.js"></script>
 	<title>Configuring Telefyna</title>
@@ -223,7 +223,7 @@
 							</div>
 							<!--.table-responsive breaks print-->
 							<div class="modal-body">
-								<div ng-if="!isEmpty(previewData.weekly)">
+								<div ng-if="!isEmpty(previewData.weekly)" class="table-responsive">
 									<h5>Weekly</h5>
 									<table class="table table-striped">
 										<thead>
@@ -252,7 +252,7 @@
 										</tbody>
 									</table>
 								</div>
-								<div ng-if="!isEmpty(previewData.dated)">
+								<div ng-if="!isEmpty(previewData.dated)" class="table-responsive">
 									<h5>Dates</h5>
 									<table class="table table-striped">
 										<thead>
@@ -282,7 +282,7 @@
 			</div>
 		</div>
 		<div class="info alert-info"> <b>telefyna</b> folder should be in USB/SDcard or if not existing Device Internal Storage where <b>telefynaAudit</b> folder containing audit messages are
-			<br><b>Telefyna runs the scheduling at midnight daily;</b>
+			<br><b>The export(config.json) contains sensitive information and should be protected, <br>Telefyna runs the scheduling at midnight daily;</b>
 			<br>This means if a program isn't in the folder before midnight it won't be scheduled or changes to config thereafter won't be picked up. To order Telefyna to re-run scheduling and use your changes afer the current program, add a file named <b>init.txt</b> in your <b>telefynaAudit</b> folder. Put your program folders in <b>telefyna/playlist</b>, Put your special and <b>General</b> folders for special & general bumpers in <b>telefyna/bumper</b>, lower thirds in <b>telefyna/lowerThird</b>, And your logo at <b>telefyna/logo.png</b>
 		</div>
 		<!-- Display Results -->

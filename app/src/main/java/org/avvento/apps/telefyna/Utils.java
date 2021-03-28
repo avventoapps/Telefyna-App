@@ -15,6 +15,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.RequiresApi;
 
@@ -67,4 +68,12 @@ public class Utils {
         String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
         return email.matches(regex);
     }
+
+    public static String formatDuration(long millis) {
+        long hours = TimeUnit.MILLISECONDS.toHours(millis);
+        long mins = TimeUnit.MILLISECONDS.toMinutes(millis - TimeUnit.HOURS.toMillis(hours));
+        long secs = TimeUnit.MILLISECONDS.toSeconds(millis - TimeUnit.MINUTES.toMillis(mins));
+        return String.format("%02d:%02d:%02d", hours, mins, secs);
+    }
+
 }

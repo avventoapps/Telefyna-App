@@ -1,9 +1,32 @@
 {
   "name": "3ABN-TV Uganda",
   "version": "1.0",
-  "lastModified": "12/03/2021, 22:49:54",
+  "lastModified": "28/03/2021, 12:02:39",
   "automationDisabled": false,
   "notificationsDisabled": true,
+  "internetWait": 60,
+  "alerts": {
+    "emailer": {
+      "email": "telefyna@gmail.com",
+      "pass": "Vmtkb2FHSnRkSHBTYlRsNVZsaE9jR0p0WkZWYVYzaHNXbTVzZFZsVGQyZFdNbFZuWWtkR01Wa3lhR3hhUTBKVldsZDRiRnB1YkhWWlUwSndZbWxCZVUxRVNYaEpSMG8xU1VWa2RscERaSHBKUjJSNVdWZE9iQT09Vm0xMGExWXlUWGhqUm1oWVlXeGFjRmxzVmxkT1JsSllZMFUxVVZWVU1Eaz0=",
+      "host": "smtp.gmail.com",
+      "port": 587
+    },
+    "subscribers": [
+      {
+        "attachConfig": false,
+        "attachAuditLog": 0,
+        "eventCategory": "BROADCAST",
+        "emails": "apps@avventohome.org"
+      },
+      {
+        "attachConfig": true,
+        "attachAuditLog": 2,
+        "eventCategory": "ADMIN",
+        "emails": "apps@avventohome.org"
+      }
+    ]
+  },
   "playlists": [
     {
       "name": "International",
@@ -19,30 +42,22 @@
       "type": "LOCAL_RANDOMIZED",
       "urlOrFolder": "Fillers",
       "active": true,
-      "playingGeneralBumpers": true,
-      "graphics": {
-        "displayLogo": true,
-        "logoPosition": "TOP",
-        "news": {
-          "messages": "Welcome to Telefyna TV #This TV station is powered by Telefyna",
-          "starts": "2.3#6.5",
-          "replays": 1
-        },
-        "lowerThirds": [
-          {
-            "file": "3abn_Clideo.mp4",
-            "starts": "0#5",
-            "replays": 1
-          }
-        ]
-      }
+      "playingGeneralBumpers": true
     },
     {
       "name": "Network",
       "type": "ONLINE",
       "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652042/secure/master.m3u8",
       "active": true,
-      "color": "#6666ff"
+      "color": "#6666ff",
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      }
     },
     {
       "name": "Proclaim",
@@ -838,23 +853,7 @@
         7
       ],
       "name": "Bwatyo Bwayogera Mukama",
-      "color": "#66ff33",
-      "graphics": {
-        "displayLogo": true,
-        "logoPosition": "TOP",
-        "news": {
-          "messages": "Welcome to Telefyna TV #This TV station is powered by Telefyna",
-          "starts": "2.3#6.5",
-          "replays": 1
-        },
-        "lowerThirds": [
-          {
-            "file": "3abn_Clideo.mp4",
-            "starts": "0#5",
-            "replays": 1
-          }
-        ]
-      }
+      "color": "#66ff33"
     },
     {
       "schedule": 12,

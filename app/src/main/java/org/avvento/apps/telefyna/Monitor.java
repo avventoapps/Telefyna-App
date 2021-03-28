@@ -227,19 +227,19 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     }
 
     public String getBumperDirectory() {
-        return programsFolder.getAbsolutePath() + File.separator + "bumper";
+        return getProgramsFolderPath() + File.separator + "bumper";
     }
 
     public String getLowerThirdDirectory() {
-        return programsFolder.getAbsolutePath() + File.separator + "lowerThird";
+        return getProgramsFolderPath() + File.separator + "lowerThird";
     }
 
     public String getPlaylistDirectory() {
-        return programsFolder.getAbsolutePath() + File.separator + "playlist";
+        return getProgramsFolderPath() + File.separator + "playlist";
     }
 
     public String getConfigFile() {
-        return programsFolder.getAbsolutePath() + File.separator + "config.json";
+        return getProgramsFolderPath() + File.separator + "config.json";
     }
 
     public String getAuditFilePath(String name) {
@@ -407,7 +407,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
 
                     player.addListener(instance);
                     player.setPlayWhenReady(true);
-                    Logger.log(AuditLog.Event.PLAYLIST_PLAY, getPlayingAtIndexLabel(index), formatDuration(position), getMediaItemName(programItems.get(program)));
+                    Logger.log(AuditLog.Event.PLAYLIST_PLAY, getPlayingAtIndexLabel(index), Utils.formatDuration(position), getMediaItemName(programItems.get(program)));
                     nowPlayingIndex = index;
                     triggerGraphics(position);
                 }
@@ -459,13 +459,6 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         return duration;
     }
 
-    private String formatDuration(long millis) {
-        long hours = TimeUnit.MILLISECONDS.toHours(millis);
-        long mins = TimeUnit.MILLISECONDS.toMinutes(millis - TimeUnit.HOURS.toMillis(hours));
-        long secs = TimeUnit.MILLISECONDS.toSeconds(millis - TimeUnit.MINUTES.toMillis(mins));
-        return String.format("%02d:%02d:%02d", hours, mins, secs);
-    }
-
     private Seek seekImmediateNonCompletedSlot(Playlist playlist, List<MediaItem> mediaItems) {
         Calendar start = getStartTime(playlist);
         if(start != null) {
@@ -498,11 +491,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     }
 
     private PlayerView getPlayerView() {
-        PlayerView playerView = findViewById(R.id.player);
-        playerView.setControllerShowTimeoutMs(0);
-        playerView.setControllerHideOnTouch(false);
-        playerView.showController();
-        return playerView;
+        return findViewById(R.id.player);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -521,7 +510,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     private String getMediaItemName(MediaItem mediaItem) {
         String name = "";
         try {
-            name = URLDecoder.decode(mediaItem.mediaId.replace("file://", "").replace(programsFolder.getAbsolutePath(), ""), "utf-8");
+            name = URLDecoder.decode(mediaItem.mediaId.replace("file://", "").replace(getProgramsFolderPath(), ""), "utf-8");
         } catch (UnsupportedEncodingException e) {
             Logger.log(AuditLog.Event.ERROR, e.getMessage());
         }
@@ -768,7 +757,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     }
 
     private void showLogo(Graphics.LogoPosition logoPosition) {
-        File logo =  new File(programsFolder.getAbsolutePath() + File.separator + "logo.png");
+        File logo =  new File(getProgramsFolderPath() + File.separator + "logo.png");
         if(logo.exists() && logoPosition != null) {
             Bitmap myBitmap = BitmapFactory.decodeFile(logo.getAbsolutePath());
             ImageView myImage;

@@ -1,5 +1,3 @@
 To: apps@avventohome.org
 Subject: Telefyna Alert CONFIGURATION_EXPORT
 
-This is a system message and no need to respond to it
-

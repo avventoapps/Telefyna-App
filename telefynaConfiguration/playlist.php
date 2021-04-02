@@ -9,17 +9,10 @@
 <div class="section action">Description
 	<input class="form-control" ng-model="playlist.description" type="text">
 </div>
-<div class="section action">* Type *
-	<select class="form-control multiselect-ui" ng-model="playlist.type" required>
-		<option value="ONLINE">Online Stream</option>
-		<option value="LOCAL_SEQUENCED">Local sequenced folder</option>
-		<option value="LOCAL_RANDOMIZED">Local random folder</option>
-		<option value="LOCAL_RESUMING">Local resuming folder</option>
-		<option value="LOCAL_RESUMING_SAME">Local same resuming folder</option>
-		<option value="LOCAL_RESUMING_NEXT">Local next resuming folder</option>
-	</select>
-</div>
-<div class="section action">* Stream URL Or Local folder name *
+<?php include 'playlistType.php';?>
+<div class="section action">
+	<label ng-if="playlist.type == 'ONLINE'">* Stream URL *</label>
+	<label ng-if="playlist.type != 'ONLINE'">* Local folder name *</label>
 	<input class="form-control" ng-model="playlist.urlOrFolder" required type="text">
 </div>
 <div class="section action select-color">Preview Color
@@ -43,6 +36,11 @@
 		<option data-color="#66ffcc" value="#66ffcc"></option>
 		<option data-color="#ccffcc" value="#ccffcc"></option>
 		<option data-color="#ffccff" value="#ffccff"></option>
+		<option data-color="#0060aa" value="#0060aa"></option>
+		<option data-color="#f9b724" value="#f9b724"></option>
+		<option data-color="#775549" value="#775549"></option>
+		<option data-color="#2c0f7d" value="#2c0f7d"></option>
+		<option data-color="#607d8b" value="#607d8b"></option>
 	</select>
 </div>
 <div class="section action">

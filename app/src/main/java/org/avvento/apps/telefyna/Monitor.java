@@ -270,9 +270,12 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     }
 
     private void cacheNowPlaying() {
-        if (nowPlayingIndex != null) {
-            PlayerView playerView = getPlayerView();
-            trackingNowPlaying(nowPlayingIndex, playerView.getPlayer() == null ? 0 : playerView.getPlayer().getCurrentPeriodIndex(), playerView.getPlayer() == null ? 0 : playerView.getPlayer().getCurrentPosition());
+        PlayerView playerView = getPlayerView();
+        if (nowPlayingIndex != null && playerView != null && playerView.getPlayer() != null && completedBumpers()) {
+            Integer at = playerView.getPlayer().getCurrentPeriodIndex();
+            if(at != null) {
+                trackingNowPlaying(nowPlayingIndex, at, playerView.getPlayer() == null ? 0 : playerView.getPlayer().getCurrentPosition());
+            }
         }
     }
 
@@ -307,7 +310,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         Playlist playlist = playlistByIndex.get(index);
 
         if (nowPlayingIndex == null || nowPlayingIndex != index || playTheSame(index)) {// leave current program to proceed if it's the same being loaded
-            if (Playlist.Type.ONLINE.equals(playlist.getType()) && !Utils.internetConnected(Monitor.instance.getConfiguration().getInternetWait()) && secondDefaultIndex != index) {
+            if (Playlist.Type.ONLINE.equals(playlist.getType()) && !Utils.internetConnected() && secondDefaultIndex != index) {
                 switchNow(secondDefaultIndex, isCurrentSlot);
                 return;
             } else {
@@ -318,9 +321,6 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                     switchNow(firstDefaultIndex, isCurrentSlot);
                     return;
                 } else {
-                    // log now playing
-                    cacheNowPlaying();
-
                     // reset tracking now playing if the playlist programs were modified
                     long modifiedOffset = playlistModified(index);
                     List<MediaItem> bumperMediaItems = new ArrayList<>();
@@ -346,7 +346,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                     if (isResuming(playlist)) {
                         int nextProgram = getSharedPlaylistMediaItem(index);
                         long nextSeekTo = getSharedPlaylistSeekTo(index);
-                        if (playlist.getType().equals(Playlist.Type.LOCAL_RESUMING_NEXT)) {
+                        if (playlist.getType().equals(Playlist.Type.LOCAL_RESUMING_NEXT) || playlist.getType().equals(Playlist.Type.LOCAL_RESUMING_ONE)) {
                             if (nextProgram == programItems.size() - 1) {// last
                                 nextProgram = 0;
                             } else {
@@ -359,42 +359,44 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                         program = nextProgram;
                         position = nextSeekTo;
                         Logger.log(AuditLog.Event.RETRIEVE_NOW_PLAYING_RESUME, playlist.getName(), programs.get(nextProgram).getName(), nextSeekTo);
-                    } else if (!playlist.getType().equals(Playlist.Type.ONLINE)) {// only add bumpers if not resuming and not online
-                        String bumperFolder = getBumperDirectory();
-                        List<Program> generalBumpers = new ArrayList<>(), specialBumpers = new ArrayList<>(), playListBumpers = new ArrayList<>();
-                        // prepare general bumpers
-                        if (playlist.isPlayingGeneralBumpers()) {
-                            addBumpers(generalBumpers, new File(bumperFolder + File.separator + "General"), false);
-                        }
-                        // prepare special bumpers
-                        String specialBumperFolder = playlist.getSpecialBumperFolder();
-                        if (StringUtils.isNotBlank(specialBumperFolder)) {
-                            addBumpers(specialBumpers, new File(bumperFolder + File.separator + specialBumperFolder), false);
-                        }
-                        // prepare playlist specific bumpers
-                        addBumpers(playListBumpers, new File(bumperFolder + File.separator + playlist.getUrlOrFolder()), false);
-                        currentBumpers.addAll(generalBumpers);
-                        currentBumpers.addAll(specialBumpers);
-                        currentBumpers.addAll(playListBumpers);
-
-                        // add any bumpers if available only for non continuous local playlists
-                        if (!isResuming(playlist)) {
-                            for (Program bumper : currentBumpers) {
-                                bumperMediaItems.add(bumper.getMediaItem());
-                            }
-                            programItems.addAll(0, bumperMediaItems);
-                        }
                     }
+                    String bumperFolder = getBumperDirectory();
+                    List<Program> generalBumpers = new ArrayList<>(), specialBumpers = new ArrayList<>(), playListBumpers = new ArrayList<>();
+                    // prepare general bumpers
+                    if (playlist.isPlayingGeneralBumpers()) {
+                        addBumpers(generalBumpers, new File(bumperFolder + File.separator + "General"), false);
+                    }
+                    // prepare special bumpers
+                    String specialBumperFolder = playlist.getSpecialBumperFolder();
+                    if (StringUtils.isNotBlank(specialBumperFolder)) {
+                        addBumpers(specialBumpers, new File(bumperFolder + File.separator + specialBumperFolder), false);
+                    }
+                    // prepare playlist specific bumpers
+                    addBumpers(playListBumpers, new File(bumperFolder + File.separator + playlist.getUrlOrFolder()), false);
+                    currentBumpers.addAll(generalBumpers);
+                    currentBumpers.addAll(specialBumpers);
+                    currentBumpers.addAll(playListBumpers);
+
+                    for (Program bumper : currentBumpers) {
+                        bumperMediaItems.add(bumper.getMediaItem());
+                    }
+                    programItems.addAll(0, bumperMediaItems);
                     // playing current local slot, TODO support more than one program
                     if (isCurrentSlot && !Playlist.Type.ONLINE.equals(playlist.getType())) {
                         Seek seek = seekImmediateNonCompletedSlot(playlist, programItems);
                         if (seek != null) {
                             program = seek.getProgram();
                             position = seek.getPosition();
-                        } else { // slot is ended, switch to first default
+                        } else { // slot is ended, switch to fillers
                             Logger.log(AuditLog.Event.PLAYLIST_COMPLETED, getPlayingAtIndexLabel(index));
-                            switchNow(firstDefaultIndex, false);
+                            switchNow(secondDefaultIndex, false);
                             return;
+                        }
+                    } else if(isCurrentSlot && Playlist.Type.ONLINE.equals(playlist.getType()) && !currentBumpers.isEmpty()) {
+                        Seek seek = seekImmediateNonCompletedSlot(playlist, bumperMediaItems);
+                        if (seek != null) {
+                            program = seek.getProgram();
+                            position = seek.getPosition();
                         }
                     }
                     player.setMediaItems(programItems);
@@ -409,6 +411,8 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                     player.setPlayWhenReady(true);
                     Logger.log(AuditLog.Event.PLAYLIST_PLAY, getPlayingAtIndexLabel(index), Utils.formatDuration(position), getMediaItemName(programItems.get(program)));
                     nowPlayingIndex = index;
+                    // log now playing
+                    cacheNowPlaying();
                     triggerGraphics(position);
                 }
             }
@@ -460,7 +464,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     }
 
     private Seek seekImmediateNonCompletedSlot(Playlist playlist, List<MediaItem> mediaItems) {
-        Calendar start = getStartTime(playlist);
+        Calendar start = playlist.getStartTime();
         if(start != null) {
             Long startTime = start.getTimeInMillis();
             long now = Calendar.getInstance().getTimeInMillis();
@@ -473,20 +477,6 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
             }
         }
         // unseekable, slot is ended
-        return null;
-    }
-
-    private Calendar getStartTime(Playlist playlist) {
-        String start = playlist.getStart();
-        if(StringUtils.isNotBlank(start)) {
-            Calendar startTime = Calendar.getInstance();
-            Integer hour = Integer.parseInt(start.split(":")[0]);
-            Integer min = Integer.parseInt(start.split(":")[1]);
-            startTime.set(Calendar.HOUR_OF_DAY, hour);
-            startTime.set(Calendar.MINUTE, min);
-            startTime.set(Calendar.SECOND, 0);
-            return startTime;
-        }
         return null;
     }
 
@@ -517,12 +507,34 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         return name;
     }
 
+    private boolean completedBumpers() {
+        if(getPlayerView().getPlayer() != null) {
+            int item = getPlayerView().getPlayer().getCurrentPeriodIndex() - 1;// last item index
+            if (currentBumpers != null && !currentBumpers.isEmpty() && item <= currentBumpers.size() - 1) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     @Override
     public void onMediaItemTransition(@Nullable MediaItem mediaItem, int reason) {
         if (nowPlayingIndex != null) {
-            int item = getPlayerView().getPlayer().getCurrentPeriodIndex() - 1;// last item index
-            trackingNowPlaying(nowPlayingIndex, item, 0);
-            Logger.log(AuditLog.Event.PLAYLIST_ITEM_CHANGE, getNowPlayingPlaylistLabel(), getMediaItemName(mediaItem));
+            Playlist playlist = playlistByIndex.get(nowPlayingIndex);
+            if(playlist.getType().equals(Playlist.Type.LOCAL_RESUMING_ONE) && completedBumpers()) {// first program completed
+                // skip playing
+                Player current = getPlayerView().getPlayer();
+                if (current != null) {
+                    current.stop();
+                    current.release();
+                    current = null;
+                    Logger.log(AuditLog.Event.PLAYLIST_COMPLETED, getNowPlayingPlaylistLabel());
+                    switchNow(getSecondDefaultIndex(), false);
+                }
+            } else {
+                cacheNowPlaying();
+                Logger.log(AuditLog.Event.PLAYLIST_ITEM_CHANGE, getNowPlayingPlaylistLabel(), getMediaItemName(mediaItem));
+            }
         }
     }
 
@@ -562,7 +574,6 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     }
 
     private void shutDownHook() {
-        cacheNowPlaying();
         Logger.log(AuditLog.Event.HEARTBEAT, "OFF");
     }
 
@@ -760,16 +771,16 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         File logo =  new File(getProgramsFolderPath() + File.separator + "logo.png");
         if(logo.exists() && logoPosition != null) {
             Bitmap myBitmap = BitmapFactory.decodeFile(logo.getAbsolutePath());
-            ImageView myImage;
+            ImageView logoView;
             if(Graphics.LogoPosition.TOP.equals(logoPosition)) {
-                myImage = findViewById(R.id.topLogo);
+                logoView = findViewById(R.id.topLogo);
                 Logger.log(AuditLog.Event.DISPLAY_LOGO_ON, Graphics.LogoPosition.TOP.name());
             } else {
-                myImage = findViewById(R.id.bottomLogo);
+                logoView = findViewById(R.id.bottomLogo);
                 Logger.log(AuditLog.Event.DISPLAY_LOGO_ON, Graphics.LogoPosition.BOTTOM.name());
             }
-            myImage.setImageBitmap(myBitmap);
-            myImage.setVisibility(View.VISIBLE);
+            logoView.setImageBitmap(myBitmap);
+            logoView.setVisibility(View.VISIBLE);
         }
     }
 

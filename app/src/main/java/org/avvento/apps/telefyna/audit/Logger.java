@@ -52,7 +52,7 @@ public class Logger {
         // email notification
         Config config = Monitor.instance.getConfiguration();
         if(config != null && config.getAlerts() != null && (AuditLog.Event.Category.ADMIN.equals(event.getCategory()) || AuditLog.Event.Category.BROADCAST.equals(event.getCategory()))) {
-            if(Utils.internetConnected(10)) {
+            if(Utils.internetConnected()) {
                 new SendEmail().execute(new AuditAlert(config.getAlerts(), event, msg));
             } else {
                 Logger.log(AuditLog.Event.NO_INTERNET, "Sending emails failed, no internet connection");

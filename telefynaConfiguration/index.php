@@ -146,6 +146,7 @@
                                 </div>
 							</div>
 							<div class="modal-footer">
+							<button class="btn btn-danger" type="button" ng-click="deleteAllSchedules()">Delete All Schedules</button>
 								<button class="btn btn-info" type="button" ng-click="clear()" type="button">Clear</button>
 								<button class="btn btn-danger" type="button" ng-disabled="isEmpty(playlist.graphics.lowerThirds)" ng-click="deleteLowerThirds()">Delete Selected Lower Thirds</button>
 								<button class="btn btn-success" type="button" ng-disabled="isEmpty(lowerThird.replays) || isEmpty(lowerThird.file) || isEmpty(lowerThird.starts)" ng-click="addLowerThird()">Add Lower Third</button>

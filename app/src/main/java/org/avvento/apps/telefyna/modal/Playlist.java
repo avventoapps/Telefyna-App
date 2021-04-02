@@ -55,8 +55,42 @@ public class Playlist {
     // index to a playlist count from top this is scheduling, must be above it. use only with day, repeats and start fields
     private Integer schedule;
 
+    public boolean isStarted() {
+        Calendar current = Calendar.getInstance();
+        Integer hour = Integer.parseInt(start.split(":")[0]);
+        Integer min = Integer.parseInt(start.split(":")[1]);
+        return hour < current.get(Calendar.HOUR_OF_DAY) || (hour == current.get(Calendar.HOUR_OF_DAY) && min <= current.get(Calendar.MINUTE));
+    }
+
+    public long getScheduledTime() {
+        Calendar time = getStartTime();
+        int hour = time.get(Calendar.HOUR_OF_DAY);
+        int min = time.get(Calendar.MINUTE);
+
+        if(hour == 0 && min == 0) {// midnight
+            time.set(Calendar.SECOND, 5);// at midnight, switch after 5 seconds since maintenance scheduler runs at 0 seconds
+        }
+        time.set(Calendar.MILLISECOND, 0);
+        return time.getTimeInMillis();
+    }
+
+    public Calendar getStartTime() {
+        String start = getStart();
+        if(StringUtils.isNotBlank(start)) {
+            Calendar startTime = Calendar.getInstance();
+            Integer hour = Integer.parseInt(start.split(":")[0]);
+            Integer min = Integer.parseInt(start.split(":")[1]);
+            startTime.set(Calendar.HOUR_OF_DAY, hour);
+            startTime.set(Calendar.MINUTE, min);
+            startTime.set(Calendar.SECOND, 0);
+            startTime.set(Calendar.MILLISECOND, 0);
+            return startTime;
+        }
+        return null;
+    }
+
     public boolean scheduledToday() {
-        if (active == null || !active || StringUtils.isBlank(start)) {
+        if (active == null || !active || StringUtils.isBlank(getStart())) {
             return false;
         } else if (ArrayUtils.isEmpty(days)) {
             return true;
@@ -88,12 +122,13 @@ public class Playlist {
     }
 
     public enum Type {
-        ONLINE, // online streaming, Tested supported formats; HLS 
-        LOCAL_SEQUENCED, // organizes program alphabetically considering their tree
-        LOCAL_RESUMING, // resuming the same program from the last playing duration
-        LOCAL_RESUMING_SAME, // resuming the same program from the start
-        LOCAL_RESUMING_NEXT, // resuming the next program from the start
-        LOCAL_RANDOMIZED // randlomy selects programs
+        ONLINE, // An Online streaming playlist using a stream url
+        LOCAL_SEQUENCED, // A local playlist starting from the first to the last alphabetical program by file naming
+        LOCAL_RANDOMIZED, // A local playlist randlomy selecting programs
+        LOCAL_RESUMING, // A local playlist resuming from the previous program at exact stopped time
+        LOCAL_RESUMING_SAME, // A local playlist restarting the previous non completed program on the next playout
+        LOCAL_RESUMING_NEXT, // A local playlist resuming from the next program
+        LOCAL_RESUMING_ONE // A local one program selection playlist resuming from the next program
     }
 
 }

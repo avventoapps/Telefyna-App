@@ -1,7 +1,7 @@
 {
   "name": "3ABN-TV Uganda",
   "version": "1.0",
-  "lastModified": "28/03/2021, 17:04:58",
+  "lastModified": "02/04/2021, 13:54:06",
   "automationDisabled": false,
   "notificationsDisabled": true,
   "internetWait": 60,
@@ -34,22 +34,7 @@
       "description": "This is the first default playlist, it plays whenever nothing is scheduled or is available",
       "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652312/secure/master.m3u8",
       "active": true,
-      "color": "#00ccff"
-    },
-    {
-      "name": "Fillers",
-      "description": "This is the second default playlist, it plays whenever there is no internet connection",
-      "type": "LOCAL_RANDOMIZED",
-      "urlOrFolder": "Fillers",
-      "active": true,
-      "playingGeneralBumpers": true
-    },
-    {
-      "name": "Network",
-      "type": "ONLINE",
-      "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652042/secure/master.m3u8",
-      "active": true,
-      "color": "#6666ff",
+      "color": "#808080",
       "graphics": {
         "displayLogo": false,
         "logoPosition": "TOP",
@@ -60,25 +45,84 @@
       }
     },
     {
+      "name": "Fillers",
+      "description": "This is the second default playlist, it plays whenever there is no internet connection",
+      "type": "LOCAL_RANDOMIZED",
+      "urlOrFolder": "Fillers",
+      "active": true,
+      "playingGeneralBumpers": true,
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "dayLightSaving": 1
+    },
+    {
+      "name": "Network",
+      "type": "ONLINE",
+      "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652042/secure/master.m3u8",
+      "active": true,
+      "color": "#0060aa",
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "dayLightSaving": 1
+    },
+    {
       "name": "Proclaim",
       "type": "ONLINE",
       "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652317/secure/master.m3u8",
       "active": true,
-      "color": "#808080"
+      "color": "#993333",
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "playingGeneralBumpers": true
     },
     {
       "name": "DareToDream",
       "type": "ONLINE",
       "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652313/secure/master.m3u8",
       "active": true,
-      "color": "#990099"
+      "color": "#990099",
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "playingGeneralBumpers": true
     },
     {
       "name": "Kids",
       "type": "ONLINE",
       "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652318/secure/master.m3u8",
       "active": true,
-      "color": "#ffff66"
+      "color": "#ffff66",
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      }
     },
     {
       "name": "PraiseHimMusic",
@@ -218,7 +262,7 @@
         6
       ],
       "name": "Proclaim",
-      "color": "#808080"
+      "color": "#993333"
     },
     {
       "schedule": 4,
@@ -242,7 +286,7 @@
         1
       ],
       "name": "Network",
-      "color": "#6666ff"
+      "color": "#0060aa"
     },
     {
       "schedule": 0,
@@ -255,7 +299,7 @@
         7
       ],
       "name": "International",
-      "color": "#00ccff"
+      "color": "#808080"
     },
     {
       "schedule": 3,
@@ -264,7 +308,7 @@
         4
       ],
       "name": "Proclaim",
-      "color": "#808080"
+      "color": "#993333"
     },
     {
       "schedule": 6,
@@ -285,7 +329,7 @@
         7
       ],
       "name": "Proclaim",
-      "color": "#808080"
+      "color": "#993333"
     },
     {
       "schedule": 2,
@@ -295,7 +339,7 @@
         5
       ],
       "name": "Network",
-      "color": "#6666ff"
+      "color": "#0060aa"
     },
     {
       "schedule": 0,
@@ -305,7 +349,7 @@
         2
       ],
       "name": "International",
-      "color": "#00ccff"
+      "color": "#808080"
     },
     {
       "schedule": 3,
@@ -315,7 +359,7 @@
         2
       ],
       "name": "Proclaim",
-      "color": "#808080"
+      "color": "#993333"
     },
     {
       "schedule": 0,
@@ -326,7 +370,7 @@
         7
       ],
       "name": "International",
-      "color": "#00ccff"
+      "color": "#808080"
     },
     {
       "schedule": 4,
@@ -346,7 +390,7 @@
         4
       ],
       "name": "International",
-      "color": "#00ccff"
+      "color": "#808080"
     },
     {
       "schedule": 6,
@@ -364,7 +408,7 @@
         7
       ],
       "name": "Network",
-      "color": "#6666ff"
+      "color": "#0060aa"
     },
     {
       "schedule": 14,
@@ -441,7 +485,7 @@
         6
       ],
       "name": "International",
-      "color": "#00ccff"
+      "color": "#808080"
     },
     {
       "schedule": 4,
@@ -482,7 +526,7 @@
         5
       ],
       "name": "Proclaim",
-      "color": "#808080"
+      "color": "#993333"
     },
     {
       "schedule": 0,
@@ -492,7 +536,7 @@
         6
       ],
       "name": "International",
-      "color": "#00ccff"
+      "color": "#808080"
     },
     {
       "schedule": 5,
@@ -524,7 +568,7 @@
         7
       ],
       "name": "International",
-      "color": "#00ccff"
+      "color": "#808080"
     },
     {
       "schedule": 3,
@@ -533,7 +577,7 @@
         7
       ],
       "name": "Proclaim",
-      "color": "#808080"
+      "color": "#993333"
     },
     {
       "schedule": 2,
@@ -542,7 +586,7 @@
         1
       ],
       "name": "Network",
-      "color": "#6666ff"
+      "color": "#0060aa"
     },
     {
       "schedule": 0,
@@ -552,7 +596,7 @@
         6
       ],
       "name": "International",
-      "color": "#00ccff"
+      "color": "#808080"
     },
     {
       "schedule": 3,
@@ -563,7 +607,7 @@
         5
       ],
       "name": "Proclaim",
-      "color": "#808080"
+      "color": "#993333"
     },
     {
       "schedule": 4,
@@ -591,7 +635,7 @@
         3
       ],
       "name": "International",
-      "color": "#00ccff"
+      "color": "#808080"
     },
     {
       "schedule": 4,
@@ -609,7 +653,7 @@
         6
       ],
       "name": "Network",
-      "color": "#6666ff"
+      "color": "#0060aa"
     },
     {
       "schedule": 7,
@@ -634,12 +678,12 @@
     {
       "schedule": 4,
       "start": "13:00",
-      "days": [
-        2,
-        6
-      ],
       "name": "DareToDream",
-      "color": "#990099"
+      "active": true,
+      "days": [
+        "2",
+        "6"
+      ]
     },
     {
       "schedule": 0,
@@ -648,7 +692,7 @@
         7
       ],
       "name": "International",
-      "color": "#00ccff"
+      "color": "#808080"
     },
     {
       "schedule": 0,
@@ -658,7 +702,7 @@
         2
       ],
       "name": "International",
-      "color": "#00ccff"
+      "color": "#808080"
     },
     {
       "schedule": 3,
@@ -668,7 +712,7 @@
         7
       ],
       "name": "Proclaim",
-      "color": "#808080"
+      "color": "#993333"
     },
     {
       "schedule": 2,
@@ -679,7 +723,16 @@
         6
       ],
       "name": "Network",
-      "color": "#6666ff"
+      "color": "#0060aa",
+      "graphics": {
+        "displayLogo": true,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0,
+          "messages": "hi#there"
+        },
+        "lowerThirds": []
+      }
     },
     {
       "schedule": 6,
@@ -709,7 +762,7 @@
         6
       ],
       "name": "Network",
-      "color": "#6666ff"
+      "color": "#0060aa"
     },
     {
       "schedule": 3,
@@ -722,7 +775,7 @@
         5
       ],
       "name": "Proclaim",
-      "color": "#808080"
+      "color": "#993333"
     },
     {
       "schedule": 0,
@@ -731,7 +784,7 @@
         6
       ],
       "name": "International",
-      "color": "#00ccff"
+      "color": "#808080"
     },
     {
       "schedule": 0,
@@ -742,7 +795,7 @@
         7
       ],
       "name": "International",
-      "color": "#00ccff"
+      "color": "#808080"
     },
     {
       "schedule": 2,
@@ -752,7 +805,7 @@
         5
       ],
       "name": "Network",
-      "color": "#6666ff"
+      "color": "#0060aa"
     },
     {
       "schedule": 5,
@@ -779,7 +832,7 @@
         2
       ],
       "name": "Network",
-      "color": "#6666ff"
+      "color": "#0060aa"
     },
     {
       "schedule": 3,
@@ -789,7 +842,7 @@
         7
       ],
       "name": "Proclaim",
-      "color": "#808080"
+      "color": "#993333"
     },
     {
       "schedule": 6,
@@ -804,11 +857,20 @@
     {
       "schedule": 0,
       "start": "18:30",
-      "days": [
-        4
-      ],
       "name": "International",
-      "color": "#00ccff"
+      "active": true,
+      "days": [
+        "4"
+      ],
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "color": "#808080"
     },
     {
       "schedule": 8,
@@ -915,7 +977,7 @@
         5
       ],
       "name": "Proclaim",
-      "color": "#808080"
+      "color": "#993333"
     },
     {
       "schedule": 4,
@@ -933,7 +995,7 @@
         7
       ],
       "name": "International",
-      "color": "#00ccff"
+      "color": "#808080"
     },
     {
       "schedule": 6,
@@ -955,7 +1017,7 @@
         5
       ],
       "name": "Network",
-      "color": "#6666ff"
+      "color": "#0060aa"
     },
     {
       "schedule": 3,
@@ -964,16 +1026,25 @@
         7
       ],
       "name": "Proclaim",
-      "color": "#808080"
+      "color": "#993333"
     },
     {
       "schedule": 2,
       "start": "23:30",
-      "days": [
-        7
-      ],
       "name": "Network",
-      "color": "#6666ff"
+      "active": true,
+      "days": [
+        "7"
+      ],
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "color": "#0060aa"
     }
   ]
 }

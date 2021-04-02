@@ -345,19 +345,19 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
 
     $scope.getDayName = function(count) {
         if(count == 1) {
-            return "1-Sunday";
+            return "Sunday";
         } else if(count == 2) {
-            return "2-Monday";
+            return "Monday";
         } else if(count == 3) {
-            return "3-Tuesday";
+            return "Tuesday";
         } else if(count == 4) {
-            return "4-Wednesday";
+            return "Wednesday";
         } else if(count == 5) {
-            return "5-Thursday";
+            return "Thursday";
         } else if(count == 6) {
-            return "6-Friday";
+            return "Friday";
         } else if(count == 7) {
-            return "7-Saturday";
+            return "Saturday";
         }
     }
 
@@ -568,6 +568,44 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
             }
         }
         return false;
+    }
+
+    $scope.getPlaylistTypeDesc = function(category) {
+        if(category == "ONLINE") {
+            return "An Online streaming playlist using a stream url";
+        } else if(category == "LOCAL_SEQUENCED") {
+            return "A local playlist starting from the first to the last alphabetical program by file naming";
+        } else if(category == "LOCAL_RANDOMIZED") {
+            return "A local playlist randlomy selecting programs";
+        } else if(category == "LOCAL_RESUMING") {
+            return "A local playlist resuming from the previous program at exact stopped time";
+        } else if(category == "LOCAL_RESUMING_ONE") {
+            return "A local one program selection playlist resuming from the next program";
+        } else if(category == "LOCAL_RESUMING_SAME") {
+            return "A local playlist restarting the previous non completed program on the next playout";
+        } else if(category == "LOCAL_RESUMING_NEXT") {
+            return "A local playlist resuming from the next program";
+        }
+    }
+
+    $scope.deleteAllSchedules = function() {
+        if(confirm("Do you want to proceed with Deleting all existing schedules?")) {
+            var indices = [];
+            angular.forEach($scope.config.playlists, function(playlist, key) { 
+                if(!$scope.isNotScheduled(playlist)) {
+                    delete $scope.config.playlists[key];
+                    indices.push(key);
+                }
+            });
+            if($scope.isEmpty(indices)) {
+                alert("There are no schedules to delete!");
+            } else {
+                // remove empty
+                $scope.config.playlists = $scope.config.playlists.filter(function(el) {
+                    return el;
+                });
+            }
+        }
     }
 
 });

@@ -7,7 +7,6 @@ import android.os.Build;
 import android.webkit.MimeTypeMap;
 
 import com.google.android.exoplayer2.MediaItem;
-import com.google.android.exoplayer2.util.Log;
 import com.google.android.exoplayer2.util.MimeTypes;
 
 import org.avvento.apps.telefyna.Metrics;
@@ -128,16 +127,12 @@ public class Maintenance {
 
     private void schedulePlayList(Playlist playlist, int index) {
         String start = playlist.getStart();
-        Integer hour = Integer.parseInt(start.split(":")[0]);
-        Integer min = Integer.parseInt(start.split(":")[1]);
-
-        Calendar current = Calendar.getInstance();
-        if (hour < current.get(Calendar.HOUR_OF_DAY) || (hour == current.get(Calendar.HOUR_OF_DAY) && min <= current.get(Calendar.MINUTE))) {
+        if (playlist.isStarted()) {
             startedSlotsToday.put(start, new CurrentPlaylist(index, playlist));
         } else {
             Intent intent = new Intent(Monitor.instance, PlaylistScheduler.class);
             intent.putExtra(PlaylistScheduler.PLAYLIST_INDEX, index);
-            schedule(intent, nextTime(hour, min), playlist.getStart());
+            schedule(intent, playlist.getScheduledTime(), playlist.getStart());
         }
     }
 
@@ -145,15 +140,6 @@ public class Maintenance {
         PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(Monitor.instance, CODE++, intent, 0);
         pendingIntents.put(start, alarmPendingIntent);
         Monitor.instance.getAlarmManager().setExact(AlarmManager.RTC_WAKEUP, mills, alarmPendingIntent);
-    }
-
-    private long nextTime(int hour, int min) {
-        Calendar next = Calendar.getInstance();
-        next.set(Calendar.HOUR_OF_DAY, hour);
-        next.set(Calendar.MINUTE, min);
-        next.set(Calendar.SECOND, hour == 0 && min == 0 ? 5 : 0);// switch after 5 seconds since maintenance scheduler runs at 0 seconds
-        next.set(Calendar.MILLISECOND, 0);
-        return next.getTimeInMillis();
     }
 
     /*

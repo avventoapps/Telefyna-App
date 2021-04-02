@@ -3,6 +3,8 @@ c# Telefyna Configuration
 This project contains a client side application for managing Telefyna's configurations which includes programming/scheduling
 
 ## TODO
+- [ ] Add delay to playlist
+- [ ] add resuming_one category of playlist which plays one program only and resumes_next
 - [ ] 3ABN: install programs, fillers
 - [ ] 3ABN: work on drive sync with broadcast imac and telefyna, test sync times etc and init.txt
 - [ ] 3ABN: finish schedule dialogs with uganda & international
@@ -12,6 +14,10 @@ This project contains a client side application for managing Telefyna's configur
 - [ ] support php receivers on exporting config
 - [ ] create a qa testing framework to ensure the ui generator works well
 - [ ] add current/previous/next program tracking on the schedule preview | Not necessary
+- [x] suppourt channel colors at: https://r.3abn.org/sched/latest/
+- [x] move playlist selection into a separate php and on selection display below it a discription
+- [x] add delete all schedules button
+- [x] remove number from the name of the day of the week
 - [x] add system metrics export (part of maintanance&configExport) to email alers for php & java; (cpu, disk, users etc)
 - [x] support mobile, fix table etc scalling and popups plus cache refresh
 - [x] put active check on scheduling for overriding, ensure inactive is out of preview

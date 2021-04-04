@@ -17,7 +17,7 @@ import lombok.Setter;
 public class News {
     private String messages;
     // minutes to start ticker at during program play,  2#6#8 means start and 2nd, 6th and 8th second, This time includes bumpers
-    private String starts;
+    private String starts = "0";
 
     // number of times to loop/play messages
     private int replays = 0;

@@ -47,6 +47,7 @@ public class Playlist {
      */
     private String urlOrFolder;
     // days of the week [1-7=Sun-Sat]: if null, runs daily
+    private boolean usingExternalStorage = false;
     private Integer[] days;
     // dates to schedule for, must be in DATE_FORMAT(dd-MM-yyyy)
     private String[] dates;
@@ -110,6 +111,7 @@ public class Playlist {
         this.name = parent.name;
         this.description = parent.description;
         this.urlOrFolder = parent.urlOrFolder;
+        this.usingExternalStorage = parent.usingExternalStorage;
         this.playingGeneralBumpers = parent.playingGeneralBumpers;
         this.specialBumperFolder = parent.specialBumperFolder;
         this.color = parent.color;

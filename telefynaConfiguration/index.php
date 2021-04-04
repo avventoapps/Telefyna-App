@@ -230,13 +230,13 @@
 										<thead>
 											<tr>
 												<th scope="col">StartTime</th>
-												<th scope="col">1-Sunday</th>
-												<th scope="col">2-Monday</th>
-												<th scope="col">3-Tuesday</th>
-												<th scope="col">4-Wednesday</th>
-												<th scope="col">5-Thursday</th>
-												<th scope="col">6-Friday</th>
-												<th scope="col">7-Saturday</th>
+												<th scope="col">Sunday</th>
+												<th scope="col">Monday</th>
+												<th scope="col">Tuesday</th>
+												<th scope="col">Wednesday</th>
+												<th scope="col">Thursday</th>
+												<th scope="col">Friday</th>
+												<th scope="col">Saturday</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -282,7 +282,7 @@
 				<button class="btn btn-success" ng-click="exportConfig()" ng-disabled="isEmpty(config.playlists)" type="button">Export</button>
 			</div>
 		</div>
-		<div class="info alert-info"> <b>telefyna</b> folder should be in USB/SDcard or if not existing Device Internal Storage where <b>telefynaAudit</b> folder containing audit messages are
+		<div class="info alert-info"> <b>telefyna</b> folder should be put in either/both Internal/SDcard whereas <b>telefynaAudit</b> exists in Internal storage
 			<br><b>The export(config.json) contains sensitive information and should be protected, <br>Telefyna runs the scheduling at midnight daily;</b>
 			<br>This means if a program isn't in the folder before midnight it won't be scheduled or changes to config thereafter won't be picked up. To order Telefyna to re-run scheduling and use your changes afer the current program, add a file named <b>init.txt</b> in your <b>telefynaAudit</b> folder. Put your program folders in <b>telefyna/playlist</b>, Put your special and <b>General</b> folders for special & general bumpers in <b>telefyna/bumper</b>, lower thirds in <b>telefyna/lowerThird</b>, And your logo at <b>telefyna/logo.png</b>
 		</div>

@@ -9,11 +9,11 @@
                 <div class="section action">
                     <b>Sender</b><br>
                     Host
-                    <input class="form-control flex-wrap" required ng-model="config.alerts.emailer.host" type="text" ng-change="modifying()">
+                    <input class="form-control flex-wrap" required ng-model="config.alerts.mailer.host" type="text" ng-change="modifying()">
                     Port
-                    <input class="form-control flex-wrap" required ng-model="config.alerts.emailer.port" type="number" ng-change="modifying()">
+                    <input class="form-control flex-wrap" required ng-model="config.alerts.mailer.port" type="number" ng-change="modifying()">
                     Email Address
-                    <input class="form-control flex-wrap" required ng-model="config.alerts.emailer.email" type="text" ng-change="modifying()">
+                    <input class="form-control flex-wrap" required ng-model="config.alerts.mailer.email" type="text" ng-change="modifying()">
                     Email Password
                     <input class="form-control flex-wrap" id="pswd" required type="password">
                 </div>

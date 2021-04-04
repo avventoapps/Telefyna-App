@@ -7,6 +7,7 @@ import com.google.android.exoplayer2.MediaItem;
 
 import org.avvento.apps.telefyna.audit.AuditLog;
 import org.avvento.apps.telefyna.audit.Logger;
+import org.avvento.apps.telefyna.modal.Playlist;
 import org.avvento.apps.telefyna.modal.Program;
 
 import java.io.File;
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -27,41 +29,44 @@ public class Utils {
      */
     public static boolean internetConnected() {
         try {
-            // credit to google for creating exoplayer here
-            // TODO unfortunately google (http://www.google.com) is on in uganda for free without data. changed to http://example.com
-            URLConnection conn = (new URL("http://example.com")).openConnection();
-            conn.setConnectTimeout(2000);
-            conn.connect();
-            conn.getInputStream().close();
-            return true;
-        } catch (IOException e) {
+            Process process = Runtime.getRuntime().exec("/system/bin/ping -c 1 8.8.8.8");
+            if (process.waitFor() == 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (IOException | InterruptedException e) {
             Logger.log(AuditLog.Event.NO_INTERNET, e.getMessage());
             return false;
         }
     }
 
-    public static void setupLocalPrograms(List<Program> programs, File fileOrFolder, boolean addedFirstItem) {
+    public static void setupLocalPrograms(List<Program> programs, File fileOrFolder, boolean addedFirstItem, Playlist playlist) {
         if (fileOrFolder.exists()) {
             File[] fileOrFolderList = fileOrFolder.listFiles();
             Arrays.sort(fileOrFolderList);// ordering programs alphabetically
             for (int j = 0; j < fileOrFolderList.length; j++) {
                 File file = fileOrFolderList[j];
                 if (file.isDirectory()) {
-                    setupLocalPrograms(programs, file, addedFirstItem);
+                    setupLocalPrograms(programs, file, addedFirstItem, playlist);
                 } else {
                     if (j == 0 && !addedFirstItem) {// first in the folder if not yet addedFirstItem
-                        programs.add(0, extractProgramFromFile(file));
+                        programs.add(0, extractProgramFromFile(file, playlist.isUsingExternalStorage()));
                         addedFirstItem = true;
                     } else {
-                        programs.add(extractProgramFromFile(file));
+                        programs.add(extractProgramFromFile(file, playlist.isUsingExternalStorage()));
                     }
                 }
+            }
+            if (Playlist.Type.LOCAL_RANDOMIZED.equals(playlist.getType())) {
+                Collections.shuffle(programs);
+                Collections.shuffle(programs);
             }
         }
     }
 
-    private static Program extractProgramFromFile(File file) {
-        return new Program(file.getAbsolutePath().split(Monitor.instance.getProgramsFolderPath())[1], MediaItem.fromUri(Uri.fromFile(file)));
+    private static Program extractProgramFromFile(File file, boolean usingExternalStorage) {
+        return new Program(file.getAbsolutePath().split(Monitor.instance.getProgramsFolderPath(usingExternalStorage))[1], MediaItem.fromUri(Uri.fromFile(file)));
     }
 
     public static boolean isValidEmail(String email) {

@@ -6,7 +6,6 @@ import android.util.Log;
 import org.apache.commons.io.FileUtils;
 import org.avvento.apps.telefyna.Monitor;
 import org.avvento.apps.telefyna.Utils;
-import org.avvento.apps.telefyna.listen.mail.Mail;
 import org.avvento.apps.telefyna.listen.mail.SendEmail;
 import org.avvento.apps.telefyna.modal.Config;
 

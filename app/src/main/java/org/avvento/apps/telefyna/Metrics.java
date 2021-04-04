@@ -9,7 +9,7 @@ import java.io.File;
 
 public class Metrics {
 
-    private static String getFreeMemory(String volume) {
+    private static String getFreeDiskSpace(String volume) {
         File path = new File(volume);
         if(path.exists()) {
             StatFs stats = new StatFs(path.getAbsolutePath());
@@ -30,8 +30,9 @@ public class Metrics {
     }
 
     public static String retrieve() {
-        String metrics = getFreeMemory(Monitor.instance.getAuditFilePath(""));
-        metrics += getFreeMemory(Monitor.instance.getProgramsFolderPath());
+        String metrics = getFreeDiskSpace(Monitor.instance.getAuditFilePath(""));
+        metrics += getFreeDiskSpace(Monitor.instance.getProgramsFolderPath(false));
+        metrics += getFreeDiskSpace(Monitor.instance.getProgramsFolderPath(true));
         metrics += getFreeMemory();
         metrics += getUptime();
         return metrics;

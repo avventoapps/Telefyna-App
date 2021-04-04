@@ -6,9 +6,9 @@
   "notificationsDisabled": true,
   "internetWait": 60,
   "alerts": {
-    "emailer": {
+    "mailer": {
       "email": "telefyna@gmail.com",
-      "pass": "Vmtkb2FHSnRkSHBTYlRsNVZsaE9jR0p0WkZWYVYzaHNXbTVzZFZsVGQyZFdNbFZuWWtkR01Wa3lhR3hhUTBKVldsZDRiRnB1YkhWWlUwSndZbWxCZVUxRVNYaEpSMG8xU1VWa2RscERaSHBKUjJSNVdWZE9iQT09Vm0xMGExWXlUWGhqUm1oWVlXeGFjRmxzVmxkT1JsSllZMFUxVVZWVU1Eaz0=",
+      "pass": "Vm0xMGExWXlUWGhqUm1oWVlXeGFjRmxzVmxkT1JsSllZMFUxVVZWVU1Eaz0=Vmtkb2FHSnRkSHBTYlRsNVZsaE9jR0p0WkZWYVYzaHNXbTVzZFZsVGQyZFdNbFZuWWtkR01Wa3lhR3hhUTBKVldsZDRiRnB1YkhWWlUwSndZbWxCZVUxRVNYaEpSMG8xU1VWa2RscERaSHBKUjJSNVdWZE9iQT091",
       "host": "smtp.gmail.com",
       "port": 587
     },

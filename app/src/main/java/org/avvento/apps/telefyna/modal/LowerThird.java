@@ -18,7 +18,7 @@ public class LowerThird {
     // file name/path within lowerThird directory
     private String file;
     // minutes to start separated by #
-    private String starts;
+    private String starts = "0";
     // number of times to play
     private int replays = 0;
 

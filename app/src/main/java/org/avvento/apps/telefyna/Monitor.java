@@ -61,7 +61,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -88,21 +87,17 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     private Integer nowPlayingIndex;
     @Getter
     private SimpleExoPlayer player;
+    private Playlist currentPlaylist;
     @Getter
     private List<List<Program>> programsByIndex;
     private List<Playlist> playlistByIndex;
     private List<Program> currentBumpers;
-    private File programsFolder;
     private List<MediaItem> programItems;
     private TickerView tickerView;
     private VideoView lowerThirdView;
     private int lowerThirdLoop = 1;
-    private Runnable keepOnair;
+    private Runnable keepOnAir;
     private boolean offAir = false;
-
-    public String getProgramsFolderPath() {
-        return programsFolder.getAbsolutePath();
-    }
 
     public void addProgramsByIndex(List<Program> programs) {
         programsByIndex.add(programs);
@@ -205,18 +200,20 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
      *
      * @return
      */
-    public File getAppRootDirectory() {
+    private File getAppRootDirectory(boolean useExternalStorage) {
         String postfix = "/telefyna";
-        String mntUsb = "/mnt/usb";
-        File[] storages = new File(mntUsb).listFiles();
-        if (storages == null) {
-            storages = ContextCompat.getExternalFilesDirs(instance, null);
-        }
-        ArrayUtils.reverse(storages);
-        for (File storage : storages) {
-            if (storage != null) {
-                String location = storage.getAbsolutePath().substring(0, StringUtils.ordinalIndexOf(storage.getAbsolutePath(), "/", storage.getAbsolutePath().contains("emulated") ? 4 : 3));
-                return new File(location + postfix);
+        if(useExternalStorage) {
+            String mntUsb = "/mnt/usb";
+            File[] storages = new File(mntUsb).listFiles();
+            if (storages == null) {
+                storages = ContextCompat.getExternalFilesDirs(instance, null);
+            }
+            ArrayUtils.reverse(storages);
+            for (File storage : storages) {
+                if (storage != null) {
+                    String location = storage.getAbsolutePath().substring(0, StringUtils.ordinalIndexOf(storage.getAbsolutePath(), "/", storage.getAbsolutePath().contains("emulated") ? 4 : 3));
+                    return new File(location + postfix);
+                }
             }
         }
         return new File(Environment.getExternalStorageDirectory().getAbsolutePath() + postfix);
@@ -226,20 +223,24 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         return new File(getAuditFilePath("init.txt"));
     }
 
-    public String getBumperDirectory() {
-        return getProgramsFolderPath() + File.separator + "bumper";
+    public String getBumperDirectory(boolean useExternalStorage) {
+        return getProgramsFolderPath(useExternalStorage) + File.separator + "bumper";
     }
 
-    public String getLowerThirdDirectory() {
-        return getProgramsFolderPath() + File.separator + "lowerThird";
+    public String getProgramsFolderPath(boolean useExternalStorage) {
+        return getAppRootDirectory(useExternalStorage).getAbsolutePath();
     }
 
-    public String getPlaylistDirectory() {
-        return getProgramsFolderPath() + File.separator + "playlist";
+    public String getLowerThirdDirectory(boolean useExternalStorage) {
+        return getProgramsFolderPath(useExternalStorage) + File.separator + "lowerThird";
+    }
+
+    public String getPlaylistDirectory(boolean useExternalStorage) {
+        return getProgramsFolderPath(useExternalStorage) + File.separator + "playlist";
     }
 
     public String getConfigFile() {
-        return getProgramsFolderPath() + File.separator + "config.json";
+        return getProgramsFolderPath(false) + File.separator + "config.json";
     }
 
     public String getAuditFilePath(String name) {
@@ -263,7 +264,6 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void initialization() {
         initialiseWithPermissions();
-        programsFolder = getAppRootDirectory();
         programsByIndex = new ArrayList<>();
         playlistByIndex = new ArrayList<>();
         maintenance.run();
@@ -271,149 +271,165 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
 
     private void cacheNowPlaying() {
         PlayerView playerView = getPlayerView();
-        if (nowPlayingIndex != null && playerView != null && playerView.getPlayer() != null && completedBumpers()) {
-            Integer at = playerView.getPlayer().getCurrentPeriodIndex();
-            if(at != null) {
-                trackingNowPlaying(nowPlayingIndex, at, playerView.getPlayer() == null ? 0 : playerView.getPlayer().getCurrentPosition());
-            }
+        Integer now = getPlaylistIndex(nowPlayingIndex);
+        if (now != null && playerView != null && player != null && now != null) {
+            trackingNowPlaying(now, player.getCurrentWindowIndex(), player.getCurrentPosition());
         }
     }
 
     private SimpleExoPlayer buildPlayer() {
         DefaultLoadControl.Builder builder = new DefaultLoadControl.Builder();
-        builder.setBufferDurationsMs(DefaultLoadControl.DEFAULT_MIN_BUFFER_MS, getConfiguration().getInternetWait() * 1000, DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_MS, DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS);
+        builder.setBufferDurationsMs(DefaultLoadControl.DEFAULT_MIN_BUFFER_MS, DefaultLoadControl.DEFAULT_MIN_BUFFER_MS + getConfiguration().getInternetWait() * 1000, DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_MS, DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS);
         SimpleExoPlayer player = new SimpleExoPlayer.Builder(instance).setLoadControl(builder.build()).build();
         return player;
     }
 
     private void addBumpers(List<Program> bumpers, File bumperFolder, boolean addedFirstItem) {
         if (bumperFolder.exists() && bumperFolder.listFiles().length > 0) {
-            Utils.setupLocalPrograms(bumpers, bumperFolder, addedFirstItem);
+            Utils.setupLocalPrograms(bumpers, bumperFolder, addedFirstItem, currentPlaylist);
             Collections.reverse(bumpers);
         }
     }
 
+    private int getPlaylistIndex(Integer index) {
+        if(index == null) {
+            return index;
+        }
+        return playlistByIndex.get(index).getSchedule() != null ? playlistByIndex.get(index).getSchedule() : index;
+    }
+
+    private boolean samePlaylistPlaying(int index) {
+        if(nowPlayingIndex != null) {
+            int now = getPlaylistIndex(nowPlayingIndex);
+            int next = getPlaylistIndex(index);
+            return now == next;
+        }
+        return false;
+    }
+
+    private boolean playTheSame(int index) {
+        return player != null && (!player.isPlaying() && samePlaylistPlaying(index));
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void switchNow(int index, boolean isCurrentSlot) {
+        Playlist p = playlistByIndex.get(index);
+        Logger.log(AuditLog.Event.PLAYLIST, getPlayingAtIndexLabel(index), new GsonBuilder().setPrettyPrinting().create().toJson(p));
+
         // re-maintain if init file exists drop it and reload schedule
         if(getReInitializerFile().exists()) {
             getReInitializerFile().delete();
             maintenance.run();
             return;
         }
-        currentBumpers = new ArrayList<>();
-        int firstDefaultIndex = getFirstDefaultIndex();
-        int secondDefaultIndex = getSecondDefaultIndex();
 
-        // setup objects, skip playlist with nothing to play
-        List<Program> programs = programsByIndex.get(index);
-        Playlist playlist = playlistByIndex.get(index);
+        if (!samePlaylistPlaying(index) || playTheSame(index)) {// leave current program to proceed if it's the same being loaded
+            // setup objects, skip playlist with nothing to play
+            List<Program> programs = programsByIndex.get(index);
+            currentPlaylist = p;
+            currentBumpers = new ArrayList<>();
+            int firstDefaultIndex = getFirstDefaultIndex();
+            int secondDefaultIndex = getSecondDefaultIndex();
+            nowPlayingIndex = index;
 
-        if (nowPlayingIndex == null || nowPlayingIndex != index || playTheSame(index)) {// leave current program to proceed if it's the same being loaded
-            if (Playlist.Type.ONLINE.equals(playlist.getType()) && !Utils.internetConnected() && secondDefaultIndex != index) {
+            if (Playlist.Type.ONLINE.equals(currentPlaylist.getType()) && !Utils.internetConnected() && secondDefaultIndex != index) {
                 switchNow(secondDefaultIndex, isCurrentSlot);
                 return;
             } else {
-                player = buildPlayer();
+                Playlist fillers = playlistByIndex.get(secondDefaultIndex);
+                File fillerDir = getDirectoryFromPlaylist(fillers);
                 keepBroadcasting();
-                if (programs.isEmpty()) {
-                    Logger.log(AuditLog.Event.PLAYLIST_EMPTY_PLAY, getPlayingAtIndexLabel(index));
-                    switchNow(firstDefaultIndex, isCurrentSlot);
-                    return;
+                if(secondDefaultIndex == index && ((Playlist.Type.ONLINE.equals(fillers.getType()) && !Utils.internetConnected()) || (!Playlist.Type.ONLINE.equals(fillers.getType()) && (!fillerDir.exists() || fillerDir.listFiles().length == 0)))) {
+                    Logger.log(AuditLog.Event.EMPTY_FILLERS);
+                    offAir = true;
                 } else {
-                    // reset tracking now playing if the playlist programs were modified
-                    long modifiedOffset = playlistModified(index);
-                    List<MediaItem> bumperMediaItems = new ArrayList<>();
+                    if (programs.isEmpty()) {
+                        Logger.log(AuditLog.Event.PLAYLIST_EMPTY_PLAY, getPlayingAtIndexLabel(index));
+                        switchNow(firstDefaultIndex, isCurrentSlot);
+                        return;
+                    } else {
+                        player = buildPlayer();
+                        // reset tracking now playing if the playlist programs were modified
+                        long modifiedOffset = playlistModified(index);
+                        List<MediaItem> bumperMediaItems = new ArrayList<>();
 
-                    if (modifiedOffset > 0) {
-                        Logger.log(AuditLog.Event.PLAYLIST_MODIFIED, getPlayingAtIndexLabel(index), modifiedOffset / 1000);
-                        resetTrackingNowPlaying(index);
-                    }
+                        if (modifiedOffset > 0) {
+                            Logger.log(AuditLog.Event.PLAYLIST_MODIFIED, getPlayingAtIndexLabel(index), modifiedOffset / 1000);
+                            resetTrackingNowPlaying(index);
+                        }
 
-                    Logger.log(AuditLog.Event.PLAYLIST, getPlayingAtIndexLabel(index), new GsonBuilder().setPrettyPrinting().create().toJson(playlist));
-
-                    // extract and add programs
-                    programItems = extractingMediaItemsFromPrograms(programs);
-                    // handle resuming local playlists
-                    if (Playlist.Type.LOCAL_RANDOMIZED.equals(playlist.getType())) {
-                        Collections.shuffle(programItems);
-                    } else if (Playlist.Type.LOCAL_SEQUENCED.equals(playlist.getType())) {
-                        // this is handled by default by Utils#setupLocalPrograms
-                    }
-                    int program = 0;
-                    long position = 0;
-                    // resume local resumable programs
-                    if (isResuming(playlist)) {
-                        int nextProgram = getSharedPlaylistMediaItem(index);
-                        long nextSeekTo = getSharedPlaylistSeekTo(index);
-                        if (playlist.getType().equals(Playlist.Type.LOCAL_RESUMING_NEXT) || playlist.getType().equals(Playlist.Type.LOCAL_RESUMING_ONE)) {
-                            if (nextProgram == programItems.size() - 1) {// last
-                                nextProgram = 0;
+                        // extract and add programs
+                        programItems = extractingMediaItemsFromPrograms(programs);
+                        int nowProgram = 0;
+                        long nowPosition = 0;
+                        if (!Playlist.Type.ONLINE.equals(currentPlaylist.getType())) {
+                            // resume local resumable programs
+                            if (isResuming(currentPlaylist)) {
+                                int nextProgram = getSharedPlaylistMediaItem(getPlaylistIndex(index));
+                                long nextSeekTo = getSharedPlaylistSeekTo(getPlaylistIndex(index));
+                                if (currentPlaylist.getType().equals(Playlist.Type.LOCAL_RESUMING_NEXT) || currentPlaylist.getType().equals(Playlist.Type.LOCAL_RESUMING_ONE)) {
+                                    if (nextProgram == programItems.size() - 1) {// last
+                                        nextProgram = 0;
+                                    } else {
+                                        nextProgram++; // next program excluding bumpers
+                                    }
+                                    nextSeekTo = 0;
+                                } else if (currentPlaylist.getType().equals(Playlist.Type.LOCAL_RESUMING_SAME)) {
+                                    nextSeekTo = 0;
+                                }
+                                nowProgram = nextProgram;
+                                nowPosition = nextSeekTo;
+                                Logger.log(AuditLog.Event.RETRIEVE_NOW_PLAYING_RESUME, currentPlaylist.getName(), programs.get(nextProgram).getName(), nextSeekTo);
                             } else {
-                                nextProgram++; // next program excluding bumpers
+                                String bumperFolder = getBumperDirectory(currentPlaylist.isUsingExternalStorage());
+                                List<Program> generalBumpers = new ArrayList<>(), specialBumpers = new ArrayList<>(), playListBumpers = new ArrayList<>();
+                                // prepare general bumpers
+                                if (currentPlaylist.isPlayingGeneralBumpers()) {
+                                    addBumpers(generalBumpers, new File(bumperFolder + File.separator + "General"), false);
+                                }
+                                // prepare special bumpers
+                                String specialBumperFolder = currentPlaylist.getSpecialBumperFolder();
+                                if (StringUtils.isNotBlank(specialBumperFolder)) {
+                                    addBumpers(specialBumpers, new File(bumperFolder + File.separator + specialBumperFolder), false);
+                                }
+                                // prepare playlist specific bumpers
+                                addBumpers(playListBumpers, new File(bumperFolder + File.separator + currentPlaylist.getUrlOrFolder().split("#")[0]), false);
+                                currentBumpers.addAll(generalBumpers);
+                                currentBumpers.addAll(specialBumpers);
+                                currentBumpers.addAll(playListBumpers);
+
+                                for (Program bumper : currentBumpers) {
+                                    bumperMediaItems.add(bumper.getMediaItem());
+                                }
+                                programItems.addAll(0, bumperMediaItems);
                             }
-                            nextSeekTo = 0;
-                        } else if (playlist.getType().equals(Playlist.Type.LOCAL_RESUMING_SAME)) {
-                            nextSeekTo = 0;
-                        }
-                        program = nextProgram;
-                        position = nextSeekTo;
-                        Logger.log(AuditLog.Event.RETRIEVE_NOW_PLAYING_RESUME, playlist.getName(), programs.get(nextProgram).getName(), nextSeekTo);
-                    }
-                    String bumperFolder = getBumperDirectory();
-                    List<Program> generalBumpers = new ArrayList<>(), specialBumpers = new ArrayList<>(), playListBumpers = new ArrayList<>();
-                    // prepare general bumpers
-                    if (playlist.isPlayingGeneralBumpers()) {
-                        addBumpers(generalBumpers, new File(bumperFolder + File.separator + "General"), false);
-                    }
-                    // prepare special bumpers
-                    String specialBumperFolder = playlist.getSpecialBumperFolder();
-                    if (StringUtils.isNotBlank(specialBumperFolder)) {
-                        addBumpers(specialBumpers, new File(bumperFolder + File.separator + specialBumperFolder), false);
-                    }
-                    // prepare playlist specific bumpers
-                    addBumpers(playListBumpers, new File(bumperFolder + File.separator + playlist.getUrlOrFolder()), false);
-                    currentBumpers.addAll(generalBumpers);
-                    currentBumpers.addAll(specialBumpers);
-                    currentBumpers.addAll(playListBumpers);
 
-                    for (Program bumper : currentBumpers) {
-                        bumperMediaItems.add(bumper.getMediaItem());
-                    }
-                    programItems.addAll(0, bumperMediaItems);
-                    // playing current local slot, TODO support more than one program
-                    if (isCurrentSlot && !Playlist.Type.ONLINE.equals(playlist.getType())) {
-                        Seek seek = seekImmediateNonCompletedSlot(playlist, programItems);
-                        if (seek != null) {
-                            program = seek.getProgram();
-                            position = seek.getPosition();
-                        } else { // slot is ended, switch to fillers
-                            Logger.log(AuditLog.Event.PLAYLIST_COMPLETED, getPlayingAtIndexLabel(index));
-                            switchNow(secondDefaultIndex, false);
-                            return;
+                            if(isCurrentSlot) {
+                                Seek seek = seekImmediateNonCompletedSlot(currentPlaylist, programItems);
+                                if (seek != null) {
+                                    nowProgram = seek.getProgram() == programItems.size() - 1 ? seek.getProgram() : nowProgram + seek.getProgram();
+                                    nowPosition =  seek.getProgram() == programItems.size() - 1 ? seek.getPosition() : nowProgram + seek.getPosition();
+                                } else { // slot is ended, switch to fillers
+                                    Logger.log(AuditLog.Event.PLAYLIST_COMPLETED, getPlayingAtIndexLabel(index));
+                                    switchNow(secondDefaultIndex, false);
+                                    return;
+                                }
+                            }
                         }
-                    } else if(isCurrentSlot && Playlist.Type.ONLINE.equals(playlist.getType()) && !currentBumpers.isEmpty()) {
-                        Seek seek = seekImmediateNonCompletedSlot(playlist, bumperMediaItems);
-                        if (seek != null) {
-                            program = seek.getProgram();
-                            position = seek.getPosition();
+                        player.setMediaItems(programItems);
+                        player.seekTo(nowProgram, nowPosition);
+                        player.prepare();
+                        Player current = getPlayerView().getPlayer();
+                        if (current != null) {
+                            current.removeListener(instance);
                         }
+                        player.addListener(instance);
+                        player.setPlayWhenReady(true);
+                        Logger.log(isCurrentSlot ? AuditLog.Event.PLAYLIST_PLAY : AuditLog.Event.PLAYLIST_SWITCH, getNowPlayingPlaylistLabel(), Utils.formatDuration(nowPosition), getMediaItemName(programItems.get(nowProgram)));
+                        // log now playing
+                        cacheNowPlaying();
+                        triggerGraphics(nowPosition);
                     }
-                    player.setMediaItems(programItems);
-                    player.seekTo(program, position);
-                    player.prepare();
-                    Player current = getPlayerView().getPlayer();
-                    if (current != null) {
-                        current.removeListener(instance);
-                    }
-
-                    player.addListener(instance);
-                    player.setPlayWhenReady(true);
-                    Logger.log(AuditLog.Event.PLAYLIST_PLAY, getPlayingAtIndexLabel(index), Utils.formatDuration(position), getMediaItemName(programItems.get(program)));
-                    nowPlayingIndex = index;
-                    // log now playing
-                    cacheNowPlaying();
-                    triggerGraphics(position);
                 }
             }
         }
@@ -425,16 +441,12 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         Player current = playerView.getPlayer();
         if (current == null || !player.equals(current)) {// change of player is proof of a switch
             if (current != null) {
+                current.setPlayWhenReady(false);
                 current.stop();
                 current.release();
-                current = null;
             }
             playerView.setPlayer(player);
         }
-    }
-
-    private boolean playTheSame(int index) {
-        return player != null && (!player.isPlaying() && nowPlayingIndex == index);
     }
 
     // if playlist is resuming, no bumpers play; next plays next program, same plays the former un completed else exact time is resumed
@@ -457,7 +469,6 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
             if (mMediaPlayer != null) {
                 mMediaPlayer.reset();
                 mMediaPlayer.release();
-                mMediaPlayer = null;
             }
         }
         return duration;
@@ -470,7 +481,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
             long now = Calendar.getInstance().getTimeInMillis();
             for (int i = 0; i < mediaItems.size(); i++) {// mediaItems are well ordered
                 long duration = getDuration(mediaItems.get(i).mediaId);
-                if (duration + startTime > now) {
+                if ((duration + startTime) > now) {
                     // use the first item
                     return new Seek(i, now - startTime);
                 }
@@ -481,7 +492,9 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     }
 
     private PlayerView getPlayerView() {
-        return findViewById(R.id.player);
+        PlayerView playerView = findViewById(R.id.player);
+        playerView.showController();
+        return playerView;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -491,7 +504,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
             if (state == Player.STATE_ENDED) {
                 Logger.log(AuditLog.Event.PLAYLIST_COMPLETED, getNowPlayingPlaylistLabel());
                 switchNow(getSecondDefaultIndex(), false);
-            } else if (state == Player.STATE_BUFFERING && Playlist.Type.ONLINE.equals(playlistByIndex.get(nowPlayingIndex).getType())) {
+            } else if (state == Player.STATE_BUFFERING && Playlist.Type.ONLINE.equals(playlistByIndex.get(getPlaylistIndex(nowPlayingIndex)).getType())) {
                 player.seekTo(player.getContentDuration());// hack
             }
         }
@@ -500,7 +513,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     private String getMediaItemName(MediaItem mediaItem) {
         String name = "";
         try {
-            name = URLDecoder.decode(mediaItem.mediaId.replace("file://", "").replace(getProgramsFolderPath(), ""), "utf-8");
+            name = URLDecoder.decode(mediaItem.mediaId.replace("file://", "").replace(getProgramsFolderPath(currentPlaylist.isUsingExternalStorage()), ""), "utf-8");
         } catch (UnsupportedEncodingException e) {
             Logger.log(AuditLog.Event.ERROR, e.getMessage());
         }
@@ -520,14 +533,13 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     @Override
     public void onMediaItemTransition(@Nullable MediaItem mediaItem, int reason) {
         if (nowPlayingIndex != null) {
-            Playlist playlist = playlistByIndex.get(nowPlayingIndex);
-            if(playlist.getType().equals(Playlist.Type.LOCAL_RESUMING_ONE) && completedBumpers()) {// first program completed
+            Playlist playlist = playlistByIndex.get(getPlaylistIndex(nowPlayingIndex));
+            if(playlist.getType().equals(Playlist.Type.LOCAL_RESUMING_ONE)) {// first program completed
                 // skip playing
                 Player current = getPlayerView().getPlayer();
                 if (current != null) {
                     current.stop();
                     current.release();
-                    current = null;
                     Logger.log(AuditLog.Event.PLAYLIST_COMPLETED, getNowPlayingPlaylistLabel());
                     switchNow(getSecondDefaultIndex(), false);
                 }
@@ -557,12 +569,12 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     }
 
     private String getPlayingAtIndexLabel(Integer index) {
-        String playlistName = playlistByIndex.get(index).getName();
+        String playlistName = playlistByIndex.get(getPlaylistIndex(index)).getName();
         return String.format("%s #%d", playlistName, index);
     }
 
     private String getNowPlayingPlaylistLabel() {
-        String playlistName = nowPlayingIndex == null ? "" : playlistByIndex.get(nowPlayingIndex).getName();
+        String playlistName = nowPlayingIndex == null ? "" : playlistByIndex.get(getPlaylistIndex(nowPlayingIndex)).getName();
         return String.format("%s #%d", playlistName, nowPlayingIndex);
     }
 
@@ -584,11 +596,15 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     }
 
     private long getLastModifiedFor(int index) {
-        return getDirectoryToPlaylist(playlistByIndex.get(index).getUrlOrFolder()).lastModified();
+        return getDirectoryFromPlaylist(playlistByIndex.get(index)).lastModified();
     }
 
-    public File getDirectoryToPlaylist(String urlOrFolder) {
-        return new File(getPlaylistDirectory() + File.separator + urlOrFolder);
+    public File getDirectoryFromPlaylist(Playlist playlist, int i) {
+        return new File(getPlaylistDirectory(playlist.isUsingExternalStorage()) + File.separator + playlist.getUrlOrFolder().split("#")[i].trim());
+    }
+
+    private File getDirectoryFromPlaylist(Playlist playlist) {
+        return getDirectoryFromPlaylist(playlist, 0);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -650,7 +666,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         return super.onKeyDown(event.getKeyCode(), event);
     }
 
-    private void triggerGraphics(long position) {
+    private void triggerGraphics(long nowPosition) {
         Playlist currentPlayList = playlistByIndex.get(nowPlayingIndex);
         hideLogo();
         hideTicker();
@@ -671,7 +687,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                             long start = Math.round(s * 60 * 1000);//s is in minutes, send in mills
                             Monitor.instance.getHandler().postDelayed(() -> {
                                 showLowerThird(ltd);
-                            }, start - position);
+                            }, start - nowPosition);
                         });
                     }
                 });
@@ -686,10 +702,10 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                     initTickers(news);
                     Arrays.stream(news.getStartsArray()).forEach(s -> {
                         long start = Math.round(s * 60 * 1000);//s is in minutes, send in mills
-                        if(start >= position) {
+                        if(start >= nowPosition) {
                             Monitor.instance.getHandler().postDelayed(() -> {
                                 showTicker();
-                            }, start - position);
+                            }, start - nowPosition);
                         }
                     });
                 }
@@ -726,7 +742,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     }
 
     private void showLowerThird(LowerThird lowerThird) {
-        String path = getLowerThirdDirectory() + File.separator + lowerThird.getFile();
+        String path = getLowerThirdDirectory(currentPlaylist.isUsingExternalStorage()) + File.separator + lowerThird.getFile();
         File lowerThirdClip =  new File(path);
         if(lowerThirdClip.exists()) {
             Logger.log(AuditLog.Event.LOWER_THIRD_ON, path);
@@ -768,7 +784,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     }
 
     private void showLogo(Graphics.LogoPosition logoPosition) {
-        File logo =  new File(getProgramsFolderPath() + File.separator + "logo.png");
+        File logo =  new File(getProgramsFolderPath(currentPlaylist.isUsingExternalStorage()) + File.separator + "logo.png");
         if(logo.exists() && logoPosition != null) {
             Bitmap myBitmap = BitmapFactory.decodeFile(logo.getAbsolutePath());
             ImageView logoView;
@@ -791,30 +807,32 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         tickerView.setTextSize(getResources().getDimension(R.dimen.tickerFontSize));
         tickerView.setBackgroundColor(getColor(R.color.trans));
         tickerView.setTextColor(ContextCompat.getColor(instance, android.R.color.white));
-        tickerView.setPadding(10, 2, 10, 2);
+        tickerView.setPadding(100, 2, 100, 2);
         return tickerView;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void keepBroadcasting() {
-        if(keepOnair != null) {
-            handler.removeCallbacks(keepOnair);
-        }
-        long delay = getConfiguration().getInternetWait() * 1000;
-        handler.postDelayed(keepOnair = () -> {
-            handler.postDelayed(keepOnair, delay);
-            if(offAir) {//been off air for the past delay
-                offAir = false;
-                Logger.log(AuditLog.Event.STUCK, delay/1000);
-                switchNow(nowPlayingIndex, false);// replay the same program
-            } else {
-                if (!player.isPlaying()) {
-                    offAir = true;
-                } else {
-                    offAir = false;
-                }
+        if(nowPlayingIndex != null) {
+            if (keepOnAir != null) {
+                handler.removeCallbacks(keepOnAir);
             }
-        }, delay);
+            long delay = getConfiguration().getInternetWait() * 1000;
+            handler.postDelayed(keepOnAir = () -> {
+                handler.postDelayed(keepOnAir, delay);
+                if (offAir) {//been off air for the past delay
+                    offAir = false;
+                    Logger.log(AuditLog.Event.STUCK, delay / 1000);
+                    switchNow(nowPlayingIndex, false);// replay the same program
+                } else {
+                    if (player == null || !player.isPlaying()) {
+                        offAir = true;
+                    } else {
+                        offAir = false;
+                    }
+                }
+            }, delay);
+        }
     }
 
 }

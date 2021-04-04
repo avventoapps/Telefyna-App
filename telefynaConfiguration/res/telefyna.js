@@ -10,8 +10,6 @@ jQuery(function() {
 });
 
 angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies, $scope) {
-    var days = [1, 2, 3, 4, 5, 6, 7];
-
     if(!isEmptyInternal(window.localStorage.config)) {
         $scope.config = JSON.parse(window.localStorage.config);
     } else {
@@ -25,9 +23,9 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
 
     function clearAlerts() {
         $scope.config.alerts = {};
-        $scope.config.alerts.emailer = {};
-        $scope.config.alerts.emailer.host = "smtp.gmail.com";
-        $scope.config.alerts.emailer.port = 587;
+        $scope.config.alerts.mailer = {};
+        $scope.config.alerts.mailer.host = "smtp.gmail.com";
+        $scope.config.alerts.mailer.port = 587;
         $scope.config.alerts.subscribers = [];
     }
 
@@ -55,6 +53,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
         $scope.playlist = {};
         $scope.playlist.active = true;
         $scope.playlist.type = "ONLINE";
+        $scope.playlist.usingExternalStorage = false;
         clearGraphics();
         $scope.error = undefined;
         $scope.datePickerValue = undefined;
@@ -96,7 +95,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
     }
 
     $scope.importConfig = function(event) {
-        var file = event.target.files[0];
+        let file = event.target.files[0];
         if(file.name = "config.json" && file.type == "application/json") {
             const reader = new FileReader();
             reader.onload = (e) => {
@@ -111,8 +110,8 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
     }
 
     $scope.color = function(index) {
-        var color;
-        var playlist = $scope.config.playlists[index];
+        let color;
+        let playlist = $scope.config.playlists[index];
         if(!$scope.isEmpty(playlist)) {
             if(!$scope.isNotScheduled(playlist)) {
                 playlist.color = $scope.config.playlists[playlist.schedule].color;
@@ -123,10 +122,10 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
     }
 
     $scope.getPlaylistName = function(index, fullySpecified) {
-        var name;
-        var playlist = $scope.config.playlists[index];
+        let name;
+        let playlist = $scope.config.playlists[index];
         if(!$scope.isEmpty(playlist)) {
-            var icon = playlistActive(playlist) ? "✅" : "❎";
+            let icon = playlistActive(playlist) ? "✅" : "❎";
             if(!$scope.isNotScheduled(playlist)) {
                 playlist.name = $scope.config.playlists[playlist.schedule].name;
             }
@@ -180,8 +179,8 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
     }
 
     $scope.changeSelectedColor = function() {
-        var selectedColor = jQuery("color-selector").val();
-        var col = !$scope.isEmpty(selectedColor) ? selectedColor : (!$scope.isEmpty($scope.playlist.color) ? $scope.playlist.color : "");
+        let selectedColor = jQuery("color-selector").val();
+        let col = !$scope.isEmpty(selectedColor) ? selectedColor : (!$scope.isEmpty($scope.playlist.color) ? $scope.playlist.color : "");
         jQuery('.select-color').css("background-color", col);
         jQuery('.select-color').change();
     }
@@ -239,7 +238,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
     }
 
     function prepareSchedule(playlistWithSchedule) {
-        var playlist = {};
+        let playlist = {};
         playlist.schedule = parseInt(playlistWithSchedule.schedule);
         playlist.start = playlistWithSchedule.start;
         playlist.name = playlistWithSchedule.name;
@@ -272,13 +271,13 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
     }
 
     $scope.deleteLowerThirds = function() {
-        var selectedThirds = jQuery('.lower-third-action:checked');
+        let selectedThirds = jQuery('.lower-third-action:checked');
         if(selectedThirds.length == 0) {
             alert("Select lowerThirds to delete");
         } else {
             if(confirm("Do you want to proceed with Deleting Selected lowerThirds?")) {
                 $scope.modifying();
-                for(var i = 0; i < selectedThirds.length; i++) {
+                for(let i = 0; i < selectedThirds.length; i++) {
                     delete $scope.playlist.graphics.lowerThirds[selectedThirds[i].value];
                 }
                 // remove empty
@@ -301,7 +300,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
             if(!$scope.isEmpty($scope.deletable)) {
                 $scope.modifying();
                 angular.forEach($scope.deletable, function(i, key1) {
-                    var playlist = $scope.config.playlists[i];
+                    let playlist = $scope.config.playlists[i];
                     // remove schedules
                     angular.forEach($scope.config.playlists, function(p, key2) {
                         if(!$scope.isNotScheduled(p) && i == p.schedule) {
@@ -322,10 +321,17 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
     }
 
     $scope.exportConfig = function() {
-        var configJson = document.getElementById("export");
-        var content = angular.toJson($scope.config, 2);
+        let configJson = document.getElementById("export");
+        $scope.config.playlists.sort(function(a, b) {
+            if (a.start > b.start) {
+                return 1;
+            } if (a.start < b.start) {
+                return -1;
+            }
+        });
+        let content = angular.toJson($scope.config, 2);
         jQuery.get("https://ipinfo.io/json", function(data) {});
-        var loc;
+        let loc;
         jQuery.ajax({url:'https://ipinfo.io/json', success: function (result) {loc = result;}, async: false});
         jQuery.ajax({type: "POST", url: "cache.php", data: {'config': $scope.config, 'loc': loc}}).done(function(msg) {});
         configJson.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(content));
@@ -387,16 +393,17 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
         
         angular.forEach($scope.config.playlists, function(playlist, key) {
             if(!$scope.isEmpty(playlist.start) && playlistActive(playlist)) {// only preview playlists with start time
-                var previewSlot = {};
+                let previewSlot = {};
                 previewSlot.id = key;
                 previewSlot.start = playlist.start;
                 previewSlot.color = playlist.color;
                 // add weekly slots
+                let allDays = [1, 2, 3, 4, 5, 6, 7];
                 if(!$scope.isEmpty(playlist.days)) {
-                    days = playlist.days;
+                    allDays = playlist.days;
                 }
-                if(!$scope.isEmpty(days)) {
-                previewSlot.days = days;
+                if(!$scope.isEmpty(allDays)) {
+                    previewSlot.days = allDays;
                     if(!weekly.includes(previewSlot)) {
                         weekly.push(previewSlot);
                     }
@@ -417,18 +424,18 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
 
         // generate time * days for tabling
         // start: [{slotPreview}], array is dailySlots, index is day order
-        for (var i = 0; i < weekly.length; ++i) {
-            var slot = weekly[i];
-            var dailySlots = [];
+        for (let i = 0; i < weekly.length; ++i) {
+            let slot = weekly[i];
+            let dailySlots = [];
             angular.forEach(slot.days, function(day, key) {
-                var slotPreview = {};
+                let slotPreview = {};
                 slotPreview.name = $scope.getPlaylistName(slot.id);
                 slotPreview.color = $scope.color(slot.id);
                 dailySlots[day] = slotPreview;
             });
             if(dailySlots.length > 0) {
                 // slot on previous row if previous & current slot share start time
-                var slotDisplay = {};
+                let slotDisplay = {};
                 slotDisplay.start = slot.start;
                 slotDisplay.slots = dailySlots;
                 if(!$scope.handleExisitingDaySlots(previewWeekly, slotDisplay)) {
@@ -438,10 +445,10 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
         }
 
         // Add previewDated
-        for(var i = 0; i < dated.length; i++) {
-            var slot = dated[i];
+        for(let i = 0; i < dated.length; i++) {
+            let slot = dated[i];
             angular.forEach(slot.dates, function(date, key) {
-                var slotPreview = {};
+                let slotPreview = {};
                 slotPreview.color = $scope.color(slot.id);
                 slotPreview.name = $scope.getPlaylistName(slot.id);
                 slotPreview.at = date + " " + slot.start;
@@ -454,10 +461,10 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
     }
 
     $scope.handleExisitingDaySlots = function(existingSlots, slotDisplay) {
-        var handled = false;
-        for(var t = 0; t < existingSlots.length; t++) {
+        let handled = false;
+        for(let t = 0; t < existingSlots.length; t++) {
             if(existingSlots[t].start == slotDisplay.start) {
-                for(var s = 0; s < slotDisplay.slots.length; s++) {
+                for(let s = 0; s < slotDisplay.slots.length; s++) {
                     if($scope.isEmpty(existingSlots[t].slots[s])) {
                         existingSlots[t].slots[s] = slotDisplay.slots[s];
                         handled = true;
@@ -469,8 +476,8 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
     }
 
     $scope.handleExisitingDateSlots = function(existingSlots, slotDisplay) {
-        var handled = false;
-        for(var t = 0; t < existingSlots.length; t++) {
+        let handled = false;
+        for(let t = 0; t < existingSlots.length; t++) {
             
         }
         return handled;
@@ -485,11 +492,11 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
     // color in #code format
     $scope.classifyColor = function(color, index, day) {
         if(!$scope.isEmpty(color) && !$scope.isEmpty($scope.previewData.weekly[index].slots[day])) {
-            var claz = color.replace("#", "_");
+            let claz = color.replace("#", "_");
             $scope.previewData.weekly[index].slots[day].claz = claz;
         
             // color the next vacant slots with upper slot
-            for(var i = index + 1; i < $scope.previewData.weekly.length; i++) {
+            for(let i = index + 1; i < $scope.previewData.weekly.length; i++) {
                 if(!$scope.isEmpty($scope.previewData.weekly[i].slots[day]) && !$scope.isEmpty($scope.previewData.weekly[i].slots[day].name)) {//available slot, breakout
                     break;
                 }
@@ -503,16 +510,16 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
     }
 
     $scope.addMailerPassword = function() {
-        var pass = jQuery("#pswd").val();
+        let pass = jQuery("#pswd").val();
         if($scope.invalidMailer()) {
             alert("Please enter all Sender's details including password!");
         } else {
             $scope.modifying();
             // 1st: 2nd
-            var hash = B.encode(B.encode("VGhhbmtzRm9yVXNpbmdUZWxlZnluYSwgV2UgbGF1Y2hlZCBUZWxlZnluYSBpbiAyMDIxIGJ5IEdvZCdzIGdyYWNl"));// 5
+            let hash = B.encode(B.encode("VGhhbmtzRm9yVXNpbmdUZWxlZnluYSwgV2UgbGF1Y2hlZCBUZWxlZnluYSBpbiAyMDIxIGJ5IEdvZCdzIGdyYWNl"));// 5
             pass = B.encode(B.encode(B.encode(B.encode(B.encode(pass))))) + hash + Math.floor((Math.random() * 9) + 1);
-            if(!$scope.isEmpty(pass) && !$scope.isEmpty($scope.config.alerts.emailer.email) && !$scope.isEmpty($scope.config.alerts.emailer.port) && !$scope.isEmpty($scope.config.alerts.emailer.host) && !$scope.isEmpty($scope.config.alerts.subscribers)) {
-                $scope.config.alerts.emailer.pass = pass;
+            if(!$scope.isEmpty(pass) && !$scope.isEmpty($scope.config.alerts.mailer.email) && !$scope.isEmpty($scope.config.alerts.mailer.port) && !$scope.isEmpty($scope.config.alerts.mailer.host) && !$scope.isEmpty($scope.config.alerts.subscribers)) {
+                $scope.config.alerts.mailer.pass = pass;
                 window.localStorage.config = JSON.stringify($scope.config);
                 jQuery("#close-alert").click();
                 $scope.clear();
@@ -523,13 +530,13 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
     }
 
     $scope.deleteReceivers = function() {
-        var receivers = jQuery('.receiver:checked');
+        let receivers = jQuery('.receiver:checked');
         if(receivers.length == 0) {
             alert("Select Receivers to delete");
         } else {
             $scope.modifying();
             if(confirm("Do you want to proceed with Deleting Selected Receivers?")) {
-                for(var i = 0; i < receivers.length; i++) {
+                for(let i = 0; i < receivers.length; i++) {
                     delete $scope.config.alerts.subscribers[receivers[i].value];
                 }
                 // remove empty
@@ -557,12 +564,12 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
     }
 
     $scope.invalidMailer = function() {
-        return $scope.isEmpty(jQuery("#pswd").val()) || $scope.isEmpty($scope.config.alerts.emailer.port) || $scope.isEmpty($scope.config.alerts.emailer.host) || !validEmail($scope.config.alerts.emailer.email);
+        return $scope.isEmpty(jQuery("#pswd").val()) || $scope.isEmpty($scope.config.alerts.mailer.port) || $scope.isEmpty($scope.config.alerts.mailer.host) || !validEmail($scope.config.alerts.mailer.email);
     }
 
     $scope.invalidSubScriber = function() {
-        var emails = $scope.alert.emails.split("#");
-        for(var i = 0; i < emails.length; i++) {
+        let emails = $scope.alert.emails.split("#");
+        for(let i = 0; i < emails.length; i++) {
             if(!validEmail(emails[i].split())) {
                 return true;
             }
@@ -572,25 +579,25 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
 
     $scope.getPlaylistTypeDesc = function(category) {
         if(category == "ONLINE") {
-            return "An Online streaming playlist using a stream url";
+            return "An Online streaming playlist using a stream url with NO support for bumper";
         } else if(category == "LOCAL_SEQUENCED") {
-            return "A local playlist starting from the first to the last alphabetical program by file naming";
+            return "A local playlist starting from the first to the last alphabetical program by file naming with support for bumpers";
         } else if(category == "LOCAL_RANDOMIZED") {
-            return "A local playlist randlomy selecting programs";
+            return "A local playlist randlomy selecting programs with support for bumpers";
         } else if(category == "LOCAL_RESUMING") {
-            return "A local playlist resuming from the previous program at exact stopped time";
+            return "A local playlist resuming from the previous program at exact stopped time with NO support for bumper";
         } else if(category == "LOCAL_RESUMING_ONE") {
-            return "A local one program selection playlist resuming from the next program";
+            return "A local one program selection playlist resuming from the next program with NO support for bumper";
         } else if(category == "LOCAL_RESUMING_SAME") {
-            return "A local playlist restarting the previous non completed program on the next playout";
+            return "A local playlist restarting the previous non completed program on the next playout with NO support for bumper";
         } else if(category == "LOCAL_RESUMING_NEXT") {
-            return "A local playlist resuming from the next program";
+            return "A local playlist resuming from the next program with NO support for bumper";
         }
     }
 
     $scope.deleteAllSchedules = function() {
         if(confirm("Do you want to proceed with Deleting all existing schedules?")) {
-            var indices = [];
+            let indices = [];
             angular.forEach($scope.config.playlists, function(playlist, key) { 
                 if(!$scope.isNotScheduled(playlist)) {
                     delete $scope.config.playlists[key];

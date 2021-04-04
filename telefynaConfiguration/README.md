@@ -3,6 +3,14 @@ c# Telefyna Configuration
 This project contains a client side application for managing Telefyna's configurations which includes programming/scheduling
 
 ## TODO
+- [ ] first play if scheduled resuming one doesn't show tickers on next resume
+- [ ] Bug: one message in ticket hangs on the screen, tickerView: fix with one message
+- [ ] support bumpers for all local programs
+- [ ] fix readme on web config
+- [ ] not syncing in the set 5 minutes
+- [ ] fix error after switch
+- [ ] move fillers to sd/telefynaFiller and have playlist on internal as audit, merge audit or telefyna
+- [ ] fix relaunching app on icon press on tv
 - [ ] Add delay to playlist
 - [ ] add resuming_one category of playlist which plays one program only and resumes_next
 - [ ] 3ABN: install programs, fillers

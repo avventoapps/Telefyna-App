@@ -10,9 +10,16 @@
         android:id="@+id/topLogo"
         android:layout_width="@dimen/tvLogoWidth"
         android:layout_height="@dimen/tvLogoHeight"
-        android:paddingRight="@dimen/tvLogPadding"
+        android:paddingRight="@dimen/tvLogoPadding"
         android:layout_alignParentRight="true"
         android:visibility="gone" />
+
+    <VideoView
+        android:id="@+id/lowerThird"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/lowerThirdHeight"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"/>
 
     <com.vinay.ticker.lib.TickerView
         android:id="@+id/tickerView"
@@ -22,18 +29,11 @@
         android:layout_marginBottom="@dimen/tvGraphicsPadding"
         android:visibility="gone"/>
 
-    <VideoView
-        android:id="@+id/lowerThird"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/tvLogoHeight"
-        android:layout_alignParentBottom="true"
-        android:visibility="gone"/>
-
     <ImageView
         android:id="@+id/bottomLogo"
         android:layout_width="@dimen/tvLogoWidth"
         android:layout_height="@dimen/tvLogoHeight"
-        android:paddingRight="@dimen/tvLogPadding"
+        android:paddingRight="@dimen/tvLogoPadding"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:visibility="gone" />

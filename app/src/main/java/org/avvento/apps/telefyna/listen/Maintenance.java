@@ -68,6 +68,7 @@ public class Maintenance {
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void schedule() {
         Config config = Monitor.instance.getConfiguration();
+
         if (config != null) {
             Playlist[] playlists = config.getPlaylists();
             List<String> starts = new ArrayList<>();
@@ -79,10 +80,12 @@ public class Maintenance {
                     if (playlist.getType().equals(Playlist.Type.ONLINE)) {
                         programs.add(new Program(playlist.getName(), MediaItem.fromUri(playlist.getUrlOrFolder())));
                     } else {
-                        File localPlaylistFolder = Monitor.instance.getDirectoryToPlaylist(playlist.getUrlOrFolder());
-                        if (localPlaylistFolder.exists() && localPlaylistFolder.listFiles().length > 0) {
-                            boolean addedFirstItem = false;
-                            Utils.setupLocalPrograms(programs, localPlaylistFolder, addedFirstItem);
+                        for(int i = 0; i < playlist.getUrlOrFolder().split("#").length; i++) {
+                            File localPlaylistFolder = Monitor.instance.getDirectoryFromPlaylist(playlist, i);
+                            if (localPlaylistFolder.exists() && localPlaylistFolder.listFiles().length > 0) {
+                                boolean addedFirstItem = false;
+                                Utils.setupLocalPrograms(programs, localPlaylistFolder, addedFirstItem, playlist);
+                            }
                         }
                     }
                 } else {
@@ -104,7 +107,10 @@ public class Maintenance {
         // was scheduled, remove existing playlist to reschedule a new later one
         String start = playlist.getStart();
         if (starts.contains(start)) {
-            Monitor.instance.getAlarmManager().cancel(pendingIntents.get(start));
+            PendingIntent operation = pendingIntents.get(start);
+            if(operation != null) {
+                Monitor.instance.getAlarmManager().cancel(operation);
+            }
             startedSlotsToday.remove(start);
             starts.remove(start);
         }

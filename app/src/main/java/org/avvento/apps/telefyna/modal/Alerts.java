@@ -8,6 +8,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class Alerts {
-    private Emailer emailer;
+    private Mailer mailer;
     private Receivers[] subscribers;
 }

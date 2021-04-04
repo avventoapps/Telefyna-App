@@ -21,7 +21,8 @@ public class AuditLog {
 
         //scheduler
         PLAYLIST(SPLITTER + "[ Preparing to play playlist: %s: %s"),
-        PLAYLIST_PLAY("Playlist: %s Playing from: %s %s"),
+        PLAYLIST_PLAY("Playing Playlist: %s from: %s %s"),
+        PLAYLIST_SWITCH("Switching to Playlist: %s from: %s %s"),
         PLAYLIST_EMPTY_PLAY(SPLITTER + "Attempted to play an empty playlist: %s"),
         PLAYLIST_MODIFIED("Playlist: %s is resetting resuming since it was modified %s seconds ago"),
         PLAYLIST_ITEM_CHANGE("Playing playlist: %s now playing program: %s"),
@@ -34,8 +35,9 @@ public class AuditLog {
         LOWER_THIRD_OFF("Turning OFF lower third"),
 
         // system
-        EMAIL("Sending email: %s to: %s %s"),
-        NO_INTERNET("%s");
+        EMAIL("Sending email: '%s' to: %s %s"),
+        NO_INTERNET("%s"),
+        EMPTY_FILLERS("There are no fillers installed");
 
         private String message;
 
@@ -49,7 +51,7 @@ public class AuditLog {
 
         public Category getCategory() {
             Event[] admins = new Event[]{HEARTBEAT, KEY_PRESS, CONFIGURATION, MAINTENANCE, METRICS, ERROR, CACHE_NOW_PLAYING_RESUME, RETRIEVE_NOW_PLAYING_RESUME, STUCK};
-            Event[] schedulers = new Event[]{PLAYLIST, PLAYLIST_PLAY, PLAYLIST_EMPTY_PLAY, PLAYLIST_MODIFIED, PLAYLIST_ITEM_CHANGE, PLAYLIST_COMPLETED, DISPLAY_LOGO_OFF, DISPLAY_LOGO_ON, DISPLAY_NEWS_ON, DISPLAY_NEWS_OFF, LOWER_THIRD_ON, LOWER_THIRD_OFF};
+            Event[] schedulers = new Event[]{PLAYLIST, PLAYLIST_PLAY, PLAYLIST_SWITCH, PLAYLIST_EMPTY_PLAY, PLAYLIST_MODIFIED, PLAYLIST_ITEM_CHANGE, PLAYLIST_COMPLETED, DISPLAY_LOGO_OFF, DISPLAY_LOGO_ON, DISPLAY_NEWS_ON, DISPLAY_NEWS_OFF, LOWER_THIRD_ON, LOWER_THIRD_OFF};
 
             if(Arrays.asList(admins).contains(this)) {
                 return Category.ADMIN;

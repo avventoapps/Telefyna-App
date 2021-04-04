@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Emailer {
+public class Mailer {
     private String email;
     private String pass;
     private String host = "smtp.gmail.com";

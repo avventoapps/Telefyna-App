@@ -42,7 +42,7 @@ public class Mail {
     public Mail(AuditAlert auditAlert) {
         this.auditAlert = auditAlert;
         emailProperties = System.getProperties();
-        emailProperties.put("mail.smtp.port",  auditAlert.getAlerts().getEmailer().getPort());
+        emailProperties.put("mail.smtp.port",  auditAlert.getAlerts().getMailer().getPort());
         emailProperties.put("mail.smtp.auth", "true");
         emailProperties.put("mail.smtp.starttls.enable", "true");
     }
@@ -110,7 +110,7 @@ public class Mail {
         try {
             createEmailMessage(receivers, draft);
             Transport transport = mailSession.getTransport("smtp");
-            transport.connect(auditAlert.getAlerts().getEmailer().getHost(), draft.getFrom(), decodePass(draft.getPass()));
+            transport.connect(auditAlert.getAlerts().getMailer().getHost(), draft.getFrom(), decodePass(draft.getPass()));
             transport.sendMessage(emailMessage, emailMessage.getAllRecipients());
             transport.close();
             Logger.log(AuditLog.Event.EMAIL, draft.getSubject(), receivers.getEmails(), "SUCCEEDED");
@@ -121,10 +121,10 @@ public class Mail {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void sendEmail() {
-        if(auditAlert != null && auditAlert.getEvent() != null && auditAlert.getAlerts() != null && auditAlert.getAlerts().getEmailer() != null) {
+        if(auditAlert != null && auditAlert.getEvent() != null && auditAlert.getAlerts() != null && auditAlert.getAlerts().getMailer() != null) {
             Draft draft = new Draft();
-            draft.setFrom(auditAlert.getAlerts().getEmailer().getEmail());
-            draft.setPass(auditAlert.getAlerts().getEmailer().getPass());
+            draft.setFrom(auditAlert.getAlerts().getMailer().getEmail());
+            draft.setPass(auditAlert.getAlerts().getMailer().getPass());
             draft.setSubject(String.format("%s %s %s Alert: %s", Logger.getToday(), Monitor.instance.getConfiguration().getName(), auditAlert.getEvent().getCategory(), auditAlert.getEvent().name()));
 
             for(Receivers receivers : auditAlert.getAlerts().getSubscribers()) {

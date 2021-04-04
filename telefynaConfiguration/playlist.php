@@ -12,9 +12,13 @@
 <?php include 'playlistType.php';?>
 <div class="section action">
 	<label ng-if="playlist.type == 'ONLINE'">* Stream URL *</label>
-	<label ng-if="playlist.type != 'ONLINE'">* Local folder name *</label>
+	<label ng-if="playlist.type != 'ONLINE'">* Local folder name, separate with # to use additional programs in other folders *</label>
 	<input class="form-control" ng-model="playlist.urlOrFolder" required type="text">
 </div>
+<div class="section action" ng-if="playlist.type != 'ONLINE'">
+	<label class="checkbox-inline"><input ng-model="playlist.usingExternalStorage" type="checkbox"> Using external Storage</label>
+</div>
+<div ng-if="playlist.usingExternalStorage == true">playlist, bumper and lowerThird folders will be retrived from the /telefyna folder in SDCard/USB drive attached if any exists else Internal storage</div>
 <div class="section action select-color">Preview Color
 	<select class="color-selector" ng-change="changeSelectedColor()" ng-model="playlist.color">
 		<option data-color="#00cc99" value="#00cc99"></option>
@@ -43,10 +47,10 @@
 		<option data-color="#607d8b" value="#607d8b"></option>
 	</select>
 </div>
-<div class="section action">
+<div class="section action" ng-if="playlist.type == 'LOCAL_SEQUENCED' || playlist.type == 'LOCAL_RANDOMIZED'">
 	<label class="checkbox-inline"><input ng-model="playlist.playingGeneralBumpers" type="checkbox"> Playing General Bumpers</label>
 </div>
-<div class="section action">Special Bumper folder name
+<div class="section action" ng-if="playlist.type == 'LOCAL_SEQUENCED' || playlist.type == 'LOCAL_RANDOMIZED'">Special Bumper folder name
 	<input class="form-control" ng-model="playlist.specialBumperFolder" type="text">
 </div>
 								

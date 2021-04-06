@@ -279,8 +279,10 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     }
 
     private SimpleExoPlayer buildPlayer() {
+        DefaultLoadControl.Builder builder = new DefaultLoadControl.Builder();
         DefaultRenderersFactory factory = new DefaultRenderersFactory(instance).setEnableAudioTrackPlaybackParams(true);
-        SimpleExoPlayer player = new SimpleExoPlayer.Builder(instance, factory).build();
+        builder.setBufferDurationsMs(DefaultLoadControl.DEFAULT_MIN_BUFFER_MS, DefaultLoadControl.DEFAULT_MIN_BUFFER_MS + getConfiguration().getInternetWait() * 1000, DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_MS, DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS);
+        SimpleExoPlayer player = new SimpleExoPlayer.Builder(instance, factory).setLoadControl(builder.build()).build();
         return player;
     }
 
@@ -446,6 +448,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                 current.setPlayWhenReady(false);
                 current.stop();
                 current.release();
+                current = null;
             }
             playerView.setPlayer(player);
         }
@@ -471,6 +474,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
             if (mMediaPlayer != null) {
                 mMediaPlayer.reset();
                 mMediaPlayer.release();
+                mMediaPlayer = null;
             }
         }
         return duration;

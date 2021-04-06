@@ -3,7 +3,20 @@ c# Telefyna Configuration
 This project contains a client side application for managing Telefyna's configurations which includes programming/scheduling
 
 ## TODO
-- [ ] first play if scheduled resuming one doesn't show tickers on next resume
+- [ ] fix fillers, music is played first, 
+- [ ] first resuming one is skipped
+- [ ] fix audio delay: https://stackoverflow.com/questions/63754900/exoplayer-mediaplayer-android-delay-applying-playbackparameters
+    - reinitiate player on every play/switch
+    - parhaps that ensulo video drops frames etc which affects encoding/decoding
+- [ ] changing playlist active/graphics should instantly change all scheduled ones. add a function to do this and send event to it
+- [ ] fix ERROR: java.lang.IllegalArgumentException: Unexpected runtime error immediately after switching 
+    - added a quick way out, ensure it causes no delays whatsover
+- preview, ensure last schedule is showed
+- remove bumpers section from all resuming
+- seems sequency transitioning is ordered in reverse, investigate and fix
+- CREATE playlist should position it immediately before schedules in positioning bot just as last item
+
+
 - [ ] Bug: one message in ticket hangs on the screen, tickerView: fix with one message
 - [ ] support bumpers for all local programs
 - [ ] fix readme on web config

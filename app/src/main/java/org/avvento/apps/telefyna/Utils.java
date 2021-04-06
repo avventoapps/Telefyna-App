@@ -41,14 +41,16 @@ public class Utils {
         }
     }
 
-    public static void setupLocalPrograms(List<Program> programs, File fileOrFolder, boolean addedFirstItem, Playlist playlist) {
+    public static void setupLocalPrograms(List<Program> programs, File fileOrFolder, boolean addedFirstItem, Playlist playlist, boolean orderPrograms) {
         if (fileOrFolder.exists()) {
             File[] fileOrFolderList = fileOrFolder.listFiles();
-            Arrays.sort(fileOrFolderList);// ordering programs alphabetically
+            if(orderPrograms) {
+                Arrays.sort(fileOrFolderList);// ordering programs alphabetically
+            }
             for (int j = 0; j < fileOrFolderList.length; j++) {
                 File file = fileOrFolderList[j];
                 if (file.isDirectory()) {
-                    setupLocalPrograms(programs, file, addedFirstItem, playlist);
+                    setupLocalPrograms(programs, file, addedFirstItem, playlist, orderPrograms);
                 } else {
                     if (j == 0 && !addedFirstItem) {// first in the folder if not yet addedFirstItem
                         programs.add(0, extractProgramFromFile(file, playlist.isUsingExternalStorage()));

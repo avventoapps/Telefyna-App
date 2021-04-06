@@ -81,10 +81,12 @@ public class Maintenance {
                         programs.add(new Program(playlist.getName(), MediaItem.fromUri(playlist.getUrlOrFolder())));
                     } else {
                         for(int i = 0; i < playlist.getUrlOrFolder().split("#").length; i++) {
+                            List<Program> pgms = new ArrayList<>();
                             File localPlaylistFolder = Monitor.instance.getDirectoryFromPlaylist(playlist, i);
                             if (localPlaylistFolder.exists() && localPlaylistFolder.listFiles().length > 0) {
                                 boolean addedFirstItem = false;
-                                Utils.setupLocalPrograms(programs, localPlaylistFolder, addedFirstItem, playlist);
+                                Utils.setupLocalPrograms(pgms, localPlaylistFolder, addedFirstItem, playlist, false);
+                                programs.addAll(pgms);
                             }
                         }
                     }

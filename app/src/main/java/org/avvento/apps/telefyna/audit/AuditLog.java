@@ -15,7 +15,7 @@ public class AuditLog {
         MAINTENANCE("Ran maintenance"),
         METRICS("%s"),
         ERROR("%s"),
-        CACHE_NOW_PLAYING_RESUME("Playlist: %s will next be resuming program: %s at: %d"),
+        CACHE_NOW_PLAYING_RESUME("Playlist: %s will next be resuming program: %s at: %s"),
         RETRIEVE_NOW_PLAYING_RESUME("Resuming Playlist: %s program: %s at: %d"),
         STUCK("Relaunching having been stuck for %d seconds"),
 

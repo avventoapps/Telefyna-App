@@ -1,7 +1,7 @@
 {
   "name": "3ABN-TV Uganda",
   "version": "1.1",
-  "lastModified": "04/04/2021, 18:27:09",
+  "lastModified": "05/04/2021, 23:19:59",
   "automationDisabled": false,
   "notificationsDisabled": true,
   "internetWait": 30,
@@ -135,20 +135,21 @@
       "color": "#ff6600"
     },
     {
-      "name": "Bwatyo Bwayogera Mukama",
+      "name": "Bwatyo Bwayogera Mukama 1",
       "type": "LOCAL_SEQUENCED",
-      "urlOrFolder": "BwatyoBwayogeraMukama",
+      "urlOrFolder": "BwatyoBwayogeraMukama1",
       "active": true,
       "playingGeneralBumpers": true,
       "color": "#66ff33",
       "graphics": {
-        "displayLogo": true,
+        "displayLogo": false,
         "logoPosition": "TOP",
         "news": {
           "replays": 0
         },
         "lowerThirds": []
-      }
+      },
+      "specialBumperFolder": "BwatyoBwayogeraMukama"
     },
     {
       "name": "Manya Ebiro",
@@ -202,7 +203,7 @@
       "name": "Ensulo ey'enkya",
       "type": "LOCAL_RESUMING_ONE",
       "urlOrFolder": "EnsuloEyenkya",
-      "active": true,
+      "active": false,
       "playingGeneralBumpers": true,
       "specialBumperFolder": "EnsuloEyenkya",
       "color": "#00cc99",
@@ -229,12 +230,13 @@
           "replays": 0
         },
         "lowerThirds": []
-      }
+      },
+      "specialBumperFolder": "BwatyoBwayogeraMukama"
     },
     {
       "name": "Bwatyo Bwayogera Mukama Vespas",
       "type": "LOCAL_SEQUENCED",
-      "urlOrFolder": "BwatyoBwayogeraMukamaDevine",
+      "urlOrFolder": "BwatyoBwayogeraMukamaVespas",
       "active": true,
       "playingGeneralBumpers": true,
       "color": "#66ff33",
@@ -245,7 +247,93 @@
           "replays": 0
         },
         "lowerThirds": []
-      }
+      },
+      "specialBumperFolder": "BwatyoBwayogeraMukama"
+    },
+    {
+      "name": "Bwatyo Bwayogera Mukama 2",
+      "type": "LOCAL_SEQUENCED",
+      "urlOrFolder": "BwatyoBwayogeraMukama2",
+      "active": true,
+      "playingGeneralBumpers": true,
+      "color": "#66ff33",
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "specialBumperFolder": "BwatyoBwayogeraMukama"
+    },
+    {
+      "name": "Bwatyo Bwayogera Mukama 3",
+      "type": "LOCAL_SEQUENCED",
+      "urlOrFolder": "BwatyoBwayogeraMukama3",
+      "active": true,
+      "playingGeneralBumpers": true,
+      "color": "#66ff33",
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "specialBumperFolder": "BwatyoBwayogeraMukama"
+    },
+    {
+      "name": "Bwatyo Bwayogera Mukama 4",
+      "type": "LOCAL_SEQUENCED",
+      "urlOrFolder": "BwatyoBwayogeraMukama4",
+      "active": true,
+      "playingGeneralBumpers": true,
+      "color": "#66ff33",
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "specialBumperFolder": "BwatyoBwayogeraMukama"
+    },
+    {
+      "name": "Bwatyo Bwayogera Mukama 5",
+      "type": "LOCAL_SEQUENCED",
+      "urlOrFolder": "BwatyoBwayogeraMukama5",
+      "active": true,
+      "playingGeneralBumpers": true,
+      "color": "#66ff33",
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "specialBumperFolder": "BwatyoBwayogeraMukama"
+    },
+    {
+      "name": "Bwatyo Bwayogera Mukama 7",
+      "type": "LOCAL_SEQUENCED",
+      "urlOrFolder": "BwatyoBwayogeraMukama7",
+      "active": true,
+      "playingGeneralBumpers": true,
+      "color": "#66ff33",
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "specialBumperFolder": "BwatyoBwayogeraMukama"
     },
     {
       "schedule": "6",
@@ -425,9 +513,27 @@
       "color": "#990099"
     },
     {
-      "schedule": 14,
+      "schedule": 6,
       "start": "06:00",
-      "name": "Ensulo ey'enkya",
+      "name": "PraiseHimMusic",
+      "active": true,
+      "days": [
+        "5",
+        "6"
+      ],
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "color": "#ff6600"
+    },
+    {
+      "schedule": "4",
+      "name": "DareToDream",
       "active": true,
       "graphics": {
         "displayLogo": false,
@@ -438,6 +544,17 @@
         "lowerThirds": []
       },
       "days": [
+        "1"
+      ],
+      "start": "06:00",
+      "color": "#990099"
+    },
+    {
+      "schedule": 14,
+      "start": "06:30",
+      "name": "Ensulo ey'enkya",
+      "active": false,
+      "days": [
         "1",
         "2",
         "3",
@@ -445,7 +562,14 @@
         "5",
         "6"
       ],
-      "color": "#00cc99"
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      }
     },
     {
       "schedule": "0",
@@ -1370,29 +1494,6 @@
       "color": "#66ff33"
     },
     {
-      "schedule": "7",
-      "name": "Bwatyo Bwayogera Mukama",
-      "active": true,
-      "graphics": {
-        "displayLogo": false,
-        "logoPosition": "TOP",
-        "news": {
-          "replays": 0
-        },
-        "lowerThirds": []
-      },
-      "days": [
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "7"
-      ],
-      "start": "20:00",
-      "color": "#66ff33"
-    },
-    {
       "schedule": "12",
       "name": "Obutonde bwogera",
       "active": true,
@@ -1409,6 +1510,114 @@
       ],
       "start": "20:00",
       "color": "#28a745"
+    },
+    {
+      "schedule": "7",
+      "name": "Bwatyo Bwayogera Mukama 1",
+      "active": true,
+      "graphics": {
+        "displayLogo": true,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "days": [
+        "1"
+      ],
+      "start": "20:00",
+      "color": "#66ff33"
+    },
+    {
+      "schedule": "17",
+      "name": "Bwatyo Bwayogera Mukama 2",
+      "active": true,
+      "graphics": {
+        "displayLogo": true,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "days": [
+        "2"
+      ],
+      "start": "20:00",
+      "color": "#66ff33"
+    },
+    {
+      "schedule": "18",
+      "name": "Bwatyo Bwayogera Mukama 3",
+      "active": true,
+      "graphics": {
+        "displayLogo": true,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "start": "20:00",
+      "days": [
+        "3"
+      ],
+      "color": "#66ff33"
+    },
+    {
+      "schedule": "19",
+      "name": "Bwatyo Bwayogera Mukama 4",
+      "active": true,
+      "graphics": {
+        "displayLogo": true,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "days": [
+        "4"
+      ],
+      "start": "20:00",
+      "color": "#66ff33"
+    },
+    {
+      "schedule": "20",
+      "name": "Bwatyo Bwayogera Mukama 5",
+      "active": true,
+      "graphics": {
+        "displayLogo": true,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "days": [
+        "5"
+      ],
+      "start": "20:00",
+      "color": "#66ff33"
+    },
+    {
+      "schedule": "21",
+      "name": "Bwatyo Bwayogera Mukama 7",
+      "active": true,
+      "graphics": {
+        "displayLogo": true,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "days": [
+        "7"
+      ],
+      "start": "20:00",
+      "color": "#66ff33"
     },
     {
       "schedule": "13",

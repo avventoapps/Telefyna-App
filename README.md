@@ -59,8 +59,8 @@ For any questions or queries, please receivers the support team at apps@avventoh
 
 
 ## TODO
-- [ ] add support for automatic driver syncing
-- [ ] fix remote control key events listening
+- [ ] add support for automatic drive syncing
+- [ ] fix remote control key events listening not working
 - [ ] add background checker if player is active and if it'sn'r for 1 minute play/switch again
 - [ ] Urgent; INVESTIGATE: connecting bluetooth plays fillers? 17 Mar 21 18:15, also player switches but plays only audio 18:30
 - [x] redo demo

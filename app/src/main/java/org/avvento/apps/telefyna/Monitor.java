@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.VideoView;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.Player;
@@ -127,28 +128,28 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     }
 
     private void resetTrackingNowPlaying(int index) {
-        trackingNowPlaying(index, 0, 0);
+        trackingNowPlaying(index, 0, 0, false);
     }
 
     private long playlistModified(int index) {
         return getLastModifiedFor(index) - getSharedPlaylistLastModified(index);
     }
 
-    private void trackingNowPlaying(Integer index, int at, long seekTo) {
-        if (isResuming(playlistByIndex.get(index))) {
-            cachePlayingAt(index, at, seekTo);
+    private void trackingNowPlaying(Integer index, int at, long seekTo, boolean noProgramTransition) {
+        if (!Playlist.Type.ONLINE.equals(playlistByIndex.get(index).getType())) {
+            cachePlayingAt(index, at, seekTo, noProgramTransition);
         }
     }
 
-    private void cachePlayingAt(Integer index, int at, long seekTo) {
+    private void cachePlayingAt(Integer index, int at, long seekTo, boolean noProgramTransition) {
         String programName = getMediaItemName(programItems.get(at));
         if (StringUtils.isNotBlank(programName)) {// exclude bumpers
             SharedPreferences.Editor editor = sharedpreferences.edit();
-            editor.putInt(getPlaylistPlayKey(index), at);
+            editor.putInt(getPlaylistPlayKey(index), noProgramTransition ? at - 1 : at);
             editor.putLong(getPlaylistSeekTo(index), seekTo);
             editor.putLong(getPlaylistLastModified(index), getLastModifiedFor(index));
             editor.commit();
-            Logger.log(AuditLog.Event.CACHE_NOW_PLAYING_RESUME, getPlayingAtIndexLabel(index), programName, seekTo);
+            Logger.log(AuditLog.Event.CACHE_NOW_PLAYING_RESUME, getPlayingAtIndexLabel(index), programName, at + "-" + seekTo);
         }
     }
 
@@ -269,24 +270,23 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         maintenance.run();
     }
 
-    private void cacheNowPlaying() {
-        PlayerView playerView = getPlayerView();
+    private void cacheNowPlaying(boolean noProgramTransition) {
+        PlayerView playerView = getPlayerView(false);
         Integer now = getPlaylistIndex(nowPlayingIndex);
         if (now != null && playerView != null && player != null && now != null) {
-            trackingNowPlaying(now, player.getCurrentWindowIndex(), player.getCurrentPosition());
+            trackingNowPlaying(now, player.getCurrentWindowIndex(), player.getCurrentPosition(), noProgramTransition);
         }
     }
 
     private SimpleExoPlayer buildPlayer() {
-        DefaultLoadControl.Builder builder = new DefaultLoadControl.Builder();
-        builder.setBufferDurationsMs(DefaultLoadControl.DEFAULT_MIN_BUFFER_MS, DefaultLoadControl.DEFAULT_MIN_BUFFER_MS + getConfiguration().getInternetWait() * 1000, DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_MS, DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS);
-        SimpleExoPlayer player = new SimpleExoPlayer.Builder(instance).setLoadControl(builder.build()).build();
+        DefaultRenderersFactory factory = new DefaultRenderersFactory(instance).setEnableAudioTrackPlaybackParams(true);
+        SimpleExoPlayer player = new SimpleExoPlayer.Builder(instance, factory).build();
         return player;
     }
 
     private void addBumpers(List<Program> bumpers, File bumperFolder, boolean addedFirstItem) {
         if (bumperFolder.exists() && bumperFolder.listFiles().length > 0) {
-            Utils.setupLocalPrograms(bumpers, bumperFolder, addedFirstItem, currentPlaylist);
+            Utils.setupLocalPrograms(bumpers, bumperFolder, addedFirstItem, currentPlaylist, true);
             Collections.reverse(bumpers);
         }
     }
@@ -365,21 +365,22 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                         if (!Playlist.Type.ONLINE.equals(currentPlaylist.getType())) {
                             // resume local resumable programs
                             if (isResuming(currentPlaylist)) {
-                                int nextProgram = getSharedPlaylistMediaItem(getPlaylistIndex(index));
-                                long nextSeekTo = getSharedPlaylistSeekTo(getPlaylistIndex(index));
+                                Integer previousProgram = getSharedPlaylistMediaItem(getPlaylistIndex(index));
+                                long previousSeekTo = getSharedPlaylistSeekTo(getPlaylistIndex(index));
                                 if (currentPlaylist.getType().equals(Playlist.Type.LOCAL_RESUMING_NEXT) || currentPlaylist.getType().equals(Playlist.Type.LOCAL_RESUMING_ONE)) {
-                                    if (nextProgram == programItems.size() - 1) {// last
-                                        nextProgram = 0;
+                                    // previousProgram == 0 when it was reset
+                                    if (previousProgram == null || previousProgram == 0 || previousProgram == programItems.size() - 1) {// last
+                                        previousProgram = 0;
                                     } else {
-                                        nextProgram++; // next program excluding bumpers
+                                        previousProgram++; // next program excluding bumpers
                                     }
-                                    nextSeekTo = 0;
+                                    previousSeekTo = 0;
                                 } else if (currentPlaylist.getType().equals(Playlist.Type.LOCAL_RESUMING_SAME)) {
-                                    nextSeekTo = 0;
+                                    previousSeekTo = 0;
                                 }
-                                nowProgram = nextProgram;
-                                nowPosition = nextSeekTo;
-                                Logger.log(AuditLog.Event.RETRIEVE_NOW_PLAYING_RESUME, currentPlaylist.getName(), programs.get(nextProgram).getName(), nextSeekTo);
+                                nowProgram = previousProgram;
+                                nowPosition = previousSeekTo;
+                                Logger.log(AuditLog.Event.RETRIEVE_NOW_PLAYING_RESUME, currentPlaylist.getName(), programs.get(previousProgram).getName(), previousSeekTo);
                             } else {
                                 String bumperFolder = getBumperDirectory(currentPlaylist.isUsingExternalStorage());
                                 List<Program> generalBumpers = new ArrayList<>(), specialBumpers = new ArrayList<>(), playListBumpers = new ArrayList<>();
@@ -419,15 +420,16 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                         player.setMediaItems(programItems);
                         player.seekTo(nowProgram, nowPosition);
                         player.prepare();
-                        Player current = getPlayerView().getPlayer();
+                        Player current = getPlayerView(true).getPlayer();
                         if (current != null) {
                             current.removeListener(instance);
                         }
+
                         player.addListener(instance);
                         player.setPlayWhenReady(true);
                         Logger.log(isCurrentSlot ? AuditLog.Event.PLAYLIST_PLAY : AuditLog.Event.PLAYLIST_SWITCH, getNowPlayingPlaylistLabel(), Utils.formatDuration(nowPosition), getMediaItemName(programItems.get(nowProgram)));
                         // log now playing
-                        cacheNowPlaying();
+                        cacheNowPlaying(false);
                         triggerGraphics(nowPosition);
                     }
                 }
@@ -437,7 +439,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
 
     @Override
     public void onIsPlayingChanged(boolean isPlaying) {
-        PlayerView playerView = getPlayerView();
+        PlayerView playerView = getPlayerView(false);
         Player current = playerView.getPlayer();
         if (current == null || !player.equals(current)) {// change of player is proof of a switch
             if (current != null) {
@@ -491,9 +493,12 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         return null;
     }
 
-    private PlayerView getPlayerView() {
+    private PlayerView getPlayerView(boolean reset) {
         PlayerView playerView = findViewById(R.id.player);
-        playerView.showController();
+        if(reset) {
+            playerView.showController();
+            playerView.invalidate();
+        }
         return playerView;
     }
 
@@ -513,21 +518,11 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     private String getMediaItemName(MediaItem mediaItem) {
         String name = "";
         try {
-            name = URLDecoder.decode(mediaItem.mediaId.replace("file://", "").replace(getProgramsFolderPath(currentPlaylist.isUsingExternalStorage()), ""), "utf-8");
+            name = URLDecoder.decode(mediaItem.mediaId.replace("file://", ""), "utf-8");
         } catch (UnsupportedEncodingException e) {
             Logger.log(AuditLog.Event.ERROR, e.getMessage());
         }
         return name;
-    }
-
-    private boolean completedBumpers() {
-        if(getPlayerView().getPlayer() != null) {
-            int item = getPlayerView().getPlayer().getCurrentPeriodIndex() - 1;// last item index
-            if (currentBumpers != null && !currentBumpers.isEmpty() && item <= currentBumpers.size() - 1) {
-                return false;
-            }
-        }
-        return true;
     }
 
     @Override
@@ -536,7 +531,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
             Playlist playlist = playlistByIndex.get(getPlaylistIndex(nowPlayingIndex));
             if(playlist.getType().equals(Playlist.Type.LOCAL_RESUMING_ONE)) {// first program completed
                 // skip playing
-                Player current = getPlayerView().getPlayer();
+                Player current = getPlayerView(false).getPlayer();
                 if (current != null) {
                     current.stop();
                     current.release();
@@ -544,7 +539,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                     switchNow(getSecondDefaultIndex(), false);
                 }
             } else {
-                cacheNowPlaying();
+                cacheNowPlaying(false);
                 Logger.log(AuditLog.Event.PLAYLIST_ITEM_CHANGE, getNowPlayingPlaylistLabel(), getMediaItemName(mediaItem));
             }
         }
@@ -554,18 +549,14 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     @Override
     public void onPlayerError(ExoPlaybackException error) {
         Logger.log(AuditLog.Event.ERROR, String.format("%s: %s", error.getCause().toString(), error.getMessage()));
-        cacheNowPlaying();
+        cacheNowPlaying(currentPlaylist.getType().name().startsWith("LOCAL_RESUMING"));
         // keep reloading existing program if internet is on and off
         if (error.getCause().getCause() instanceof UnknownHostException || error.getCause().getCause() instanceof IOException) {
             Logger.log(AuditLog.Event.NO_INTERNET, "Failing to play program because of no internet connection");
-            reload();
+            // this will wait for set time on config before reloading
+        } else {
+            switchNow(nowPlayingIndex, false);// replay the same program
         }
-    }
-
-    // TODO reload?
-    private void reload() {
-        player.prepare();
-        player.play();
     }
 
     private String getPlayingAtIndexLabel(Integer index) {

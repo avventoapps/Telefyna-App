@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Build;
 
 import org.avvento.apps.telefyna.Monitor;
+import org.avvento.apps.telefyna.audit.AuditLog;
+import org.avvento.apps.telefyna.audit.Logger;
 
 import androidx.annotation.RequiresApi;
 
@@ -15,6 +17,10 @@ public class PlaylistScheduler extends BroadcastReceiver {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onReceive(Context context, Intent intent) {
-        Monitor.instance.switchNow(intent.getIntExtra(PLAYLIST_INDEX, Monitor.instance.getFirstDefaultIndex()), false);
+        try {
+            Monitor.instance.switchNow(intent.getIntExtra(PLAYLIST_INDEX, Monitor.instance.getFirstDefaultIndex()), false);
+        } catch (Exception e) {
+            Logger.log(AuditLog.Event.ERROR, e.getMessage());
+        }
     }
 }

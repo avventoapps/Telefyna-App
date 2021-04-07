@@ -49,6 +49,9 @@ import org.avvento.apps.telefyna.modal.News;
 import org.avvento.apps.telefyna.modal.Playlist;
 import org.avvento.apps.telefyna.modal.Program;
 import org.avvento.apps.telefyna.modal.Seek;
+import org.videolan.libvlc.LibVLC;
+import org.videolan.libvlc.Media;
+import org.videolan.libvlc.util.VLCVideoLayout;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -268,6 +271,31 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         programsByIndex = new ArrayList<>();
         playlistByIndex = new ArrayList<>();
         maintenance.run();
+        vlcPlayer();
+    }
+
+    private void vlcPlayer() {
+
+        LibVLC mLibVLC = new LibVLC(instance);
+        VLCVideoLayout videoLayout = findViewById(R.id.vlc);
+        org.videolan.libvlc.MediaPlayer mp = new org.videolan.libvlc.MediaPlayer(mLibVLC);
+        File file = new File(getPlaylistDirectory(false) + File.separator + "BwatyoBwayogeraMukama1/Bwatyo_bwayogera_Mukama-U_000001-Amanyi_g'enjiri.mp4");
+        //mp.play(Uri.fromFile(file));
+        // srt://173.234.28.109:55027
+        // https://moiptvhls-i.akamaihd.net/hls/live/652312/secure/master.m3u8
+        // https://www.youtube.com/watch?v=9AU641IUrYI
+        //args.addAll(Arrays.asList("-vvv", "--ffmpeg-hw", "--live-caching=1000", "--rtsp-caching=1000", "--realrtsp-caching=1000", "--skip-frames", "--drop-late-frames"));
+        mp.setAspectRatio("16:9");
+        Media media = new Media(mLibVLC, Uri.parse("https://moiptvhls-i.akamaihd.net/hls/live/652312/secure/master.m3u8"));
+        //Media media = new Media(mLibVLC, Uri.fromFile(file));
+        media.addOption(":prefetch-buffer-size=1024");
+        media.addOption(":network-caching=100000");
+        media.addOption(":clock-jitter=0");
+        media.addOption(":clock-synchro=0");
+        media.addOption(":fullscreen");
+        mp.play(media);
+        mp.attachViews(videoLayout, null, false, true);
+
     }
 
     private void cacheNowPlaying(boolean noProgramTransition) {
@@ -279,10 +307,10 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     }
 
     private SimpleExoPlayer buildPlayer() {
+        int delay = getConfiguration().getInternetWait() * 1000;
         DefaultLoadControl.Builder builder = new DefaultLoadControl.Builder();
-        DefaultRenderersFactory factory = new DefaultRenderersFactory(instance).setEnableAudioTrackPlaybackParams(true);
-        builder.setBufferDurationsMs(DefaultLoadControl.DEFAULT_MIN_BUFFER_MS, DefaultLoadControl.DEFAULT_MIN_BUFFER_MS + getConfiguration().getInternetWait() * 1000, DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_MS, DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS);
-        SimpleExoPlayer player = new SimpleExoPlayer.Builder(instance, factory).setLoadControl(builder.build()).build();
+        builder.setBufferDurationsMs(DefaultLoadControl.DEFAULT_MIN_BUFFER_MS + delay, DefaultLoadControl.DEFAULT_MAX_BUFFER_MS + (delay * 2), DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_MS, DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS);
+        SimpleExoPlayer player = new SimpleExoPlayer.Builder(instance).setLoadControl(builder.build()).build();
         return player;
     }
 

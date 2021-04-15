@@ -3,6 +3,10 @@
 	<label class="checkbox-inline">
 		<input ng-model="playlist.active" type="checkbox"> Active</label>
 </div>
+<div class="section action" ng-if="!isEmpty(edit)">
+	<label class="checkbox-inline">
+		<input ng-model="overrideSchedules" type="checkbox"> Override active & Graphics for Schedules</label>
+</div>
 <div class="section action">* Name *
 	<input class="form-control" ng-model="playlist.name" required type="text">
 </div>

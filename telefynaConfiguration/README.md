@@ -3,12 +3,22 @@ c# Telefyna Configuration
 This project contains a client side application for managing Telefyna's configurations which includes programming/scheduling
 
 ## TODO
-- [ ] fix fillers, music is played first, 
-- [ ] first resuming one is skipped
-- [ ] fix audio delay: https://stackoverflow.com/questions/63754900/exoplayer-mediaplayer-android-delay-applying-playbackparameters
+- [ ] scheduling to list playlists first before schedules to avoid messing up ids on delete
+- [x] disable audio alert on remote connection with teamviewer
+- [ ] change audit log file to something like json or better stuff to easily support improved reporting
+- [x] fix fillers, playing international rather
+- [ ] fix ERROR: java.lang.IllegalArgumentException: Unexpected runtime error when switching
+    - prepare();play(); in stuck finder and error
+- [ ] redo external monitor with teamviewer
+- [x] tickerview, support speed selection; slow|current, fast, very fast
+- [x] fix fillers, music is played first, 
+- [x] first resuming one is skipped
+- [x] fix audio delay: https://stackoverflow.com/questions/63754900/exoplayer-mediaplayer-android-delay-applying-playbackparameters
+    - decorder issues
     - reinitiate player on every play/switch
     - parhaps that ensulo video drops frames etc which affects encoding/decoding
-- [ ] changing playlist active/graphics should instantly change all scheduled ones. add a function to do this and send event to it
+- [x] changing playlist active/graphics should instantly change all scheduled ones. add a function to do this and send event to it
+    - used a setting/checkbox to trigger this behavior
 - [ ] fix ERROR: java.lang.IllegalArgumentException: Unexpected runtime error immediately after switching 
     - added a quick way out, ensure it causes no delays whatsover
 - preview, ensure last schedule is showed

@@ -22,6 +22,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
     }
 
     function clearAlerts() {
+        $scope.config.alerts.enabled = true;
         $scope.config.alerts = {};
         $scope.config.alerts.mailer = {};
         $scope.config.alerts.mailer.host = "smtp.gmail.com";
@@ -44,12 +45,14 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
         $scope.playlist.graphics.logoPosition = "TOP";
         $scope.playlist.graphics.news = {};
         $scope.playlist.graphics.news.replays = 0;
+        $scope.playlist.graphics.news.speed = "SLOW";
         $scope.playlist.graphics.lowerThirds = [];
         $scope.lowerThird = {};
         $scope.lowerThird.replays = 0;
     }
 
     function clearInternal() {
+        $scope.overrideSchedules = false;
         $scope.playlist = {};
         $scope.playlist.active = true;
         $scope.playlist.type = "ONLINE";
@@ -207,6 +210,9 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
                 if(!$scope.isEmpty($scope.edit)) {
                     $scope.modifying();
                     overwritePlayList(parseInt($scope.edit), $scope.playlist);
+                    if(!$scope.isEmpty($scope.overrideSchedules)) {
+                        overwriteSchedules(parseInt($scope.edit), $scope.playlist);
+                    }
                     window.localStorage.config = JSON.stringify($scope.config);
                     jQuery("#close-edit").click();
                     $scope.clear();
@@ -365,6 +371,15 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
         } else if(count == 7) {
             return "Saturday";
         }
+    }
+
+    function overwriteSchedules(index, playlist) {
+        angular.forEach($scope.config.playlists, function(p, k) {
+            if(!$scope.isNotScheduled(p) && index == p.schedule) {
+                $scope.config.playlists[k].active = playlist.active;
+                $scope.config.playlists[k].graphics = playlist.graphics;
+            }
+        });
     }
 
     function overwritePlayList(index, playlist) {

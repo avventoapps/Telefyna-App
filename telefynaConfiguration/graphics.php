@@ -1,6 +1,6 @@
 <div class="section action">
 	<label class="checkbox-inline">
-		<input ng-model="playlist.graphics.displayLogo" type="checkbox">Display Logo(telefyna/logo.png)</label>
+		<input ng-model="playlist.graphics.displayLogo" type="checkbox"> Display Logo(telefyna/logo.png)</label>
 	<div>Logo Position
 		<select ng-model="playlist.graphics.logoPosition">
 			<option value="TOP">Top Right</option>
@@ -15,6 +15,13 @@
 		<div>Replays
 			<input ng-model="playlist.graphics.news.replays" type="number">
 		</div>
+		<div>Speed
+        	<select ng-model="playlist.graphics.news.speed">
+        		<option value="SLOW">Slow</option>
+       			<option value="FAST">Fast</option>
+       			<option value="VERY_FAST">Very Fast</option>
+       		</select>
+        </div>
 	</div>
 	<div class="section action table-responsive">Lower thirds
 		<table class="table table-striped">

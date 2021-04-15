@@ -6,6 +6,9 @@
 			    <h5 class="modal-title">Email alerts</h5>
 			</div>
 			<div class="modal-body">
+			    <div class="section action">
+			        <label class="checkbox-inline"><input ng-model="config.alerts.enabled" type="checkbox"> Enabled</label>
+			    </div>
                 <div class="section action">
                     <b>Sender</b><br>
                     Host
@@ -65,7 +68,7 @@
 				<button class="btn btn-danger" id="close-alert" data-dismiss="modal"	ng-click="clear()" type="button">Cancel</button>
 				<button class="btn btn-danger" type="button" ng-disabled="isEmpty(config.alerts.subscribers)" ng-click="deleteReceivers()">Delete Selected Receivers</button>
                 <button class="btn btn-success"  type="button" ng-disabled="isEmpty(alert.emails) || isEmpty(alert.attachConfig) || isEmpty(alert.attachAuditLog) || isEmpty(alert.eventCategory) || invalidSubScriber()" ng-click="addAlert()">Add Receiver</button>
-				<button class="btn btn-success" type="submit" ng-disabled="isEmpty(config.alerts.subscribers)" >Save Sender Password</button>
+				<button class="btn btn-success" type="submit" ng-disabled="isEmpty(config.alerts.subscribers)" >Save</button>
 			</div>
 		</form>
 	</div>

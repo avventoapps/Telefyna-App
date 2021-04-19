@@ -3,13 +3,23 @@ c# Telefyna Configuration
 This project contains a client side application for managing Telefyna's configurations which includes programming/scheduling
 
 ## TODO
+- mon change dare to dream sue challenge repeats at 15:30
+- fix tickers second return start
+- fix 16:30 on Monday switching from network when q/a is ongoing
+- [ ] once internet is back, retrieve active program
+- [ ] unhandled exception restart test
+- [ ] add logo size in the documentations
 - [ ] scheduling to list playlists first before schedules to avoid messing up ids on delete
+- [ ] fix ERROR: java.lang.IllegalArgumentException: Unexpected runtime error when switching
+    - prepare();play(); in stuck finder and error
+- [x] init.txt test | synchronization
+- [ ] redo external monitor with teamviewer
+- [x] fillers switching to international
+- [x] 11:50, change dareToDream, vodoo ...
+- [x] fix tickers only first uses loops
 - [x] disable audio alert on remote connection with teamviewer
 - [ ] change audit log file to something like json or better stuff to easily support improved reporting
 - [x] fix fillers, playing international rather
-- [ ] fix ERROR: java.lang.IllegalArgumentException: Unexpected runtime error when switching
-    - prepare();play(); in stuck finder and error
-- [ ] redo external monitor with teamviewer
 - [x] tickerview, support speed selection; slow|current, fast, very fast
 - [x] fix fillers, music is played first, 
 - [x] first resuming one is skipped

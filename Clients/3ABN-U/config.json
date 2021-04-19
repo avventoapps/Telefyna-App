@@ -1,7 +1,7 @@
 {
   "name": "3ABN-TV Uganda",
   "version": "1.1",
-  "lastModified": "05/04/2021, 23:19:59",
+  "lastModified": "16/04/2021, 09:35:10",
   "automationDisabled": false,
   "notificationsDisabled": true,
   "internetWait": 30,
@@ -25,7 +25,8 @@
         "eventCategory": "ADMIN",
         "emails": "apps@avventohome.org"
       }
-    ]
+    ],
+    "enabled": true
   },
   "playlists": [
     {
@@ -50,12 +51,12 @@
       "name": "Fillers",
       "description": "This is the second default playlist, it plays whenever there is no internet connection",
       "type": "LOCAL_RANDOMIZED",
-      "urlOrFolder": "Filler/nature#Filler/music",
+      "urlOrFolder": "Filler/ads#Filler/nature#Filler/music",
       "usingExternalStorage": true,
       "active": true,
       "playingGeneralBumpers": true,
       "graphics": {
-        "displayLogo": true,
+        "displayLogo": false,
         "logoPosition": "TOP",
         "news": {
           "replays": 0
@@ -132,7 +133,18 @@
       "type": "ONLINE",
       "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/554145/secure/playlist.m3u8",
       "active": true,
-      "color": "#ff6600"
+      "color": "#ff6600",
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 1,
+          "speed": "FAST",
+          "starts": "0#25",
+          "messages": "Olina omukisa okulaba program ezenjawulo; ezobulamu, enyimba, obujulizi, ebiseera ebyomumaaso wano ku 3ABN TV. Jitege ate otegeezeko omulala.\n#Tosubwa program Bwatyo bwayogera mukama buli saawa 2 ezikiro (Sunday - Thursday), 1 ezikiro (Friday).\n#Tosubwa program Yimba Nange nga tukuleetedde Kanyanya SDA church choir ku saawa 3 ezikiro Saturday, Monday ne Wednesday eno\n#Tokwata 3ABN-TV, yakubuzeeko... Kola oba damu Search ku free to air decoder"
+        },
+        "lowerThirds": []
+      }
     },
     {
       "name": "Bwatyo Bwayogera Mukama 1",
@@ -145,11 +157,14 @@
         "displayLogo": false,
         "logoPosition": "TOP",
         "news": {
-          "replays": 0
+          "replays": 1,
+          "messages": "Olina omukisa okulaba program ezenjawulo; ezobulamu, enyimba, obujulizi, ebiseera ebyomumaaso wano ku 3ABN TV. Jitege ate otegeezeko omulala.\n#Tosubwa program Bwatyo bwayogera mukama buli saawa 2 ezikiro (Sunday - Thursday), 1 ezikiro (Friday).\n#Tosubwa program Yimba Nange nga tukuleetedde Kanyanya SDA church choir ku saawa 3 ezikiro Saturday, Monday ne Wednesday eno\n#Tokwata 3ABN-TV, yakubuzeeko... Kola oba damu Search ku free to air decoder",
+          "starts": "0#25#50",
+          "speed": "FAST"
         },
         "lowerThirds": []
       },
-      "specialBumperFolder": "BwatyoBwayogeraMukama"
+      "specialBumperFolder": "Special/BwatyoBwayogeraMukama"
     },
     {
       "name": "Manya Ebiro",
@@ -157,7 +172,15 @@
       "urlOrFolder": "ManyaEbiro",
       "active": true,
       "playingGeneralBumpers": true,
-      "color": "#99ff99"
+      "color": "#99ff99",
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      }
     },
     {
       "name": "Julira Mukama",
@@ -165,7 +188,15 @@
       "urlOrFolder": "JuliraMukama",
       "active": true,
       "playingGeneralBumpers": true,
-      "color": "#ccffcc"
+      "color": "#ccffcc",
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      }
     },
     {
       "name": "Beera Mulamu",
@@ -173,7 +204,15 @@
       "urlOrFolder": "BeeraMulamu",
       "active": true,
       "playingGeneralBumpers": true,
-      "color": "#336600"
+      "color": "#336600",
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      }
     },
     {
       "name": "Yimba Nange",
@@ -181,7 +220,18 @@
       "urlOrFolder": "YimbaNange",
       "active": true,
       "playingGeneralBumpers": true,
-      "color": "#66ffcc"
+      "color": "#66ffcc",
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 1,
+          "messages": "Olina omukisa okulaba program ezenjawulo; ezobulamu, enyimba, obujulizi, ebiseera ebyomumaaso wano ku 3ABN TV. Jitege ate otegeezeko omulala.\n#Tosubwa program Bwatyo bwayogera mukama buli saawa 2 ezikiro (Sunday - Thursday), 1 ezikiro (Friday).\n#Tosubwa program Yimba Nange nga tukuleetedde Kanyanya SDA church choir ku saawa 3 ezikiro Saturday, Monday ne Wednesday eno\n#Tokwata 3ABN-TV, yakubuzeeko... Kola oba damu Search ku free to air decoder",
+          "starts": "0#25#50",
+          "speed": "FAST"
+        },
+        "lowerThirds": []
+      }
     },
     {
       "name": "Obutonde bwogera",
@@ -227,11 +277,14 @@
         "displayLogo": false,
         "logoPosition": "TOP",
         "news": {
-          "replays": 0
+          "replays": 1,
+          "messages": "Olina omukisa okulaba program ezenjawulo; ezobulamu, enyimba, obujulizi, ebiseera ebyomumaaso wano ku 3ABN TV. Jitege ate otegeezeko omulala.\n#Tosubwa program Bwatyo bwayogera mukama buli saawa 2 ezikiro (Sunday - Thursday), 1 ezikiro (Friday).\n#Tosubwa program Yimba Nange nga tukuleetedde Kanyanya SDA church choir ku saawa 3 ezikiro Saturday, Monday ne Wednesday eno\n#Tokwata 3ABN-TV, yakubuzeeko... Kola oba damu Search ku free to air decoder",
+          "starts": "0#25#50",
+          "speed": "FAST"
         },
         "lowerThirds": []
       },
-      "specialBumperFolder": "BwatyoBwayogeraMukama"
+      "specialBumperFolder": "Special/BwatyoBwayogeraMukama"
     },
     {
       "name": "Bwatyo Bwayogera Mukama Vespas",
@@ -244,11 +297,14 @@
         "displayLogo": false,
         "logoPosition": "TOP",
         "news": {
-          "replays": 0
+          "replays": 1,
+          "messages": "Olina omukisa okulaba program ezenjawulo; ezobulamu, enyimba, obujulizi, ebiseera ebyomumaaso wano ku 3ABN TV. Jitege ate otegeezeko omulala.\n#Tosubwa program Bwatyo bwayogera mukama buli saawa 2 ezikiro (Sunday - Thursday), 1 ezikiro (Friday).\n#Tosubwa program Yimba Nange nga tukuleetedde Kanyanya SDA church choir ku saawa 3 ezikiro Saturday, Monday ne Wednesday eno\n#Tokwata 3ABN-TV, yakubuzeeko... Kola oba damu Search ku free to air decoder",
+          "starts": "0#25#50",
+          "speed": "FAST"
         },
         "lowerThirds": []
       },
-      "specialBumperFolder": "BwatyoBwayogeraMukama"
+      "specialBumperFolder": "Special/BwatyoBwayogeraMukama"
     },
     {
       "name": "Bwatyo Bwayogera Mukama 2",
@@ -261,11 +317,14 @@
         "displayLogo": false,
         "logoPosition": "TOP",
         "news": {
-          "replays": 0
+          "replays": 1,
+          "starts": "0#25#50",
+          "speed": "FAST",
+          "messages": "Olina omukisa okulaba program ezenjawulo; ezobulamu, enyimba, obujulizi, ebiseera ebyomumaaso wano ku 3ABN TV. Jitege ate otegeezeko omulala.\n#Tosubwa program Bwatyo bwayogera mukama buli saawa 2 ezikiro (Sunday - Thursday), 1 ezikiro (Friday).\n#Tosubwa program Yimba Nange nga tukuleetedde Kanyanya SDA church choir ku saawa 3 ezikiro Saturday, Monday ne Wednesday eno\n#Tokwata 3ABN-TV, yakubuzeeko... Kola oba damu Search ku free to air decoder"
         },
         "lowerThirds": []
       },
-      "specialBumperFolder": "BwatyoBwayogeraMukama"
+      "specialBumperFolder": "Special/BwatyoBwayogeraMukama"
     },
     {
       "name": "Bwatyo Bwayogera Mukama 3",
@@ -278,11 +337,14 @@
         "displayLogo": false,
         "logoPosition": "TOP",
         "news": {
-          "replays": 0
+          "replays": 1,
+          "messages": "Olina omukisa okulaba program ezenjawulo; ezobulamu, enyimba, obujulizi, ebiseera ebyomumaaso wano ku 3ABN TV. Jitege ate otegeezeko omulala.\n#Tosubwa program Bwatyo bwayogera mukama buli saawa 2 ezikiro (Sunday - Thursday), 1 ezikiro (Friday).\n#Tosubwa program Yimba Nange nga tukuleetedde Kanyanya SDA church choir ku saawa 3 ezikiro Saturday, Monday ne Wednesday eno\n#Tokwata 3ABN-TV, yakubuzeeko... Kola oba damu Search ku free to air decoder",
+          "starts": "0#25#50",
+          "speed": "FAST"
         },
         "lowerThirds": []
       },
-      "specialBumperFolder": "BwatyoBwayogeraMukama"
+      "specialBumperFolder": "Special/BwatyoBwayogeraMukama"
     },
     {
       "name": "Bwatyo Bwayogera Mukama 4",
@@ -295,11 +357,14 @@
         "displayLogo": false,
         "logoPosition": "TOP",
         "news": {
-          "replays": 0
+          "replays": 1,
+          "starts": "0#25#50",
+          "messages": "Olina omukisa okulaba program ezenjawulo; ezobulamu, enyimba, obujulizi, ebiseera ebyomumaaso wano ku 3ABN TV. Jitege ate otegeezeko omulala.\n#Tosubwa program Bwatyo bwayogera mukama buli saawa 2 ezikiro (Sunday - Thursday), 1 ezikiro (Friday).\n#Tosubwa program Yimba Nange nga tukuleetedde Kanyanya SDA church choir ku saawa 3 ezikiro Saturday, Monday ne Wednesday eno\n#Tokwata 3ABN-TV, yakubuzeeko... Kola oba damu Search ku free to air decoder",
+          "speed": "FAST"
         },
         "lowerThirds": []
       },
-      "specialBumperFolder": "BwatyoBwayogeraMukama"
+      "specialBumperFolder": "Special/BwatyoBwayogeraMukama"
     },
     {
       "name": "Bwatyo Bwayogera Mukama 5",
@@ -312,11 +377,14 @@
         "displayLogo": false,
         "logoPosition": "TOP",
         "news": {
-          "replays": 0
+          "replays": 1,
+          "messages": "Olina omukisa okulaba program ezenjawulo; ezobulamu, enyimba, obujulizi, ebiseera ebyomumaaso wano ku 3ABN TV. Jitege ate otegeezeko omulala.\n#Tosubwa program Bwatyo bwayogera mukama buli saawa 2 ezikiro (Sunday - Thursday), 1 ezikiro (Friday).\n#Tosubwa program Yimba Nange nga tukuleetedde Kanyanya SDA church choir ku saawa 3 ezikiro Saturday, Monday ne Wednesday eno\n#Tokwata 3ABN-TV, yakubuzeeko... Kola oba damu Search ku free to air decoder",
+          "starts": "0#25#50",
+          "speed": "FAST"
         },
         "lowerThirds": []
       },
-      "specialBumperFolder": "BwatyoBwayogeraMukama"
+      "specialBumperFolder": "Special/BwatyoBwayogeraMukama"
     },
     {
       "name": "Bwatyo Bwayogera Mukama 7",
@@ -329,25 +397,31 @@
         "displayLogo": false,
         "logoPosition": "TOP",
         "news": {
-          "replays": 0
+          "replays": 1,
+          "starts": "0#25#50",
+          "messages": "Olina omukisa okulaba program ezenjawulo; ezobulamu, enyimba, obujulizi, ebiseera ebyomumaaso wano ku 3ABN TV. Jitege ate otegeezeko omulala.\n#Tosubwa program Bwatyo bwayogera mukama buli saawa 2 ezikiro (Sunday - Thursday), 1 ezikiro (Friday).\n#Tosubwa program Yimba Nange nga tukuleetedde Kanyanya SDA church choir ku saawa 3 ezikiro Saturday, Monday ne Wednesday eno\n#Tokwata 3ABN-TV, yakubuzeeko... Kola oba damu Search ku free to air decoder",
+          "speed": "FAST"
         },
         "lowerThirds": []
       },
-      "specialBumperFolder": "BwatyoBwayogeraMukama"
+      "specialBumperFolder": "Special/BwatyoBwayogeraMukama"
     },
     {
-      "schedule": "6",
+      "schedule": 6,
+      "start": "00:00",
       "name": "PraiseHimMusic",
       "active": true,
       "graphics": {
         "displayLogo": false,
         "logoPosition": "TOP",
         "news": {
-          "replays": 0
+          "replays": 1,
+          "speed": "FAST",
+          "starts": "0#25",
+          "messages": "Olina omukisa okulaba program ezenjawulo; ezobulamu, enyimba, obujulizi, ebiseera ebyomumaaso wano ku 3ABN TV. Jitege ate otegeezeko omulala.\n#Tosubwa program Bwatyo bwayogera mukama buli saawa 2 ezikiro (Sunday - Thursday), 1 ezikiro (Friday).\n#Tosubwa program Yimba Nange nga tukuleetedde Kanyanya SDA church choir ku saawa 3 ezikiro Saturday, Monday ne Wednesday eno\n#Tokwata 3ABN-TV, yakubuzeeko... Kola oba damu Search ku free to air decoder"
         },
         "lowerThirds": []
       },
-      "start": "00:00",
       "color": "#ff6600"
     },
     {
@@ -388,7 +462,8 @@
       "color": "#0060aa"
     },
     {
-      "schedule": "0",
+      "schedule": 0,
+      "start": "03:00",
       "name": "International",
       "active": true,
       "graphics": {
@@ -399,7 +474,6 @@
         },
         "lowerThirds": []
       },
-      "start": "03:00",
       "color": "#808080"
     },
     {
@@ -466,7 +540,10 @@
         "displayLogo": false,
         "logoPosition": "TOP",
         "news": {
-          "replays": 0
+          "replays": 1,
+          "speed": "FAST",
+          "starts": "0#25",
+          "messages": "Olina omukisa okulaba program ezenjawulo; ezobulamu, enyimba, obujulizi, ebiseera ebyomumaaso wano ku 3ABN TV. Jitege ate otegeezeko omulala.\n#Tosubwa program Bwatyo bwayogera mukama buli saawa 2 ezikiro (Sunday - Thursday), 1 ezikiro (Friday).\n#Tosubwa program Yimba Nange nga tukuleetedde Kanyanya SDA church choir ku saawa 3 ezikiro Saturday, Monday ne Wednesday eno\n#Tokwata 3ABN-TV, yakubuzeeko... Kola oba damu Search ku free to air decoder"
         },
         "lowerThirds": []
       },
@@ -499,6 +576,9 @@
       "start": "06:00",
       "name": "DareToDream",
       "active": true,
+      "days": [
+        "7"
+      ],
       "graphics": {
         "displayLogo": false,
         "logoPosition": "TOP",
@@ -507,9 +587,6 @@
         },
         "lowerThirds": []
       },
-      "days": [
-        "7"
-      ],
       "color": "#990099"
     },
     {
@@ -525,7 +602,10 @@
         "displayLogo": false,
         "logoPosition": "TOP",
         "news": {
-          "replays": 0
+          "replays": 1,
+          "speed": "FAST",
+          "starts": "0#25",
+          "messages": "Olina omukisa okulaba program ezenjawulo; ezobulamu, enyimba, obujulizi, ebiseera ebyomumaaso wano ku 3ABN TV. Jitege ate otegeezeko omulala.\n#Tosubwa program Bwatyo bwayogera mukama buli saawa 2 ezikiro (Sunday - Thursday), 1 ezikiro (Friday).\n#Tosubwa program Yimba Nange nga tukuleetedde Kanyanya SDA church choir ku saawa 3 ezikiro Saturday, Monday ne Wednesday eno\n#Tokwata 3ABN-TV, yakubuzeeko... Kola oba damu Search ku free to air decoder"
         },
         "lowerThirds": []
       },
@@ -596,9 +676,7 @@
       "name": "Network",
       "active": true,
       "days": [
-        "2",
         "3",
-        "4",
         "7"
       ],
       "graphics": {
@@ -655,7 +733,10 @@
         "displayLogo": false,
         "logoPosition": "TOP",
         "news": {
-          "replays": 0
+          "replays": 1,
+          "speed": "FAST",
+          "starts": "0#25",
+          "messages": "Olina omukisa okulaba program ezenjawulo; ezobulamu, enyimba, obujulizi, ebiseera ebyomumaaso wano ku 3ABN TV. Jitege ate otegeezeko omulala.\n#Tosubwa program Bwatyo bwayogera mukama buli saawa 2 ezikiro (Sunday - Thursday), 1 ezikiro (Friday).\n#Tosubwa program Yimba Nange nga tukuleetedde Kanyanya SDA church choir ku saawa 3 ezikiro Saturday, Monday ne Wednesday eno\n#Tokwata 3ABN-TV, yakubuzeeko... Kola oba damu Search ku free to air decoder"
         },
         "lowerThirds": []
       },
@@ -691,7 +772,10 @@
         "displayLogo": false,
         "logoPosition": "TOP",
         "news": {
-          "replays": 0
+          "replays": 1,
+          "speed": "FAST",
+          "starts": "0#25",
+          "messages": "Olina omukisa okulaba program ezenjawulo; ezobulamu, enyimba, obujulizi, ebiseera ebyomumaaso wano ku 3ABN TV. Jitege ate otegeezeko omulala.\n#Tosubwa program Bwatyo bwayogera mukama buli saawa 2 ezikiro (Sunday - Thursday), 1 ezikiro (Friday).\n#Tosubwa program Yimba Nange nga tukuleetedde Kanyanya SDA church choir ku saawa 3 ezikiro Saturday, Monday ne Wednesday eno\n#Tokwata 3ABN-TV, yakubuzeeko... Kola oba damu Search ku free to air decoder"
         },
         "lowerThirds": []
       },
@@ -891,21 +975,24 @@
       "color": "#0060aa"
     },
     {
-      "schedule": "15",
+      "schedule": 15,
+      "start": "12:00",
       "name": "Bwatyo Bwayogera Mukama Devine",
       "active": true,
+      "days": [
+        "7"
+      ],
       "graphics": {
         "displayLogo": false,
         "logoPosition": "TOP",
         "news": {
-          "replays": 0
+          "replays": 1,
+          "messages": "Olina omukisa okulaba program ezenjawulo; ezobulamu, enyimba, obujulizi, ebiseera ebyomumaaso wano ku 3ABN TV. Jitege ate otegeezeko omulala.\n#Tosubwa program Bwatyo bwayogera mukama buli saawa 2 ezikiro (Sunday - Thursday), 1 ezikiro (Friday).\n#Tosubwa program Yimba Nange nga tukuleetedde Kanyanya SDA church choir ku saawa 3 ezikiro Saturday, Monday ne Wednesday eno\n#Tokwata 3ABN-TV, yakubuzeeko... Kola oba damu Search ku free to air decoder",
+          "starts": "0#25#50",
+          "speed": "FAST"
         },
         "lowerThirds": []
       },
-      "start": "12:00",
-      "days": [
-        "7"
-      ],
       "color": "#66ff33"
     },
     {
@@ -953,7 +1040,10 @@
         "displayLogo": false,
         "logoPosition": "TOP",
         "news": {
-          "replays": 0
+          "replays": 1,
+          "speed": "FAST",
+          "starts": "0#25",
+          "messages": "Olina omukisa okulaba program ezenjawulo; ezobulamu, enyimba, obujulizi, ebiseera ebyomumaaso wano ku 3ABN TV. Jitege ate otegeezeko omulala.\n#Tosubwa program Bwatyo bwayogera mukama buli saawa 2 ezikiro (Sunday - Thursday), 1 ezikiro (Friday).\n#Tosubwa program Yimba Nange nga tukuleetedde Kanyanya SDA church choir ku saawa 3 ezikiro Saturday, Monday ne Wednesday eno\n#Tokwata 3ABN-TV, yakubuzeeko... Kola oba damu Search ku free to air decoder"
         },
         "lowerThirds": []
       },
@@ -1083,7 +1173,10 @@
         "displayLogo": false,
         "logoPosition": "TOP",
         "news": {
-          "replays": 0
+          "replays": 1,
+          "speed": "FAST",
+          "starts": "0#25",
+          "messages": "Olina omukisa okulaba program ezenjawulo; ezobulamu, enyimba, obujulizi, ebiseera ebyomumaaso wano ku 3ABN TV. Jitege ate otegeezeko omulala.\n#Tosubwa program Bwatyo bwayogera mukama buli saawa 2 ezikiro (Sunday - Thursday), 1 ezikiro (Friday).\n#Tosubwa program Yimba Nange nga tukuleetedde Kanyanya SDA church choir ku saawa 3 ezikiro Saturday, Monday ne Wednesday eno\n#Tokwata 3ABN-TV, yakubuzeeko... Kola oba damu Search ku free to air decoder"
         },
         "lowerThirds": []
       },
@@ -1176,7 +1269,10 @@
         "displayLogo": false,
         "logoPosition": "TOP",
         "news": {
-          "replays": 0
+          "replays": 1,
+          "speed": "FAST",
+          "starts": "0#25",
+          "messages": "Olina omukisa okulaba program ezenjawulo; ezobulamu, enyimba, obujulizi, ebiseera ebyomumaaso wano ku 3ABN TV. Jitege ate otegeezeko omulala.\n#Tosubwa program Bwatyo bwayogera mukama buli saawa 2 ezikiro (Sunday - Thursday), 1 ezikiro (Friday).\n#Tosubwa program Yimba Nange nga tukuleetedde Kanyanya SDA church choir ku saawa 3 ezikiro Saturday, Monday ne Wednesday eno\n#Tokwata 3ABN-TV, yakubuzeeko... Kola oba damu Search ku free to air decoder"
         },
         "lowerThirds": []
       },
@@ -1212,7 +1308,10 @@
         "displayLogo": false,
         "logoPosition": "TOP",
         "news": {
-          "replays": 0
+          "replays": 1,
+          "speed": "FAST",
+          "starts": "0#25",
+          "messages": "Olina omukisa okulaba program ezenjawulo; ezobulamu, enyimba, obujulizi, ebiseera ebyomumaaso wano ku 3ABN TV. Jitege ate otegeezeko omulala.\n#Tosubwa program Bwatyo bwayogera mukama buli saawa 2 ezikiro (Sunday - Thursday), 1 ezikiro (Friday).\n#Tosubwa program Yimba Nange nga tukuleetedde Kanyanya SDA church choir ku saawa 3 ezikiro Saturday, Monday ne Wednesday eno\n#Tokwata 3ABN-TV, yakubuzeeko... Kola oba damu Search ku free to air decoder"
         },
         "lowerThirds": []
       },
@@ -1262,9 +1361,16 @@
       "color": "#0060aa"
     },
     {
-      "schedule": "3",
+      "schedule": 3,
+      "start": "16:30",
       "name": "Proclaim",
       "active": true,
+      "days": [
+        "1",
+        "2",
+        "4",
+        "7"
+      ],
       "graphics": {
         "displayLogo": false,
         "logoPosition": "TOP",
@@ -1273,15 +1379,6 @@
         },
         "lowerThirds": []
       },
-      "days": [
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "7"
-      ],
-      "start": "16:30",
       "color": "#993333"
     },
     {
@@ -1407,7 +1504,10 @@
         "displayLogo": false,
         "logoPosition": "TOP",
         "news": {
-          "replays": 0
+          "replays": 1,
+          "speed": "FAST",
+          "starts": "0#25",
+          "messages": "Olina omukisa okulaba program ezenjawulo; ezobulamu, enyimba, obujulizi, ebiseera ebyomumaaso wano ku 3ABN TV. Jitege ate otegeezeko omulala.\n#Tosubwa program Bwatyo bwayogera mukama buli saawa 2 ezikiro (Sunday - Thursday), 1 ezikiro (Friday).\n#Tosubwa program Yimba Nange nga tukuleetedde Kanyanya SDA church choir ku saawa 3 ezikiro Saturday, Monday ne Wednesday eno\n#Tokwata 3ABN-TV, yakubuzeeko... Kola oba damu Search ku free to air decoder"
         },
         "lowerThirds": []
       },
@@ -1483,7 +1583,10 @@
         "displayLogo": false,
         "logoPosition": "TOP",
         "news": {
-          "replays": 0
+          "replays": 1,
+          "messages": "Olina omukisa okulaba program ezenjawulo; ezobulamu, enyimba, obujulizi, ebiseera ebyomumaaso wano ku 3ABN TV. Jitege ate otegeezeko omulala.\n#Tosubwa program Bwatyo bwayogera mukama buli saawa 2 ezikiro (Sunday - Thursday), 1 ezikiro (Friday).\n#Tosubwa program Yimba Nange nga tukuleetedde Kanyanya SDA church choir ku saawa 3 ezikiro Saturday, Monday ne Wednesday eno\n#Tokwata 3ABN-TV, yakubuzeeko... Kola oba damu Search ku free to air decoder",
+          "starts": "0#25#50",
+          "speed": "FAST"
         },
         "lowerThirds": []
       },
@@ -1516,10 +1619,13 @@
       "name": "Bwatyo Bwayogera Mukama 1",
       "active": true,
       "graphics": {
-        "displayLogo": true,
+        "displayLogo": false,
         "logoPosition": "TOP",
         "news": {
-          "replays": 0
+          "replays": 1,
+          "messages": "Olina omukisa okulaba program ezenjawulo; ezobulamu, enyimba, obujulizi, ebiseera ebyomumaaso wano ku 3ABN TV. Jitege ate otegeezeko omulala.\n#Tosubwa program Bwatyo bwayogera mukama buli saawa 2 ezikiro (Sunday - Thursday), 1 ezikiro (Friday).\n#Tosubwa program Yimba Nange nga tukuleetedde Kanyanya SDA church choir ku saawa 3 ezikiro Saturday, Monday ne Wednesday eno\n#Tokwata 3ABN-TV, yakubuzeeko... Kola oba damu Search ku free to air decoder",
+          "starts": "0#25#50",
+          "speed": "FAST"
         },
         "lowerThirds": []
       },
@@ -1534,10 +1640,13 @@
       "name": "Bwatyo Bwayogera Mukama 2",
       "active": true,
       "graphics": {
-        "displayLogo": true,
+        "displayLogo": false,
         "logoPosition": "TOP",
         "news": {
-          "replays": 0
+          "replays": 1,
+          "starts": "0#25#50",
+          "speed": "FAST",
+          "messages": "Olina omukisa okulaba program ezenjawulo; ezobulamu, enyimba, obujulizi, ebiseera ebyomumaaso wano ku 3ABN TV. Jitege ate otegeezeko omulala.\n#Tosubwa program Bwatyo bwayogera mukama buli saawa 2 ezikiro (Sunday - Thursday), 1 ezikiro (Friday).\n#Tosubwa program Yimba Nange nga tukuleetedde Kanyanya SDA church choir ku saawa 3 ezikiro Saturday, Monday ne Wednesday eno\n#Tokwata 3ABN-TV, yakubuzeeko... Kola oba damu Search ku free to air decoder"
         },
         "lowerThirds": []
       },
@@ -1552,10 +1661,13 @@
       "name": "Bwatyo Bwayogera Mukama 3",
       "active": true,
       "graphics": {
-        "displayLogo": true,
+        "displayLogo": false,
         "logoPosition": "TOP",
         "news": {
-          "replays": 0
+          "replays": 1,
+          "messages": "Olina omukisa okulaba program ezenjawulo; ezobulamu, enyimba, obujulizi, ebiseera ebyomumaaso wano ku 3ABN TV. Jitege ate otegeezeko omulala.\n#Tosubwa program Bwatyo bwayogera mukama buli saawa 2 ezikiro (Sunday - Thursday), 1 ezikiro (Friday).\n#Tosubwa program Yimba Nange nga tukuleetedde Kanyanya SDA church choir ku saawa 3 ezikiro Saturday, Monday ne Wednesday eno\n#Tokwata 3ABN-TV, yakubuzeeko... Kola oba damu Search ku free to air decoder",
+          "starts": "0#25#50",
+          "speed": "FAST"
         },
         "lowerThirds": []
       },
@@ -1570,10 +1682,13 @@
       "name": "Bwatyo Bwayogera Mukama 4",
       "active": true,
       "graphics": {
-        "displayLogo": true,
+        "displayLogo": false,
         "logoPosition": "TOP",
         "news": {
-          "replays": 0
+          "replays": 1,
+          "starts": "0#25#50",
+          "messages": "Olina omukisa okulaba program ezenjawulo; ezobulamu, enyimba, obujulizi, ebiseera ebyomumaaso wano ku 3ABN TV. Jitege ate otegeezeko omulala.\n#Tosubwa program Bwatyo bwayogera mukama buli saawa 2 ezikiro (Sunday - Thursday), 1 ezikiro (Friday).\n#Tosubwa program Yimba Nange nga tukuleetedde Kanyanya SDA church choir ku saawa 3 ezikiro Saturday, Monday ne Wednesday eno\n#Tokwata 3ABN-TV, yakubuzeeko... Kola oba damu Search ku free to air decoder",
+          "speed": "FAST"
         },
         "lowerThirds": []
       },
@@ -1588,10 +1703,13 @@
       "name": "Bwatyo Bwayogera Mukama 5",
       "active": true,
       "graphics": {
-        "displayLogo": true,
+        "displayLogo": false,
         "logoPosition": "TOP",
         "news": {
-          "replays": 0
+          "replays": 1,
+          "messages": "Olina omukisa okulaba program ezenjawulo; ezobulamu, enyimba, obujulizi, ebiseera ebyomumaaso wano ku 3ABN TV. Jitege ate otegeezeko omulala.\n#Tosubwa program Bwatyo bwayogera mukama buli saawa 2 ezikiro (Sunday - Thursday), 1 ezikiro (Friday).\n#Tosubwa program Yimba Nange nga tukuleetedde Kanyanya SDA church choir ku saawa 3 ezikiro Saturday, Monday ne Wednesday eno\n#Tokwata 3ABN-TV, yakubuzeeko... Kola oba damu Search ku free to air decoder",
+          "starts": "0#25#50",
+          "speed": "FAST"
         },
         "lowerThirds": []
       },
@@ -1602,21 +1720,24 @@
       "color": "#66ff33"
     },
     {
-      "schedule": "21",
-      "name": "Bwatyo Bwayogera Mukama 7",
+      "schedule": 15,
+      "start": "20:00",
+      "name": "Bwatyo Bwayogera Mukama Devine",
       "active": true,
-      "graphics": {
-        "displayLogo": true,
-        "logoPosition": "TOP",
-        "news": {
-          "replays": 0
-        },
-        "lowerThirds": []
-      },
       "days": [
         "7"
       ],
-      "start": "20:00",
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 1,
+          "messages": "Olina omukisa okulaba program ezenjawulo; ezobulamu, enyimba, obujulizi, ebiseera ebyomumaaso wano ku 3ABN TV. Jitege ate otegeezeko omulala.\n#Tosubwa program Bwatyo bwayogera mukama buli saawa 2 ezikiro (Sunday - Thursday), 1 ezikiro (Friday).\n#Tosubwa program Yimba Nange nga tukuleetedde Kanyanya SDA church choir ku saawa 3 ezikiro Saturday, Monday ne Wednesday eno\n#Tokwata 3ABN-TV, yakubuzeeko... Kola oba damu Search ku free to air decoder",
+          "starts": "0#25#50",
+          "speed": "FAST"
+        },
+        "lowerThirds": []
+      },
       "color": "#66ff33"
     },
     {
@@ -1665,7 +1786,10 @@
         "displayLogo": false,
         "logoPosition": "TOP",
         "news": {
-          "replays": 0
+          "replays": 1,
+          "messages": "Olina omukisa okulaba program ezenjawulo; ezobulamu, enyimba, obujulizi, ebiseera ebyomumaaso wano ku 3ABN TV. Jitege ate otegeezeko omulala.\n#Tosubwa program Bwatyo bwayogera mukama buli saawa 2 ezikiro (Sunday - Thursday), 1 ezikiro (Friday).\n#Tosubwa program Yimba Nange nga tukuleetedde Kanyanya SDA church choir ku saawa 3 ezikiro Saturday, Monday ne Wednesday eno\n#Tokwata 3ABN-TV, yakubuzeeko... Kola oba damu Search ku free to air decoder",
+          "starts": "0#25#50",
+          "speed": "FAST"
         },
         "lowerThirds": []
       },
@@ -1703,7 +1827,10 @@
         "displayLogo": false,
         "logoPosition": "TOP",
         "news": {
-          "replays": 0
+          "replays": 1,
+          "speed": "FAST",
+          "starts": "0#25",
+          "messages": "Olina omukisa okulaba program ezenjawulo; ezobulamu, enyimba, obujulizi, ebiseera ebyomumaaso wano ku 3ABN TV. Jitege ate otegeezeko omulala.\n#Tosubwa program Bwatyo bwayogera mukama buli saawa 2 ezikiro (Sunday - Thursday), 1 ezikiro (Friday).\n#Tosubwa program Yimba Nange nga tukuleetedde Kanyanya SDA church choir ku saawa 3 ezikiro Saturday, Monday ne Wednesday eno\n#Tokwata 3ABN-TV, yakubuzeeko... Kola oba damu Search ku free to air decoder"
         },
         "lowerThirds": []
       },

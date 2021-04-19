@@ -50,7 +50,7 @@ public class Logger {
     private static void emailAudit(AuditLog.Event event, String msg) {
         // email notification
         Config config = Monitor.instance.getConfiguration();
-        if(config != null && config.getAlerts() != null && (AuditLog.Event.Category.ADMIN.equals(event.getCategory()) || AuditLog.Event.Category.BROADCAST.equals(event.getCategory()))) {
+        if(config != null && config.getAlerts() != null && config.getAlerts().isEnabled() && (AuditLog.Event.Category.ADMIN.equals(event.getCategory()) || AuditLog.Event.Category.BROADCAST.equals(event.getCategory()))) {
             if(Utils.internetConnected()) {
                 new SendEmail().execute(new AuditAlert(config.getAlerts(), event, msg));
             } else {

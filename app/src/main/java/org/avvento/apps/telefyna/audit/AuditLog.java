@@ -18,6 +18,8 @@ public class AuditLog {
         CACHE_NOW_PLAYING_RESUME("Playlist: %s will next be resuming program: %s at: %s"),
         RETRIEVE_NOW_PLAYING_RESUME("Resuming Playlist: %s program: %s at: %d"),
         STUCK("Relaunching having been stuck for %d seconds"),
+        EMPTY_FILLERS("There are no fillers installed"),
+        CRASH("Relaunched Telefyna after crash because of: %s"),
 
         //scheduler
         PLAYLIST(SPLITTER + "[ Preparing to play playlist: %s: %s"),
@@ -36,8 +38,7 @@ public class AuditLog {
 
         // system
         EMAIL("Sending email: '%s' to: %s %s"),
-        NO_INTERNET("%s"),
-        EMPTY_FILLERS("There are no fillers installed");
+        NO_INTERNET("%s");
 
         private String message;
 
@@ -50,7 +51,7 @@ public class AuditLog {
         }
 
         public Category getCategory() {
-            Event[] admins = new Event[]{HEARTBEAT, KEY_PRESS, CONFIGURATION, MAINTENANCE, METRICS, ERROR, CACHE_NOW_PLAYING_RESUME, RETRIEVE_NOW_PLAYING_RESUME, STUCK};
+            Event[] admins = new Event[]{HEARTBEAT, KEY_PRESS, CONFIGURATION, MAINTENANCE, METRICS, ERROR, CACHE_NOW_PLAYING_RESUME, RETRIEVE_NOW_PLAYING_RESUME, STUCK, EMPTY_FILLERS, CRASH};
             Event[] schedulers = new Event[]{PLAYLIST, PLAYLIST_PLAY, PLAYLIST_SWITCH, PLAYLIST_EMPTY_PLAY, PLAYLIST_MODIFIED, PLAYLIST_ITEM_CHANGE, PLAYLIST_COMPLETED, DISPLAY_LOGO_OFF, DISPLAY_LOGO_ON, DISPLAY_NEWS_ON, DISPLAY_NEWS_OFF, LOWER_THIRD_ON, LOWER_THIRD_OFF};
 
             if(Arrays.asList(admins).contains(this)) {

@@ -20,13 +20,5 @@
         app:hide_on_touch="false"
         android:animateLayoutChanges="true"
         app:resize_mode="fill"/>
-    <org.videolan.libvlc.util.VLCVideoLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/vlc"
-        android:fitsSystemWindows="false"
-        android:visibility="gone">
-
-    </org.videolan.libvlc.util.VLCVideoLayout>
 
 </androidx.appcompat.widget.LinearLayoutCompat>

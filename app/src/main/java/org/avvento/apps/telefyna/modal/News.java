@@ -22,6 +22,8 @@ public class News {
     // number of times to loop/play messages
     private int replays = 0;
 
+    private Speed speed = Speed.SLOW;
+
     public Double[] getStartsArray() {
         List<Double> startTimes = new ArrayList<>();
         if(StringUtils.isNotBlank(starts)) {
@@ -45,5 +47,19 @@ public class News {
             });
         }
         return mess.toArray(new String[mess.size()]);
+    }
+
+    public enum Speed {
+        SLOW, FAST, VERY_FAST;
+
+        public int getDisplacement() {
+            if(this.equals(FAST)) {
+                return 50;
+            } else if(this.equals(VERY_FAST)) {
+                return 100;
+            } else {
+                return 1;
+            }
+        }
     }
 }

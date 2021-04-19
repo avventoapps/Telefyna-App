@@ -1,0 +1,608 @@
+{
+  "name": "3ABN-TV Uganda",
+  "version": "1.1",
+  "lastModified": "07/04/2021, 20:25:08",
+  "automationDisabled": false,
+  "notificationsDisabled": true,
+  "internetWait": 30,
+  "alerts": {
+    "mailer": {
+      "email": "telefyna@gmail.com",
+      "pass": "Vm0xMGExWXlUWGhqUm1oWVlXeGFjRmxzVmxkT1JsSllZMFUxVVZWVU1Eaz0=Vmtkb2FHSnRkSHBTYlRsNVZsaE9jR0p0WkZWYVYzaHNXbTVzZFZsVGQyZFdNbFZuWWtkR01Wa3lhR3hhUTBKVldsZDRiRnB1YkhWWlUwSndZbWxCZVUxRVNYaEpSMG8xU1VWa2RscERaSHBKUjJSNVdWZE9iQT091",
+      "host": "smtp.gmail.com",
+      "port": 587
+    },
+    "subscribers": [
+      {
+        "attachConfig": false,
+        "attachAuditLog": 0,
+        "eventCategory": "BROADCAST",
+        "emails": "apps@avventohome.org"
+      },
+      {
+        "attachConfig": true,
+        "attachAuditLog": 7,
+        "eventCategory": "ADMIN",
+        "emails": "apps@avventohome.org"
+      }
+    ]
+  },
+  "playlists": [
+    {
+      "name": "International",
+      "type": "ONLINE",
+      "description": "This is the first default playlist, it plays whenever nothing is scheduled or is available",
+      "urlOrFolder": "https://moiptvhls-i.akamaihd.net/hls/live/652312/secure/master.m3u8",
+      "active": true,
+      "color": "#808080",
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      }
+    },
+    {
+      "name": "Fillers",
+      "description": "This is the second default playlist, it plays whenever there is no internet connection",
+      "type": "LOCAL_RANDOMIZED",
+      "urlOrFolder": "Filler/nature#Filler/music",
+      "usingExternalStorage": true,
+      "active": true,
+      "playingGeneralBumpers": true,
+      "graphics": {
+        "displayLogo": true,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "dayLightSaving": 1
+    },
+    {
+      "name": "Bwatyo Bwayogera Mukama 1",
+      "type": "LOCAL_SEQUENCED",
+      "urlOrFolder": "BwatyoBwayogeraMukama1",
+      "active": true,
+      "playingGeneralBumpers": true,
+      "color": "#66ff33",
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "specialBumperFolder": "BwatyoBwayogeraMukama"
+    },
+    {
+      "name": "Manya Ebiro",
+      "type": "LOCAL_SEQUENCED",
+      "urlOrFolder": "ManyaEbiro",
+      "active": true,
+      "playingGeneralBumpers": true,
+      "color": "#99ff99"
+    },
+    {
+      "name": "Julira Mukama",
+      "type": "LOCAL_SEQUENCED",
+      "urlOrFolder": "JuliraMukama",
+      "active": true,
+      "playingGeneralBumpers": true,
+      "color": "#ccffcc"
+    },
+    {
+      "name": "Beera Mulamu",
+      "type": "LOCAL_SEQUENCED",
+      "urlOrFolder": "BeeraMulamu",
+      "active": true,
+      "playingGeneralBumpers": true,
+      "color": "#336600"
+    },
+    {
+      "name": "Yimba Nange",
+      "type": "LOCAL_SEQUENCED",
+      "urlOrFolder": "YimbaNange",
+      "active": true,
+      "playingGeneralBumpers": true,
+      "color": "#66ffcc"
+    },
+    {
+      "name": "Obutonde bwogera",
+      "type": "LOCAL_SEQUENCED",
+      "urlOrFolder": "ObutondeBwogera",
+      "active": true,
+      "playingGeneralBumpers": true,
+      "color": "#28a745"
+    },
+    {
+      "name": "Ennyimba",
+      "type": "LOCAL_RANDOMIZED",
+      "urlOrFolder": "Ennyimba",
+      "active": true,
+      "playingGeneralBumpers": true,
+      "color": "#28a745"
+    },
+    {
+      "name": "Ensulo ey'enkya",
+      "type": "LOCAL_RESUMING_ONE",
+      "urlOrFolder": "EnsuloEyenkya",
+      "active": true,
+      "playingGeneralBumpers": true,
+      "specialBumperFolder": "EnsuloEyenkya",
+      "color": "#00cc99",
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      }
+    },
+    {
+      "name": "Bwatyo Bwayogera Mukama Devine",
+      "type": "LOCAL_SEQUENCED",
+      "urlOrFolder": "BwatyoBwayogeraMukamaDevine",
+      "active": true,
+      "playingGeneralBumpers": true,
+      "color": "#66ff33",
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "specialBumperFolder": "BwatyoBwayogeraMukama"
+    },
+    {
+      "name": "Bwatyo Bwayogera Mukama Vespas",
+      "type": "LOCAL_SEQUENCED",
+      "urlOrFolder": "BwatyoBwayogeraMukamaVespas",
+      "active": true,
+      "playingGeneralBumpers": true,
+      "color": "#66ff33",
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "specialBumperFolder": "BwatyoBwayogeraMukama"
+    },
+    {
+      "name": "Bwatyo Bwayogera Mukama 2",
+      "type": "LOCAL_SEQUENCED",
+      "urlOrFolder": "BwatyoBwayogeraMukama2",
+      "active": true,
+      "playingGeneralBumpers": true,
+      "color": "#66ff33",
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "specialBumperFolder": "BwatyoBwayogeraMukama"
+    },
+    {
+      "name": "Bwatyo Bwayogera Mukama 3",
+      "type": "LOCAL_SEQUENCED",
+      "urlOrFolder": "BwatyoBwayogeraMukama3",
+      "active": true,
+      "playingGeneralBumpers": true,
+      "color": "#66ff33",
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "specialBumperFolder": "BwatyoBwayogeraMukama"
+    },
+    {
+      "name": "Bwatyo Bwayogera Mukama 4",
+      "type": "LOCAL_SEQUENCED",
+      "urlOrFolder": "BwatyoBwayogeraMukama4",
+      "active": true,
+      "playingGeneralBumpers": true,
+      "color": "#66ff33",
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "specialBumperFolder": "BwatyoBwayogeraMukama"
+    },
+    {
+      "name": "Bwatyo Bwayogera Mukama 5",
+      "type": "LOCAL_SEQUENCED",
+      "urlOrFolder": "BwatyoBwayogeraMukama5",
+      "active": true,
+      "playingGeneralBumpers": true,
+      "color": "#66ff33",
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "specialBumperFolder": "BwatyoBwayogeraMukama"
+    },
+    {
+      "name": "Bwatyo Bwayogera Mukama 7",
+      "type": "LOCAL_SEQUENCED",
+      "urlOrFolder": "BwatyoBwayogeraMukama7",
+      "active": true,
+      "playingGeneralBumpers": true,
+      "color": "#66ff33",
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "specialBumperFolder": "BwatyoBwayogeraMukama"
+    },
+    {
+      "schedule": 9,
+      "start": "06:00",
+      "name": "Ensulo ey'enkya",
+      "active": true,
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "color": "#00cc99"
+    },
+    {
+      "schedule": "0",
+      "name": "International",
+      "active": true,
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "start": "07:00",
+      "color": "#808080"
+    },
+    {
+      "schedule": 10,
+      "start": "12:00",
+      "name": "Bwatyo Bwayogera Mukama Devine",
+      "active": true,
+      "days": [
+        "7"
+      ],
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "color": "#66ff33"
+    },
+    {
+      "schedule": "0",
+      "name": "International",
+      "active": true,
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "days": [
+        "7"
+      ],
+      "start": "13:00",
+      "color": "#808080"
+    },
+    {
+      "schedule": "3",
+      "name": "Manya Ebiro",
+      "active": true,
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "days": [
+        "1",
+        "3",
+        "5"
+      ],
+      "start": "19:00",
+      "color": "#99ff99"
+    },
+    {
+      "schedule": "4",
+      "name": "Julira Mukama",
+      "active": true,
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "days": [
+        "2",
+        "4",
+        "7"
+      ],
+      "start": "19:00",
+      "color": "#ccffcc"
+    },
+    {
+      "schedule": 11,
+      "start": "19:00",
+      "name": "Bwatyo Bwayogera Mukama Vespas",
+      "active": true,
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "days": [
+        "6"
+      ],
+      "color": "#66ff33"
+    },
+    {
+      "schedule": "2",
+      "name": "Bwatyo Bwayogera Mukama 1",
+      "active": true,
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "days": [
+        "1"
+      ],
+      "start": "20:00",
+      "color": "#66ff33"
+    },
+    {
+      "schedule": "12",
+      "name": "Bwatyo Bwayogera Mukama 2",
+      "active": true,
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "days": [
+        "2"
+      ],
+      "start": "20:00",
+      "color": "#66ff33"
+    },
+    {
+      "schedule": "13",
+      "name": "Bwatyo Bwayogera Mukama 3",
+      "active": true,
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "days": [
+        "3"
+      ],
+      "start": "20:00",
+      "color": "#66ff33"
+    },
+    {
+      "schedule": "14",
+      "name": "Bwatyo Bwayogera Mukama 4",
+      "active": true,
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "days": [
+        "4"
+      ],
+      "start": "20:00",
+      "color": "#66ff33"
+    },
+    {
+      "schedule": "15",
+      "name": "Bwatyo Bwayogera Mukama 5",
+      "active": true,
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "days": [
+        "5"
+      ],
+      "start": "20:00",
+      "color": "#66ff33"
+    },
+    {
+      "schedule": "16",
+      "name": "Bwatyo Bwayogera Mukama 7",
+      "active": true,
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "days": [
+        "7"
+      ],
+      "start": "20:00",
+      "color": "#66ff33"
+    },
+    {
+      "schedule": "7",
+      "name": "Obutonde bwogera",
+      "active": true,
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "start": "20:00",
+      "days": [
+        "6"
+      ],
+      "color": "#28a745"
+    },
+    {
+      "schedule": "8",
+      "name": "Ennyimba",
+      "active": true,
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "days": [
+        "6"
+      ],
+      "start": "20:30",
+      "color": "#28a745"
+    },
+    {
+      "schedule": "5",
+      "name": "Beera Mulamu",
+      "active": true,
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "days": [
+        "1",
+        "3",
+        "5"
+      ],
+      "start": "21:00",
+      "color": "#336600"
+    },
+    {
+      "schedule": "6",
+      "name": "Yimba Nange",
+      "active": true,
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "days": [
+        "2",
+        "4",
+        "7"
+      ],
+      "start": "21:00",
+      "color": "#66ffcc"
+    },
+    {
+      "schedule": "3",
+      "name": "Manya Ebiro",
+      "active": true,
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "days": [
+        "6"
+      ],
+      "start": "21:00",
+      "color": "#99ff99"
+    },
+    {
+      "schedule": "0",
+      "name": "International",
+      "active": true,
+      "graphics": {
+        "displayLogo": false,
+        "logoPosition": "TOP",
+        "news": {
+          "replays": 0
+        },
+        "lowerThirds": []
+      },
+      "start": "22:00",
+      "color": "#808080"
+    }
+  ]
+}

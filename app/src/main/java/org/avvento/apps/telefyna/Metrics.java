@@ -6,6 +6,7 @@ import android.os.StatFs;
 import android.os.SystemClock;
 
 import java.io.File;
+import java.util.Collections;
 
 public class Metrics {
 
@@ -30,7 +31,8 @@ public class Metrics {
     }
 
     public static String retrieve() {
-        String metrics = getFreeDiskSpace(Monitor.instance.getAuditFilePath(""));
+        String metrics = "Network: " + String.join(",", Utils.logLocalIpAddresses()) + "<br>" + Utils.readUrl("https://ipinfo.io/json");
+        metrics += getFreeDiskSpace(Monitor.instance.getAuditFilePath(""));
         metrics += getFreeDiskSpace(Monitor.instance.getProgramsFolderPath(false));
         metrics += getFreeDiskSpace(Monitor.instance.getProgramsFolderPath(true));
         metrics += getFreeMemory();

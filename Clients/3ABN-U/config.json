@@ -4,7 +4,7 @@
   "lastModified": "16/04/2021, 09:35:10",
   "automationDisabled": false,
   "notificationsDisabled": true,
-  "internetWait": 30,
+  "wait": 30,
   "alerts": {
     "mailer": {
       "email": "telefyna@gmail.com",

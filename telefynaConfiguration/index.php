@@ -42,8 +42,8 @@
 			<div class="section action">Version
 				<input class="form-control flex-wrap" ng-model="config.version" ng-change="modifying()" type="text">
 			</div>
-			<div class="section action">Internet Waiting time (seconds)
-				<input class="form-control flex-wrap" ng-model="config.internetWait" ng-change="modifying()" type="number">
+			<div class="section action">Pinging time (seconds): time to keep checking the player and wait for internet
+				<input class="form-control flex-wrap" ng-model="config.wait" ng-change="modifying()" type="number">
 			</div>
 			<div class="form-check form-switch">
 				<label class="checkbox-inline"><input ng-model="config.automationDisabled" ng-change="modifying()" type="checkbox"> Disable Automation</label>
@@ -61,7 +61,7 @@
 								<h5 class="modal-title">Create a new Playlist</h5>
 							</div>
 							<div class="modal-body">
-								<div ng-if="isEmpty(config.playlists)">This is your first and Default playlist, It's played when nothing is scheduled or programs are unexisting in the folder and when automation is disabled.</div>
+								<div ng-if="isEmpty(config.playlists)">This is your first and Default playlist, It's played when nothing is scheduled without <b>emptyReplacer</b> or programs are unexisting in the folder and when automation is disabled.</div>
 								<div ng-if="config.playlists.length == 1">This is your second and Fillers playlist, It's played when programs finish before the schedule/slot is ended and when internet breaks or is unavailable</div>
 								<?php include 'playlist.php';?>
 								<?php include 'graphics.php';?>
@@ -85,7 +85,7 @@
 								<h5 class="modal-title">Edit an existing Playlist</h5>
 							</div>
 							<div class="modal-body">
-								<div ng-if="edit == 0">This is your first and Default playlist, It's played when nothing is scheduled or programs are not existing in the folder and when automation is disabled.</div>
+								<div ng-if="edit == 0">This is your first and Default playlist, It's played when nothing is scheduled  without <b>emptyReplacer</b> or programs are not existing in the folder and when automation is disabled.</div>
 								<div ng-if="edit == 1">This is your second and Fillers playlist, It's played when programs finish before the schedule/slot is ended and when internet breaks or is unavailable.</div>
 								<div class="section action">* Select Playlist to edit *
 									<select class="form-control" ng-change="renderEdit()" ng-model="edit" required>
@@ -284,7 +284,7 @@
 		</div>
 		<div class="info alert-info"> <b>telefyna</b> folder should be put in either/both Internal/SDcard whereas <b>telefynaAudit</b> exists in Internal storage
 			<br><b>The export(config.json) contains sensitive information and should be protected, <br>Telefyna runs the scheduling at midnight daily;</b>
-			<br>This means if a program isn't in the folder before midnight it won't be scheduled or changes to config thereafter won't be picked up. To order Telefyna to re-run scheduling and use your changes afer the current program, add a file named <b>init.txt</b> in your <b>telefynaAudit</b> folder. Put your program folders in <b>telefyna/playlist</b>, Put your special and <b>General</b> folders for special & general bumpers in <b>telefyna/bumper</b>, lower thirds in <b>telefyna/lowerThird</b>, And your logo at <b>telefyna/logo.png</b>
+			<br>This means if a program isn't in the folder before midnight it won't be scheduled or changes to config thereafter won't be picked up. To order Telefyna to re-run scheduling and use your changes afer the current program, add a file named <b>init.txt</b> in your <b>telefynaAudit</b> folder. To restart Telefyna after configured <b>wait</b>, add a file named <b>restart.txt</b> in your <b>telefynaAudit</b>. Use <b>backupConfig.txt|backupConfigReset.txt</b> to regenerate copy of <b>config.json</b> in <b>telefynaAudit</b> at next <b>wait</b>. Put your program folders in <b>telefyna/playlist</b>, Put your special and <b>General</b> folders for special & general bumpers in <b>telefyna/bumper</b>, lower thirds in <b>telefyna/lowerThird</b>, And your logo (not more than 200MB) at <b>telefyna/logo.png</b>
 		</div>
 		<!-- Display Results -->
 		<!--div class="section config-result">

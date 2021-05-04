@@ -5,7 +5,7 @@
 </div>
 <div class="section action" ng-if="!isEmpty(edit)">
 	<label class="checkbox-inline">
-		<input ng-model="overrideSchedules" type="checkbox"> Override active & Graphics for Schedules</label>
+		<input ng-model="overrideSchedules" type="checkbox"> Override name, active, color, emptyReplacer, seekTo & Graphics for Schedules</label>
 </div>
 <div class="section action">* Name *
 	<input class="form-control" ng-model="playlist.name" required type="text">
@@ -14,6 +14,13 @@
 	<input class="form-control" ng-model="playlist.description" type="text">
 </div>
 <?php include 'playlistType.php';?>
+<div class="section action">Index of playlist to replace with when empty
+	<input class="form-control flex-wrap" ng-model="playlist.emptyReplacer" type="number">
+</div>
+<div class="section action" ng-if="playlist.type.indexOf('LOCAL_RESUMING') == 0">
+	SeekTo Starting program index (0-based)<input class="form-control" ng-model="playlist.seekTo.program" type="number">
+	SeekTo position (milliseconds)<input class="form-control" ng-model="playlist.seekTo.position" type="number">
+</div>
 <div class="section action">
 	<label ng-if="playlist.type == 'ONLINE'">* Stream URL *</label>
 	<label ng-if="playlist.type != 'ONLINE'">* Local folder name, separate with # to use additional programs in other folders *</label>

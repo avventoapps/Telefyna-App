@@ -4,8 +4,8 @@
     <dimen name="largeBtnFontSize">30dp</dimen>
     <dimen name="tvLogoPadding">70dp</dimen>
     <dimen name="lowerThirdHeight">200dp</dimen>
-    <dimen name="tvLogoHeight">250dp</dimen>
-    <dimen name="tvLogoWidth">250dp</dimen>
+    <dimen name="tvLogoHeight">270dp</dimen>
+    <dimen name="tvLogoWidth">270dp</dimen>
     <dimen name="tvGraphicsPadding">20dp</dimen>
     <dimen name="tickerFontSize">30dp</dimen>
 </resources>

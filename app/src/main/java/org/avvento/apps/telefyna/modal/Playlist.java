@@ -55,6 +55,9 @@ public class Playlist {
     private String start;
     // index to a playlist count from top this is scheduling, must be above it. use only with day, repeats and start fields
     private Integer schedule;
+    // Index of playlist to replace with when empty
+    private Integer emptyReplacer;
+    private Seek seekTo = new Seek(0, 0);
 
     public boolean isStarted() {
         Calendar current = Calendar.getInstance();
@@ -114,6 +117,7 @@ public class Playlist {
         this.usingExternalStorage = parent.usingExternalStorage;
         this.playingGeneralBumpers = parent.playingGeneralBumpers;
         this.specialBumperFolder = parent.specialBumperFolder;
+        this.emptyReplacer = parent.emptyReplacer;
         this.color = parent.color;
         if(parent.active != null && !parent.active) {
             this.active = false;
@@ -121,6 +125,12 @@ public class Playlist {
             this.active = parent.active;
         }
         return this;
+    }
+
+
+    // if playlist is resuming, no bumpers play; next plays next program, same plays the former un completed else exact time is resumed
+    public boolean isResuming() {
+        return getType().name().startsWith(Playlist.Type.LOCAL_RESUMING.name());
     }
 
     public enum Type {

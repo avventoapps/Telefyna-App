@@ -6,7 +6,6 @@ import android.os.StatFs;
 import android.os.SystemClock;
 
 import java.io.File;
-import java.util.Collections;
 
 public class Metrics {
 

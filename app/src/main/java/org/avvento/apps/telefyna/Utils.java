@@ -48,7 +48,7 @@ public class Utils {
         }
     }
 
-    public static void setupLocalPrograms(List<Program> programs, File fileOrFolder, boolean addedFirstItem, Playlist playlist, boolean orderPrograms) {
+    public static void setupLocalPrograms(List<MediaItem> programs, File fileOrFolder, boolean addedFirstItem, Playlist playlist, boolean orderPrograms) {
         if (fileOrFolder.exists()) {
             File[] fileOrFolderList = fileOrFolder.listFiles();
             if(orderPrograms) {
@@ -60,10 +60,10 @@ public class Utils {
                     setupLocalPrograms(programs, file, addedFirstItem, playlist, orderPrograms);
                 } else if(Utils.validPlayableItem(file)) {
                     if (j == 0 && !addedFirstItem) {// first in the folder if not yet addedFirstItem
-                        programs.add(0, extractProgramFromFile(file, playlist.isUsingExternalStorage()));
+                        programs.add(0, MediaItem.fromUri(Uri.fromFile(file)));
                         addedFirstItem = true;
                     } else {
-                        programs.add(extractProgramFromFile(file, playlist.isUsingExternalStorage()));
+                        programs.add(MediaItem.fromUri(Uri.fromFile(file)));
                     }
                 }
             }
@@ -72,10 +72,6 @@ public class Utils {
                 Collections.shuffle(programs);
             }
         }
-    }
-
-    private static Program extractProgramFromFile(File file, boolean usingExternalStorage) {
-        return new Program(file.getAbsolutePath().split(Monitor.instance.getProgramsFolderPath(usingExternalStorage))[1], MediaItem.fromUri(Uri.fromFile(file)));
     }
 
     public static boolean isValidEmail(String email) {

@@ -36,14 +36,18 @@ public class Maintenance {
     private Map<String, PendingIntent> pendingIntents;
 
     /**
-     * Called when Telefyns is lauched and everyday at midnight
+     * Called when Telefyna is launched and everyday at midnight
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void triggerMaintenance() {
-        Monitor.instance.initialiseConfiguration();
+        cancelPendingIntents();
+        Monitor.instance.initialise();
         // switch to firstDefault when automation is turned off
         if (Monitor.instance.getConfiguration().isAutomationDisabled()) {
-            Monitor.instance.switchNow(Monitor.instance.getFirstDefaultIndex(), false);
+            int defaultIndex = Monitor.instance.getFirstDefaultIndex();
+            Playlist playlist = Monitor.instance.getConfiguration().getPlaylists()[defaultIndex];
+            Monitor.instance.addPlayListByIndex(playlist);
+            Monitor.instance.switchNow(defaultIndex, false);
         } else {
             startedSlotsToday = new HashMap<>();
             pendingIntents = new HashMap<>();
@@ -53,14 +57,22 @@ public class Maintenance {
         }
     }
 
+    public void cancelPendingIntents() {
+        if(pendingIntents != null && !pendingIntents.isEmpty()) {
+            for(PendingIntent intent : pendingIntents.values()) {// TODO test
+                Monitor.instance.getAlarmManager().cancel(intent);
+            }
+        }
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void run() {
         triggerMaintenance();
         Logger.log(AuditLog.Event.HEARTBEAT, "ON");
-        Monitor.instance.getHandler().postDelayed(new Runnable() {// maintainer
+        Monitor.instance.getMaintenanceHandler().postDelayed(new Runnable() {// maintainer
             public void run() {
                 triggerMaintenance();
-                Monitor.instance.getHandler().postDelayed(this, getMillsToMaintenanceTime());
+                Monitor.instance.getMaintenanceHandler().postDelayed(this, getMillsToMaintenanceTime());
             }
         }, getMillsToMaintenanceTime());
     }
@@ -75,34 +87,37 @@ public class Maintenance {
             for (int index = 0; index < playlists.length; index++) {
                 Playlist playlist = playlists[index];
                 Integer schedule = playlist.getSchedule();
-                List<Program> programs = new ArrayList<>();
-                if (schedule == null) {
-                    if (playlist.getType().equals(Playlist.Type.ONLINE)) {
-                        programs.add(new Program(playlist.getName(), MediaItem.fromUri(playlist.getUrlOrFolder())));
-                    } else {
-                        for(int i = 0; i < playlist.getUrlOrFolder().split("#").length; i++) {
-                            List<Program> pgms = new ArrayList<>();
-                            File localPlaylistFolder = Monitor.instance.getDirectoryFromPlaylist(playlist, i);
-                            if (localPlaylistFolder.exists() && localPlaylistFolder.listFiles().length > 0) {
-                                boolean addedFirstItem = false;
-                                Utils.setupLocalPrograms(pgms, localPlaylistFolder, addedFirstItem, playlist, false);
-                                programs.addAll(pgms);
-                            }
-                        }
-                    }
-                } else {
-                    programs = Monitor.instance.getProgramsByIndex().get(schedule);
+                if (schedule != null) {
                     playlist = playlist.schedule(playlists[schedule]);
                 }
 
                 if (playlist.scheduledToday()) {
                     schedulePlaylistAtStart(playlist, index, starts);
                 }
-                Monitor.instance.addProgramsByIndex(programs);
                 Monitor.instance.addPlayListByIndex(playlist);
             }
             playCurrentSlot();
         }
+    }
+
+    public List<MediaItem> retrievePrograms(Playlist playlist) {
+        List<MediaItem> programs = new ArrayList<>();
+        if(playlist != null) {
+            if (playlist.getType().equals(Playlist.Type.ONLINE)) {
+                programs.add(MediaItem.fromUri(playlist.getUrlOrFolder()));
+            } else {
+                for (int i = 0; i < playlist.getUrlOrFolder().split("#").length; i++) {
+                    List<MediaItem> pgms = new ArrayList<>();
+                    File localPlaylistFolder = Monitor.instance.getDirectoryFromPlaylist(playlist, i);
+                    if (localPlaylistFolder.exists() && localPlaylistFolder.listFiles().length > 0) {
+                        boolean addedFirstItem = false;
+                        Utils.setupLocalPrograms(pgms, localPlaylistFolder, addedFirstItem, playlist, false);
+                        programs.addAll(pgms);
+                    }
+                }
+            }
+        }
+        return programs;
     }
 
     private void schedulePlaylistAtStart(Playlist playlist, int index, List<String> starts) {

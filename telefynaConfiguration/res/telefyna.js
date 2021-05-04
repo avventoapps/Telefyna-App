@@ -34,7 +34,7 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
         $scope.config = {};
         $scope.config.automationDisabled = false;
         $scope.config.notificationsDisabled = true;
-        $scope.config.internetWait = 60;
+        $scope.config.wait = 30;
         clearAlerts();
         $scope.config.playlists = [];
     }
@@ -57,6 +57,9 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
         $scope.playlist.active = true;
         $scope.playlist.type = "ONLINE";
         $scope.playlist.usingExternalStorage = false;
+        $scope.playlist.seekTo = {};
+        $scope.playlist.seekTo.program = 0;
+        $scope.playlist.seekTo.position = 0;
         clearGraphics();
         $scope.error = undefined;
         $scope.datePickerValue = undefined;
@@ -377,6 +380,10 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
         angular.forEach($scope.config.playlists, function(p, k) {
             if(!$scope.isNotScheduled(p) && index == p.schedule) {
                 $scope.config.playlists[k].active = playlist.active;
+                $scope.config.playlists[k].emptyReplacer = playlist.emptyReplacer;
+                $scope.config.playlists[k].name = playlist.name;
+                $scope.config.playlists[k].color = playlist.color;
+                $scope.config.playlists[k].seekTo = playlist.seekTo;
                 $scope.config.playlists[k].graphics = playlist.graphics;
             }
         });

@@ -18,6 +18,7 @@
         app:use_controller="true"
         app:show_timeout="0"
         app:hide_on_touch="false"
+        app:surface_type="texture_view"
         android:animateLayoutChanges="true"
         app:resize_mode="fill"/>
 

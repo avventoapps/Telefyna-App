@@ -3,12 +3,31 @@ c# Telefyna Configuration
 This project contains a client side application for managing Telefyna's configurations which includes programming/scheduling
 
 ## TODO
+- [ ] add logo position: top left config posibility
+- [ ] fix playing the same playlist
+- [ ] add support for hearing impaired section as we do with lowerthirds
+- [ ] fix restart, doesn't delete formerly existing scheduled events
+- [ ] add telefyna background app, can also include laucher in the future to be default to start immediately after teamviewer to be visible when restart is triggered
+- [ ] add nowPlaying(index,position) to config and app, consume it with resuming
+- [ ] add backup.txt to export config with resuming settings
+- [ ] internet restore: replace switchNow(getCurrentIndex(), false); to 
+- [ ] restart has a bug on next scheduling. 
+- [ ] fix fillers programs empty
+- [ ] test automation disabled
+- [ ] cache now playing should only be for resuming
+- test pending intent/scheduling
+- [ ] news background/font etc customization through settings
+- [ ] only trigger graphics from switch not broadcast keeper
+- [ ] logo should be retained and not removed if existing the next program displays it
+- [x] rescheduling should drop existing scheduled events
+- [x] add way to restart app (restart.txt) after internet wait
 - mon change dare to dream sue challenge repeats at 15:30
-- fix tickers second return start
+- [ ] fix tickers second return start position
 - fix 16:30 on Monday switching from network when q/a is ongoing
-- [ ] once internet is back, retrieve active program
-- [ ] unhandled exception restart test
-- [ ] add logo size in the documentations
+- [ ] once internet is back, retrieve active program. on nextitem
+- [ ] unhandled exception restart testing
+- [x] close all handlers in switchNow around hideGraphics area
+- [x] add logo size in the documentations
 - [ ] scheduling to list playlists first before schedules to avoid messing up ids on delete
 - [ ] fix ERROR: java.lang.IllegalArgumentException: Unexpected runtime error when switching
     - prepare();play(); in stuck finder and error

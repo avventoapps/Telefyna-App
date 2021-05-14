@@ -48,16 +48,16 @@ public class Utils {
         }
     }
 
-    public static void setupLocalPrograms(List<MediaItem> programs, File fileOrFolder, boolean addedFirstItem, Playlist playlist, boolean orderPrograms) {
+    public static void setupLocalPrograms(List<MediaItem> programs, File fileOrFolder, boolean addedFirstItem, Playlist playlist) {
         if (fileOrFolder.exists()) {
             File[] fileOrFolderList = fileOrFolder.listFiles();
-            if(orderPrograms) {
+            if(Playlist.Type.LOCAL_SEQUENCED.equals(playlist.getType()) || playlist.isResuming()) {
                 Arrays.sort(fileOrFolderList);// ordering programs alphabetically
             }
             for (int j = 0; j < fileOrFolderList.length; j++) {
                 File file = fileOrFolderList[j];
                 if (file.isDirectory()) {
-                    setupLocalPrograms(programs, file, addedFirstItem, playlist, orderPrograms);
+                    setupLocalPrograms(programs, file, addedFirstItem, playlist);
                 } else if(Utils.validPlayableItem(file)) {
                     if (j == 0 && !addedFirstItem) {// first in the folder if not yet addedFirstItem
                         programs.add(0, MediaItem.fromUri(Uri.fromFile(file)));

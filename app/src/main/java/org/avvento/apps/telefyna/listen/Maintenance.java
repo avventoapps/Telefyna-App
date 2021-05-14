@@ -31,7 +31,6 @@ import androidx.annotation.RequiresApi;
 
 public class Maintenance {
 
-    private static int CODE = 0;
     private Map<String, CurrentPlaylist> startedSlotsToday;
     private Map<String, PendingIntent> pendingIntents;
 
@@ -40,7 +39,6 @@ public class Maintenance {
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void triggerMaintenance() {
-        cancelPendingIntents();
         Monitor.instance.initialise();
         // switch to firstDefault when automation is turned off
         if (Monitor.instance.getConfiguration().isAutomationDisabled()) {
@@ -67,6 +65,7 @@ public class Maintenance {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void run() {
+        cancelPendingIntents();
         triggerMaintenance();
         Logger.log(AuditLog.Event.HEARTBEAT, "ON");
         Monitor.instance.getMaintenanceHandler().postDelayed(new Runnable() {// maintainer
@@ -111,7 +110,7 @@ public class Maintenance {
                     File localPlaylistFolder = Monitor.instance.getDirectoryFromPlaylist(playlist, i);
                     if (localPlaylistFolder.exists() && localPlaylistFolder.listFiles().length > 0) {
                         boolean addedFirstItem = false;
-                        Utils.setupLocalPrograms(pgms, localPlaylistFolder, addedFirstItem, playlist, false);
+                        Utils.setupLocalPrograms(pgms, localPlaylistFolder, addedFirstItem, playlist);
                         programs.addAll(pgms);
                     }
                 }
@@ -155,12 +154,12 @@ public class Maintenance {
         } else {
             Intent intent = new Intent(Monitor.instance, PlaylistScheduler.class);
             intent.putExtra(PlaylistScheduler.PLAYLIST_INDEX, index);
-            schedule(intent, playlist.getScheduledTime(), playlist.getStart());
+            schedule(intent, playlist.getScheduledTime(), playlist.getStart(), index);
         }
     }
 
-    private void schedule(Intent intent, long mills, String start) {
-        PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(Monitor.instance, CODE++, intent, 0);
+    private void schedule(Intent intent, long mills, String start, int index) {
+        PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(Monitor.instance, index, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         pendingIntents.put(start, alarmPendingIntent);
         Monitor.instance.getAlarmManager().setExact(AlarmManager.RTC_WAKEUP, mills, alarmPendingIntent);
     }

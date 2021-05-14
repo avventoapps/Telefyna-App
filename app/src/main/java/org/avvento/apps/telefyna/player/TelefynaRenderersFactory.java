@@ -21,5 +21,4 @@ public class TelefynaRenderersFactory extends DefaultRenderersFactory {
         out.add(new TelefynaCodecRender(context, mediaCodecSelector, allowedVideoJoiningTimeMs, enableDecoderFallback, eventHandler, eventListener, MAX_DROPPED_VIDEO_FRAME_COUNT_TO_NOTIFY));
     }
 
-
 }

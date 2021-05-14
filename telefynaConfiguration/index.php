@@ -221,6 +221,7 @@
 								<img alt="Telefyna Icon" height="50" src="telefyna.png" width="55">
 								<br>
 								<h4>{{config.name}}'s schedule</h4>
+								Version: {{config.version}}
 							</div>
 							<!--.table-responsive breaks print-->
 							<div class="modal-body">
@@ -284,7 +285,7 @@
 		</div>
 		<div class="info alert-info"> <b>telefyna</b> folder should be put in either/both Internal/SDcard whereas <b>telefynaAudit</b> exists in Internal storage
 			<br><b>The export(config.json) contains sensitive information and should be protected, <br>Telefyna runs the scheduling at midnight daily;</b>
-			<br>This means if a program isn't in the folder before midnight it won't be scheduled or changes to config thereafter won't be picked up. To order Telefyna to re-run scheduling and use your changes afer the current program, add a file named <b>init.txt</b> in your <b>telefynaAudit</b> folder. To restart Telefyna after configured <b>wait</b>, add a file named <b>restart.txt</b> in your <b>telefynaAudit</b>. Use <b>backupConfig.txt|backupConfigReset.txt</b> to regenerate copy of <b>config.json</b> in <b>telefynaAudit</b> at next <b>wait</b>. Put your program folders in <b>telefyna/playlist</b>, Put your special and <b>General</b> folders for special & general bumpers in <b>telefyna/bumper</b>, lower thirds in <b>telefyna/lowerThird</b>, And your logo (not more than 200MB) at <b>telefyna/logo.png</b>
+			<br>This means if a program isn't in the folder before midnight it won't be scheduled or changes to config thereafter won't be picked up. To order Telefyna to re-run scheduling and use your changes afer the current program, add a file named <b>init.txt</b> in your <b>telefynaAudit</b> folder. Add a file named <b>restart.txt|reboot.txt</b> in your <b>telefynaAudit</b> to restart Telefyna or reboot device respectively after <b>wait</b>. Use <b>backupConfig.txt|backupConfigReset.txt</b> to regenerate copy of <b>config.json</b> in <b>telefynaAudit</b> at next <b>wait</b>. Put your program folders in <b>telefyna/playlist</b> Put your special and <b>General</b> folders for special & general bumpers in <b>telefyna/bumper</b>.(bumpers are played in program, special and general bumper order before the programs), lower thirds in <b>telefyna/lowerThird</b>, And your logo (not more than 200KB) at <b>telefyna/logo.png</b>
 		</div>
 		<!-- Display Results -->
 		<!--div class="section config-result">

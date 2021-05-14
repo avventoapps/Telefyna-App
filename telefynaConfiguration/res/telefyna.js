@@ -22,8 +22,8 @@ angular.module("Telefyna", ['ngCookies']).controller('Config', function($cookies
     }
 
     function clearAlerts() {
-        $scope.config.alerts.enabled = true;
         $scope.config.alerts = {};
+        $scope.config.alerts.enabled = true;
         $scope.config.alerts.mailer = {};
         $scope.config.alerts.mailer.host = "smtp.gmail.com";
         $scope.config.alerts.mailer.port = 587;

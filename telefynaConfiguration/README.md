@@ -3,6 +3,20 @@ c# Telefyna Configuration
 This project contains a client side application for managing Telefyna's configurations which includes programming/scheduling
 
 ## TODO
+- [ ] Fix resuming Playlist.Type.LOCAL_RESUMING to resume exact time, logged at start of play, log in real time to track that if necessary else drop that category
+- [ ] seekTo/cache is not advancing
+- [ ] teamviewer enable udp to speed up uploads
+- [ ] playone shouldn't transition at all. always include only one media item in programs that's meant to be played
+- [ ] power off during resume play should resume the same program, cache current date and only transition (++) if cache is etiher null or not same
+- [ ] program bumpers should begin rather than play last
+- [ ] add playlist move/re-range index
+- [ ] playerError should log the mediafile too
+- [ ] empty programs should be triggered if nothing is able to play from the folder due to wrong format
+- [ ] restart should not re-shedule
+- [ ] some mp4 don't play in exoplayer, sdcard issue
+    com.google.android.exoplayer2.source.UnrecognizedInputFormatException: None of the available extractors (FragmentedMp4Extractor, Mp4Extractor, FlvExtractor, FlacExtractor, WavExtractor, AmrExtractor, PsExtractor, OggExtractor, TsExtractor, MatroskaExtractor, AdtsExtractor, Ac3Extractor, Ac4Extractor, Mp3Extractor, JpegExtractor) could read the stream
+- [ ] ensure a restart happens for unhandled exceptions
+- [ ] forward to next if wrong file is the first media file, proceed to next still. insert cache to reload from next
 - [ ] add logo position: top left config posibility
 - [ ] fix playing the same playlist
 - [ ] add support for hearing impaired section as we do with lowerthirds

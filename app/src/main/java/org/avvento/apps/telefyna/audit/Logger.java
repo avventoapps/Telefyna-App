@@ -22,8 +22,6 @@ import androidx.annotation.RequiresApi;
 public class Logger {
     private static SimpleDateFormat datetimeFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
     /*
      * TODO mail, save to file
      */
@@ -64,7 +62,7 @@ public class Logger {
     }
 
     public static String getToday() {
-        return dateFormat.format(Calendar.getInstance().getTime());
+        return Monitor.instance.getDateFormat().format(Calendar.getInstance().getTime());
     }
 
     public static List<String> getAuditsForNDays(int days) {
@@ -80,7 +78,7 @@ public class Logger {
                     } else {
                         Calendar d = Calendar.getInstance();
                         d.add(Calendar.DAY_OF_YEAR, i * -1);// - one day
-                        audit = Monitor.instance.getAuditLogsFilePath(dateFormat.format(d.getTime()));
+                        audit = Monitor.instance.getAuditLogsFilePath(Monitor.instance.getDateFormat().format(d.getTime()));
                     }
                     audits.add(audit);
                 }

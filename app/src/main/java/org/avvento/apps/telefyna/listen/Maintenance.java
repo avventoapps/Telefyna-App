@@ -39,6 +39,7 @@ public class Maintenance {
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void triggerMaintenance() {
+        cancelPendingIntents();
         Monitor.instance.initialise();
         // switch to firstDefault when automation is turned off
         if (Monitor.instance.getConfiguration().isAutomationDisabled()) {
@@ -65,9 +66,9 @@ public class Maintenance {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void run() {
-        cancelPendingIntents();
         triggerMaintenance();
         Logger.log(AuditLog.Event.HEARTBEAT, "ON");
+        Monitor.instance.getMaintenanceHandler().removeCallbacksAndMessages(null);
         Monitor.instance.getMaintenanceHandler().postDelayed(new Runnable() {// maintainer
             public void run() {
                 triggerMaintenance();

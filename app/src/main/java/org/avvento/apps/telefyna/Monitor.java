@@ -31,6 +31,7 @@ import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.mediacodec.MediaCodecRenderer;
 import com.google.android.exoplayer2.source.UnrecognizedInputFormatException;
 import com.google.android.exoplayer2.ui.PlayerNotificationManager;
 import com.google.android.exoplayer2.ui.PlayerView;
@@ -103,7 +104,6 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     private SimpleExoPlayer player;
     private Playlist currentPlaylist;
     private List<Playlist> playlistByIndex;
-    private List<MediaItem> currentBumpers;
     private List<MediaItem> programItems;
     private TickerView tickerView;
     private VideoView lowerThirdView;
@@ -363,28 +363,6 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         return player != null && !player.isPlaying() && samePlaylistPlaying(index);
     }
 
-    // TODO don't use until tested & fix
-    private Integer getCurrentIndex() {
-        Map<String, Integer> startedSlotsToday = new HashMap<>();
-        List<String> starts = new ArrayList<>();
-        Playlist[] playlists = getConfiguration().getPlaylists();
-        for(int i = 0; i < playlists.length; i++) {
-            Playlist playlist = playlists[i];
-            String start = playlist.getStart();
-            if(starts.contains(start)) { // consider the last
-                starts.remove(start);
-                startedSlotsToday.remove(start);
-            }
-            if(playlist.scheduledToday() && playlist.isStarted()) {
-                starts.add(start);
-                startedSlotsToday.put(start, i);
-            }
-        }
-        List<String> slots = startedSlotsToday.keySet().stream().collect(Collectors.toList());
-        Collections.sort(slots, Collections.reverseOrder());
-        return startedSlotsToday.get(slots.get(0));
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.O)
     public synchronized void switchNow(int index, boolean isCurrentSlot) {
         Playlist playlist = playlistByIndex.get(index);
@@ -402,7 +380,6 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
             nowPlayingIndex = index;
             currentPlaylist = playlist;
             programItems = maintenance.retrievePrograms(currentPlaylist);
-            currentBumpers = new ArrayList<>();
             Monitor.instance.getHandler().removeCallbacksAndMessages(null);
             int firstDefaultIndex = getFirstDefaultIndex();
             int secondDefaultIndex = getSecondDefaultIndex();
@@ -414,6 +391,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                         return;
                     } else {
                         fillingForLackOfInternet = true;
+                        failedBecauseOfInternetIndex = nowPlayingIndex;
                         switchNow(secondDefaultIndex, isCurrentSlot);
                         return;
                     }
@@ -474,7 +452,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                                 }
                             } else {
                                 String bumperFolder = getBumperDirectory(currentPlaylist.isUsingExternalStorage());
-                                List<MediaItem> generalBumpers = new ArrayList<>(), specialBumpers = new ArrayList<>(), playListBumpers = new ArrayList<>();
+                                List<MediaItem> generalBumpers = new ArrayList<>(), specialBumpers = new ArrayList<>(), playListIntroBumpers = new ArrayList<>(), playListOutroBumpers = new ArrayList<>();
                                 // prepare general bumpers
                                 if (currentPlaylist.isPlayingGeneralBumpers()) {
                                     addBumpers(generalBumpers, new File(bumperFolder + File.separator + "General"), false);
@@ -485,11 +463,14 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                                     addBumpers(specialBumpers, new File(bumperFolder + File.separator + specialBumperFolder), false);
                                 }
                                 // prepare playlist specific bumpers
-                                addBumpers(playListBumpers, new File(bumperFolder + File.separator + currentPlaylist.getUrlOrFolder().split("#")[0]), false);
-                                currentBumpers.addAll(playListBumpers);
+                                addBumpers(playListIntroBumpers, new File(String.format("%s-INTRO", bumperFolder + File.separator + currentPlaylist.getUrlOrFolder().split("#")[0])), false);
+                                addBumpers(playListOutroBumpers, new File(String.format("%s-OUTRO", bumperFolder + File.separator + currentPlaylist.getUrlOrFolder().split("#")[0])), false);
+                                List<MediaItem> currentBumpers = new ArrayList<>();
+                                currentBumpers.addAll(playListIntroBumpers);
                                 currentBumpers.addAll(specialBumpers);
                                 currentBumpers.addAll(generalBumpers);
-                                programItems.addAll(0, currentBumpers);
+                                programItems.addAll(0, currentBumpers);// add first bumbers
+                                programItems.addAll(playListOutroBumpers);// add last bumpers
                             }
 
                             if (isCurrentSlot) {
@@ -530,6 +511,8 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         if (current == null || !player.equals(current)) {// change of player is proof of a switch
             while (player.isPlaying()) {
                 if (current != null) {
+                    current.setVideoSurfaceView(null);
+                    current.clearVideoSurface();
                     current.release();
                     current = null;
                 }
@@ -626,10 +609,12 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         // keep reloading existing program if internet is on and off
         if (error.getCause().getCause() instanceof UnknownHostException || error.getCause().getCause() instanceof IOException) {
             Logger.log(AuditLog.Event.NO_INTERNET, "Failing to play program because of no internet connection");
-            failedBecauseOfInternetIndex = nowPlayingIndex;
             // this will wait for set time on config before reloading
         } else if(error.getCause().getCause() instanceof UnrecognizedInputFormatException && player.isCurrentWindowSeekable()) {
             player.seekTo(nowProgramItem + 1, 0);
+        } else if(error.getCause().getCause() instanceof MediaCodecRenderer.DecoderInitializationException) {
+            player.prepare();
+            player.play();
         } else if(!player.isPlaying()) {
            switchNow(nowPlayingIndex, false);
         }

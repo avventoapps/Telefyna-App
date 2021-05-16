@@ -147,7 +147,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     private void cachePlayingAt(Integer index, long seekTo, boolean noProgramTransition) {
         int at = Playlist.Type.LOCAL_RESUMING_ONE.equals(currentPlaylist.getType()) && startOnePlayProgramItem != null ? 0 : nowProgramItem;
         int atValue = Playlist.Type.LOCAL_RESUMING_ONE.equals(currentPlaylist.getType()) && startOnePlayProgramItem != null ? startOnePlayProgramItem : nowProgramItem;
-        atValue = noProgramTransition ? atValue - 1 : atValue;
+        atValue = noProgramTransition && !Playlist.Type.LOCAL_RESUMING_ONE.equals(currentPlaylist.getType()) ? atValue - 1 : atValue;
         String programName = getMediaItemName(programItems.get(at));
         if (StringUtils.isNotBlank(programName)) {// exclude bumpers
             SharedPreferences.Editor editor = sharedpreferences.edit();
@@ -384,7 +384,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
             int firstDefaultIndex = getFirstDefaultIndex();
             int secondDefaultIndex = getSecondDefaultIndex();
 
-            if (Playlist.Type.ONLINE.equals(currentPlaylist.getType()) && !Utils.internetConnected() && secondDefaultIndex != nowPlayingIndex) {
+            if(Playlist.Type.ONLINE.equals(currentPlaylist.getType()) && !Utils.internetConnected() && secondDefaultIndex != nowPlayingIndex) {
                 Monitor.instance.getHandler().postDelayed(() -> {
                     if (Utils.internetConnected()) {
                         switchNow(nowPlayingIndex, isCurrentSlot);
@@ -473,7 +473,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
                                 programItems.addAll(playListOutroBumpers);// add last bumpers
                             }
 
-                            if (isCurrentSlot) {
+                            if (isCurrentSlot && nowPlayingIndex != secondDefaultIndex) {// not fillers
                                 Seek seek = seekImmediateNonCompletedSlot(currentPlaylist, programItems);
                                 if (seek != null) {
                                     nowProgramItem = seek.getProgram() == programItems.size() - 1 ? seek.getProgram() : nowProgramItem + seek.getProgram();
@@ -609,12 +609,12 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         // keep reloading existing program if internet is on and off
         if (error.getCause().getCause() instanceof UnknownHostException || error.getCause().getCause() instanceof IOException) {
             Logger.log(AuditLog.Event.NO_INTERNET, "Failing to play program because of no internet connection");
+            failedBecauseOfInternetIndex = nowPlayingIndex;
             // this will wait for set time on config before reloading
         } else if(error.getCause().getCause() instanceof UnrecognizedInputFormatException && player.isCurrentWindowSeekable()) {
             player.seekTo(nowProgramItem + 1, 0);
         } else if(error.getCause().getCause() instanceof MediaCodecRenderer.DecoderInitializationException) {
-            player.prepare();
-            player.play();
+            switchNow(nowPlayingIndex, false);
         } else if(!player.isPlaying()) {
            switchNow(nowPlayingIndex, false);
         }
@@ -648,7 +648,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
     }
 
     private long getLastModifiedFor(int index) {
-        return getDirectoryFromPlaylist(playlistByIndex.get(index)).lastModified();
+        return getDirectoryFromPlaylist(playlistByIndex.get(getPlaylistIndex(index))).lastModified();
     }
 
     public File getDirectoryFromPlaylist(Playlist playlist, int i) {
@@ -789,7 +789,7 @@ public class Monitor extends AppCompatActivity implements PlayerNotificationMana
         File lowerThirdClip =  new File(path);
         if(Utils.validPlayableItem(lowerThirdClip)) {
             Logger.log(AuditLog.Event.LOWER_THIRD_ON, path);
-            lowerThirdView = (VideoView) findViewById(R.id.lowerThird); // initiate a video view
+            lowerThirdView = findViewById(R.id.lowerThird); // initiate a video view
             lowerThirdView.setVideoURI(Uri.fromFile(lowerThirdClip));
             lowerThirdView.start();
             lowerThirdView.setVisibility(View.VISIBLE);

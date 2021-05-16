@@ -22,7 +22,7 @@ public class TelefynaCodecRender extends MediaCodecVideoRenderer {
     @Override
     protected boolean codecNeedsSetOutputSurfaceWorkaround(String name) {
         // https://github.com/google/ExoPlayer/issues/3939
-        return workAroundDecoders.contains(name) || super.codecNeedsSetOutputSurfaceWorkaround(name);
+        return workAroundDecoders.contains(name);
     }
 
 

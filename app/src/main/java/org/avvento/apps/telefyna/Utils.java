@@ -36,7 +36,7 @@ public class Utils {
      */
     public static boolean internetConnected() {
         try {
-            Process process = Runtime.getRuntime().exec("/system/bin/ping -c 1 8.8.8.8");
+            Process process = Runtime.getRuntime().exec("/system/bin/ping -c 1 8.8.4.4");
             if (process.waitFor() == 0) {
                 return true;
             } else {
@@ -60,10 +60,10 @@ public class Utils {
                     setupLocalPrograms(programs, file, addedFirstItem, playlist);
                 } else if(Utils.validPlayableItem(file)) {
                     if (j == 0 && !addedFirstItem) {// first in the folder if not yet addedFirstItem
-                        programs.add(0, MediaItem.fromUri(Uri.fromFile(file)));
+                        programs.add(0, new MediaItem.Builder().setUri(Uri.fromFile(file)).setMediaId(Uri.fromFile(file).toString()).build());
                         addedFirstItem = true;
                     } else {
-                        programs.add(MediaItem.fromUri(Uri.fromFile(file)));
+                        programs.add(new MediaItem.Builder().setUri(Uri.fromFile(file)).setMediaId(Uri.fromFile(file).toString()).build());
                     }
                 }
             }

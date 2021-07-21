@@ -5,7 +5,7 @@ The best simplest performing online stream & local file scheduling auto player f
 ______
 
 ## Infrastructure/Demo
-[![Telefyna Demo](![icon](https://user-images.githubusercontent.com/29783151/126462177-7cd944c0-8915-4475-b4b3-7dc7f4289553.jpg))](https://www.youtube.com/watch?v=Oy5aN6MTcXM)
+[![Telefyna Demo](https://user-images.githubusercontent.com/29783151/126462177-7cd944c0-8915-4475-b4b3-7dc7f4289553.jpg)](https://www.youtube.com/watch?v=Oy5aN6MTcXM)
 
 ## Installation
 * Download the [APK from here](https://github.com/avventoapps/avvento/releases/latest/download/telefyna.apk) and install it, grant the app Storage permission and reload it if necessary
